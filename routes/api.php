@@ -178,3 +178,7 @@ Route::post('send/text', function(Request $request){
     $api->sendMessage($request->telefono, $request->message, 1);
     return true;
 });
+
+Route::get('get/all/clubes', function(){
+    return App\Clube::all();
+});

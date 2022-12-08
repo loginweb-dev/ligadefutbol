@@ -41,6 +41,10 @@
 @stop
 
 @section('content')
+@php
+    $equipos= App\Clube::all();
+
+@endphp
     <div class="page-content browse container-fluid">
         @include('voyager::alerts')
         <div class="row">
@@ -372,7 +376,24 @@
         });
 
         async function enviar_planillas(){
-            
+            var clubes= await axios("{{setting('admin.url')}}api/get/all/clubes")
+
+            for (let index = 0; index < clubes.data.length; index++) {
+                var url="{{setting('admin.url')}}admin/jugadores-planillas/create"
+                if (clubes.data[index].wpp==null) {
+                    console.log("No tiene")
+                }
+                else{
+                    console.log("Tiene")
+                    var data={
+                        msj: "Buenas tardes, porfavor procedan a rellenar la nómina de su equipo \nGracias, atentamente Mutual",
+                        telefono: '591'+clubes.data[index].wpp 
+                    }
+                    var mensaje= await axios.post("{{setting('admin.url')}}api/send/message", data)
+                    var mensajeurl= await axios.post("{{setting('admin.url')}}api/send/message", {msj:url, telefono: '591'+clubes.data[index].wpp })
+
+                }                
+            }
         }
 
 

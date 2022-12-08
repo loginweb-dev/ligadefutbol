@@ -522,6 +522,8 @@
             });
         </script>
     @endif --}}
+    {{-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> --}}
+
     <script>
 
         async function validar_check() {

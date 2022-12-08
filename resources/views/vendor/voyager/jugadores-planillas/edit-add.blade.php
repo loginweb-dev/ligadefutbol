@@ -791,3 +791,7 @@
         });
     </script>
 @stop
+
+@section('mijs')
+    
+@stop

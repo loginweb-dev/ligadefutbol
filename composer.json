@@ -7,13 +7,14 @@
     "require": {
         "php": "^7.3|^8.0",
         "beyondcode/laravel-websockets": "^1.13",
-        "binshops/laravel-blog": "^9.2",
+        "binshops/laravel-blog": "v8.1.1",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "laraveles/spanish": "^1.5",
         "pusher/pusher-php-server": "~3.0",
         "ricardoapaes/whaticket-api": "^1.0",
         "tcg/voyager": "^1.6"

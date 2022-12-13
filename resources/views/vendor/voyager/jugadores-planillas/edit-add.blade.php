@@ -37,6 +37,8 @@
                     <div class="row">
                  
                         <div class="col-md-12">
+                            <button class="btn btn-dark btn-block" onclick="prueba()">Prueba</button>
+
 
                             <div class="col-sm-4">
                                 <label for="select_club">Club</label>
@@ -738,8 +740,8 @@
           };
         }
 
-        $('document').ready(function () {
-            // example2.init();
+        $('document').ready(async function () {
+          // example2.init();
             $('.toggleswitch').bootstrapToggle();
 
             //Init datepicker for date fields if data-datepicker attribute defined
@@ -789,6 +791,35 @@
             $('[data-toggle="tooltip"]').tooltip();
             // add_deudas()
         });
+
+        // Example POST method implementation:
+        async function prueba() {
+            var myData = {
+                "data": {
+                    "number": "59170269362", 
+                    "whatsappId":17, 
+                    "body":"Prueba Javascript Final"
+                }
+            };
+
+            $.ajax({
+
+                url: 'https://api.appxi.net/api/messages/send',
+                type: 'POST',
+                crossDomain: true,
+                data: myData,
+                datatype: 'jsonp',
+                success: function() { alert("Success"); },
+                error: function() { alert('Failed!'); },
+                beforeSend: setHeader
+               
+            });
+        }
+
+        function setHeader(xhr) {
+            xhr.setRequestHeader('Authorization',  'Bearer d13aaed2-3751-46c0-8934-7f7bc00709f2');
+        }
+
     </script>
 @stop
 

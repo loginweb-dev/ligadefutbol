@@ -182,3 +182,8 @@ Route::post('send/text', function(Request $request){
 Route::get('get/all/clubes', function(){
     return App\Clube::all();
 });
+
+Route::get('find/club/telefono/{telefono}', function($telefono){
+    $equipo= App\Clube::where('wpp', $telefono)->first();
+    return $equipo;
+});

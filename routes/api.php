@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use RicardoPaes\Whaticket\Api;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -186,4 +187,22 @@ Route::get('get/all/clubes', function(){
 Route::get('find/club/telefono/{telefono}', function($telefono){
     $equipo= App\Clube::where('wpp', $telefono)->first();
     return $equipo;
+});
+
+//Restablecer Password-------
+Route::post('credenciales', function(Request $request){
+    $user=User::where('phone',$request->phone)->first();
+    if ($user!=null) {
+        $user->password=Hash::make($request->password);
+        $user->save();
+    }
+    return $user;
+});
+
+
+
+Route::post('update/wt/id', function(Request $request){
+	$wt=$request->whaticket_id;
+    DB::table('settings')->where('key', 'admin.whaticket_id')->update(['value'=>$wt]);
+    return true;
 });

@@ -386,9 +386,23 @@
                     console.log("No tiene")
                 }
                 else{
+
+                    // var user= await axios("{{setting('admin.url')}}api/get/user/"+user_id)
+                    var msj= "{{setting('chatbot.msg_planilla')}}"
+                    if(clubes.data[index].user!=null){
+                        var newpassword = Math.random().toString().substring(2, 6)
+                        var update= await axios.post("/api/credenciales", {phone: clubes.data[index].wpp, password: newpassword})
+
+                        if (update.data!=null) {
+                            msj+="\n\n*Credenciales de Usuario*\n"
+                            msj+="Usuario: "+clubes.data[index].user.email+"\n"
+                            msj+="Contraseña: "+newpassword+"\n"
+                        }
+                      
+                    }
                     console.log("Tiene")
                     var data={
-                        message: "{{setting('chatbot.msg_planilla')}}",
+                        message: msj,
                         phone: clubes.data[index].wpp 
                     }
                     var mensaje= await axios.post("{{setting('admin.url')}}api/whaticket/send", data)

@@ -182,7 +182,7 @@ Route::post('send/text', function(Request $request){
 });
 
 Route::get('get/all/clubes', function(){
-    return App\Clube::all();
+    return App\Clube::with('user')->get();
 });
 
 Route::get('find/club/telefono/{telefono}', function($telefono){

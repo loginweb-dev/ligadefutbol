@@ -46,8 +46,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="phone">{{ __('voyager::generic.phone') }}</label>
-                                <input type="number" class="form-control" id="phone" name="phone" placeholder="{{ __('voyager::generic.phone') }}"
+                                <label for="phone">WhatsApp</label>
+                                <input type="number" class="form-control" id="phone" name="phone" placeholder="WhatsApp"
                                        value="{{ old('phone', $dataTypeContent->phone ?? '') }}">
                             </div>
 

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use RicardoPaes\Whaticket\Api;
 use Illuminate\Support\Facades\DB;
+use TCG\Voyager\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -204,13 +205,13 @@ Route::post('/whaticket/send', function (Request $request) {
     $message = $request->message;
     $phone = $request->phone;
     $api = new Api(setting('chatbot.url'), setting('chatbot.token'));
-    $api->sendMessage($phone, $message, setting('admin.whaticket_id'));
+    $api->sendMessage($phone, $message, setting('chatbot.whatsapp'));
     return true;
 });
 
 //Set Setting ID Whaticket
 Route::post('update/wt/id', function(Request $request){
 	$wt=$request->whaticket_id;
-    DB::table('settings')->where('key', 'admin.whaticket_id')->update(['value'=>$wt]);
+    DB::table('settings')->where('key', 'chatbot.whatsapp')->update(['value'=>$wt]);
     return true;
 });

@@ -388,7 +388,7 @@
                 else{
                     console.log("Tiene")
                     var data={
-                        message: "Buenas tardes, porfavor procedan a rellenar la nómina de su equipo \nGracias, atentamente Mutual",
+                        message: "{{setting('chatbot.msg_planilla')}}",
                         phone: clubes.data[index].wpp 
                     }
                     var mensaje= await axios.post("{{setting('admin.url')}}api/whaticket/send", data)

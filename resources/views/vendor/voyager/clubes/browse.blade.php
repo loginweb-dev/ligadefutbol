@@ -397,7 +397,11 @@
                             msj+="\n\n*Credenciales de Usuario*\n"
                             msj+="Usuario: "+clubes.data[index].user.email+"\n"
                             msj+="Contraseña: "+newpassword+"\n"
+                            msj+="\n"
                         }
+                        msj+="Ingrese al Sistema a través del siguiente link\n"
+                        msj+=""+url+"\n"
+                        msj+="Nota: Para que el link funcione tiene que agregar como contacto este número."
                       
                     }
                     console.log("Tiene")

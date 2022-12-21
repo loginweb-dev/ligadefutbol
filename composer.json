@@ -10,6 +10,7 @@
         "binshops/laravel-blog": "v8.1.1",
         "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "hansschouten/laravel-pagebuilder": "^0.23.0",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",

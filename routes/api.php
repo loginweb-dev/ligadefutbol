@@ -199,8 +199,16 @@ Route::post('credenciales', function(Request $request){
     return $user;
 });
 
+//Mensaje con Whaticket
+Route::post('/whaticket/send', function (Request $request) {
+    $message = $request->message;
+    $phone = $request->phone;
+    $api = new Api(getenv('WHATICKET_BASEURL'), getenv('WHATICKET_TOKEN'));
+    $api->sendMessage($phone, $message, setting('admin.whaticket_id'));
+    return true;
+});
 
-
+//Set Setting ID Whaticket
 Route::post('update/wt/id', function(Request $request){
 	$wt=$request->whaticket_id;
     DB::table('settings')->where('key', 'admin.whaticket_id')->update(['value'=>$wt]);

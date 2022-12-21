@@ -386,11 +386,11 @@
                 else{
                     console.log("Tiene")
                     var data={
-                        msj: "Buenas tardes, porfavor procedan a rellenar la nómina de su equipo \nGracias, atentamente Mutual",
-                        telefono: '591'+clubes.data[index].wpp 
+                        message: "Buenas tardes, porfavor procedan a rellenar la nómina de su equipo \nGracias, atentamente Mutual",
+                        phone: clubes.data[index].wpp 
                     }
-                    var mensaje= await axios.post("{{setting('admin.url')}}api/send/message", data)
-                    var mensajeurl= await axios.post("{{setting('admin.url')}}api/send/message", {msj:url, telefono: '591'+clubes.data[index].wpp })
+                    var mensaje= await axios.post("{{setting('admin.url')}}api/whaticket/send", data)
+                    var mensajeurl= await axios.post("{{setting('admin.url')}}api/whaticket/send", {message:url, phone: clubes.data[index].wpp })
 
                 }                
             }

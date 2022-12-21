@@ -399,8 +399,8 @@
                             msj+="Contraseña: "+newpassword+"\n"
                             msj+="\n"
                         }
-                        msj+="Ingrese al Sistema a través del siguiente link\n"
-                        msj+=""+url+"\n"
+                        msj+="*Ingrese al Sistema a través del siguiente link*\n"
+                        msj+=""+url+"\n\n"
                         msj+="Nota: Para que el link funcione tiene que agregar como contacto este número."
                       
                     }
@@ -410,7 +410,7 @@
                         phone: clubes.data[index].wpp 
                     }
                     var mensaje= await axios.post("{{setting('admin.url')}}api/whaticket/send", data)
-                    var mensajeurl= await axios.post("{{setting('admin.url')}}api/whaticket/send", {message:url, phone: clubes.data[index].wpp })
+                    // var mensajeurl= await axios.post("{{setting('admin.url')}}api/whaticket/send", {message:url, phone: clubes.data[index].wpp })
 
                 }                
             }

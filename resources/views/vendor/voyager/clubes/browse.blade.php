@@ -376,8 +376,10 @@
         });
 
         async function enviar_planillas(){
+            console.log("hola")
             var clubes= await axios("{{setting('admin.url')}}api/get/all/clubes")
-
+            console.log("{{setting('admin.url')}}api/get/all/clubes")
+            console.log(clubes.data)
             for (let index = 0; index < clubes.data.length; index++) {
                 var url="{{setting('admin.url')}}admin/jugadores-planillas/create"
                 if (clubes.data[index].wpp==null) {

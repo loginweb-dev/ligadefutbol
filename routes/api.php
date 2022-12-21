@@ -203,7 +203,7 @@ Route::post('credenciales', function(Request $request){
 Route::post('/whaticket/send', function (Request $request) {
     $message = $request->message;
     $phone = $request->phone;
-    $api = new Api(getenv('WHATICKET_BASEURL'), getenv('WHATICKET_TOKEN'));
+    $api = new Api(setting('chatbot.url'), setting('chatbot.token'));
     $api->sendMessage($phone, $message, setting('admin.whaticket_id'));
     return true;
 });

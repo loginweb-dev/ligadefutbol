@@ -192,7 +192,7 @@
                 monto:$("#input_monto").val(),
                 editor_id:$("#input_editor").val(),
                 planilla_id:$("#select_planilla").val(),
-                club_id:$("#select_club").val(),
+                clube_id:$("#select_club").val(),
                 jugador_id:$("#select_jugador").val(),
                 observacion:$("#text_descripcion").val(),
                 estado:"Pagado",

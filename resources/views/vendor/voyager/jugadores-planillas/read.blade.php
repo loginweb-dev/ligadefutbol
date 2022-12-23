@@ -34,7 +34,7 @@
 @section('content')
 
     @php
-        $equipo= App\Clube::find($dataTypeContent->club_id);
+        $equipo= App\Clube::find($dataTypeContent->clube_id);
         $delegado= App\Delegado::find($dataTypeContent->delegado_id);
         $nomina = App\RelPlanillaJugadore::where('planilla_id', $dataTypeContent->id)->with('jugador')->get();
         $index=0;

@@ -15,7 +15,7 @@ class Asiento extends Model
         'monto',
         'editor_id',
         'planilla_id',
-        'club_id',
+        'clube_id',
         'jugador_id',
         'observacion',
         'estado',
@@ -25,7 +25,7 @@ class Asiento extends Model
 
     public function clubes()
 	{
-		return $this->belongsTo(Clube::class, 'club_id');
+		return $this->belongsTo(Clube::class, 'clube_id');
 	}
     public function jugadores()
 	{

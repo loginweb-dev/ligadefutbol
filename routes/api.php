@@ -69,8 +69,8 @@ Route::group(['prefix' => 'partidos'], function () {
 
 Route::group(['prefix' => 'jugadores'], function () {
 
-    Route::get('planilla/find/jugadores/{club_id}', function ($club_id) {
-        $jugadores= App\Jugadore::where('club_id', $club_id)->get();
+    Route::get('planilla/find/jugadores/{clube_id}', function ($clube_id) {
+        $jugadores= App\Jugadore::where('clube_id', $clube_id)->get();
         return $jugadores;
     });
 
@@ -80,13 +80,13 @@ Route::group(['prefix' => 'jugadores'], function () {
     });
 
     Route::post('planilla/save', function (Request $request) {
-        $ult_planilla= App\JugadoresPlanilla::where('club_id', $request->club_id)->where('categoria_jugadores', $request->categoria_jugadores)->where('activo', 1)->first();
+        $ult_planilla= App\JugadoresPlanilla::where('clube_id', $request->clube_id)->where('categoria_jugadores', $request->categoria_jugadores)->where('activo', 1)->first();
         if ($ult_planilla) {
             $ult_planilla->activo=0;
             $ult_planilla->save();
         }
             $planilla= App\JugadoresPlanilla::create([
-                'club_id'=> $request->club_id,
+                'clube_id'=> $request->clube_id,
                 'categoria_jugadores'=> $request->categoria_jugadores,
                 'fecha_entrega'=> $request->fecha_entrega,
                 'veedor_id'=> $request->veedor_id,
@@ -148,7 +148,7 @@ Route::post('asiento/save', function(Request $request){
         'monto'=> $request->monto,
         'editor_id'=> $request->editor_id,
         'planilla_id'=> $request->planilla_id,
-        'club_id'=> $request->club_id,
+        'clube_id'=> $request->clube_id,
         'jugador_id'=> $request->jugador_id,
         'observacion'=> $request->observacion,
         'estado'=> $request->estado,
@@ -182,7 +182,7 @@ Route::post('send/text', function(Request $request){
 });
 
 Route::get('get/all/clubes', function(){
-    return App\Clube::with('user')->get();
+    return App\Clube::with('user', 'jugadores')->get();
 });
 
 Route::get('find/club/telefono/{telefono}', function($telefono){
@@ -214,4 +214,50 @@ Route::post('update/wt/id', function(Request $request){
 	$wt=$request->whaticket_id;
     DB::table('settings')->where('key', 'chatbot.whatsapp')->update(['value'=>$wt]);
     return true;
+});
+
+//Guardar Transferencia Jugador
+Route::post('transferencia/jugador', function(Request $request){
+    $transferencia= App\Transferencia::create([
+        'jugadore_id'=>$request->jugadore_id,
+        'clube_id_origen'=>$request->clube_id_origen,
+        'clube_id_destino'=>$request->clube_id_destino,
+        'observacion'=>$request->observacion,
+        // 'precio'=>$request->precio
+    ]);
+    $jugador=App\Jugadore::find($request->jugadore_id);
+    $jugador->clube_id=$request->clube_id_destino;
+    $jugador->save();
+    return $transferencia;
+});
+
+//Crear Delegado
+Route::post('create/delegado', function(Request $request){
+    $delegado= App\Delegado::create([
+        'clube_id'=>$request->clube_id,
+        'name'=>$request->name
+    ]);
+    return $delegado;
+});
+
+//Todos los delegados
+Route::get('all/delegados', function(){
+    return App\Delegado::where('created_at','!=', null)->orderBy('created_at', 'desc')->get();
+});
+
+//Crear Jugador
+Route::post('create/jugador', function(Request $request){
+    $jugador= App\Jugadore::create([
+        'name'=>$request->name,
+        'polera'=>$request->polera,
+        'edad'=>$request->edad,
+        'nacido'=>$request->nacido,
+        // 'jug_categoria'=>$request->jug_categoria,
+        'clube_id'=>$request->clube_id,
+        // 'foto'=>$request->foto,
+        // 'color_carnet'=>$request->color_carnet,
+        'phone'=>$request->phone
+        
+    ]);
+    return $jugador;
 });

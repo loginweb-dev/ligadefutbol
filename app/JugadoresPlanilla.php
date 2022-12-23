@@ -10,7 +10,7 @@ use App\RelPlanillaJugadore;
 class JugadoresPlanilla extends Model
 {
 	protected $fillable = [
-        'club_id',
+        'clube_id',
         'categoria_jugadores',
         'fecha_entrega',
         'veedor_id',
@@ -27,7 +27,7 @@ class JugadoresPlanilla extends Model
     use SoftDeletes;
     public function clubes()
 	{
-		return $this->belongsTo(Clube::class, 'club_id');
+		return $this->belongsTo(Clube::class, 'clube_id');
 	}	
     public function jugadores()
 	{

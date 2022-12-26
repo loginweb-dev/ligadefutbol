@@ -53,10 +53,10 @@
                         <div class="row">
                             <div class="col-md-12"> --}}
                                 {{-- <div class="panel panel-bordered"> --}}
-                                    <div class="text-center">
+                                    {{-- <div class="text-center">
                                         <h2 class="subs">MUTUAL DE EX JUGADORES DE FUTBOL TRINIDAD</h2>
                                         <span class="subs">FUNDADA EL 8 DE FEBRERO DE 1987 <br> MEDIANTE RESOLUCIÓN PREFECTURAL Nª. 050/99</span>
-                                    </div>
+                                    </div> --}}
                                     <hr>
                 
                                     {{-- <div class="row"> --}}

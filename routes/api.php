@@ -190,6 +190,11 @@ Route::get('find/club/telefono/{telefono}', function($telefono){
     return $equipo;
 });
 
+Route::get('find/club/user/{user_id}', function($user_id){
+    $equipo= App\Clube::where('user_id', $user_id)->first();
+    return $equipo;
+});
+
 //Restablecer Password-------
 Route::post('credenciales', function(Request $request){
     $user=User::where('phone',$request->phone)->first();

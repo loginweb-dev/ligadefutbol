@@ -37,6 +37,14 @@
 @stop
 
 @section('content')
+<div id="voyager-loader" class="mireload" hidden>
+    <?php $admin_loader_img = Voyager::setting('admin.loader', ''); ?>
+    @if($admin_loader_img == '')
+        <img src="{{ voyager_asset('images/logo-icon.png') }}" alt="Voyager Loader">
+    @else
+        <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
+    @endif
+</div>
     <div class="page-content browse container-fluid">
         @include('voyager::alerts')
         <div class="row">
@@ -44,7 +52,7 @@
                 <div class="panel panel-bordered">
                     <div class="panel-body">
                         @if ($isServerSide)
-                            <form method="get" class="form-search">
+                            {{-- <form method="get" class="form-search">
                                 <div id="search-input">
                                     <div class="col-2">
                                         <select id="search_key" name="key">
@@ -72,7 +80,7 @@
                                     <input type="hidden" name="sort_order" value="{{ Request::get('sort_order') }}">
                                     <input type="hidden" name="order_by" value="{{ Request::get('order_by') }}">
                                 @endif
-                            </form>
+                            </form> --}}
                         @endif
                         <div class="table-responsive">
                             <table id="dataTable" class="table table-hover">
@@ -324,7 +332,45 @@
     @endif
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
-        $(document).ready(function () {
+        async function recargar() {
+            var user_id="{{Auth::user()->id}}"
+           
+           
+            if ("{{Auth::user()->role_id}}"!=1) {
+                $('.mireload').attr("hidden", false)
+                var equipo= await axios("/api/find/club/user/"+user_id)
+                var url_equipo= "/admin/jugadores-planillas?key=clube_id&filter=equals&s="+equipo.data.id
+                console.log("hola")
+                const url_actual=window.location.toString()
+                var s="s="+equipo.data.id+""
+                console.log(url_actual)
+                // if (url_actual.includes(s)) {
+                //     $('.mireload').attr("hidden", true)
+
+                // }
+                // else{
+                //     console.log("no se pudo")
+                // }
+                console.log(s)
+                console.log(url_actual.includes("key=clube_id"))
+                console.log(url_actual.includes("filter=equals"))
+                console.log(url_actual.includes(s))
+                if ("{{Auth::user()->role_id}}"!=1 && url_actual.includes("key=clube_id") && url_actual.includes("filter=equals") && url_actual.includes(s)) {
+                    $('.mireload').attr("hidden", true)
+                }
+                else{
+                    // $('.mireload').attr("hidden", true)
+                    // console.log("no se valido")
+                    window.location.href=url_equipo
+                }
+
+            }
+            else{
+                // console.log("no")
+            }
+        }
+        $(document).ready(async function () {
+            await recargar()
             @if (!$dataType->server_side)
                 var table = $('#dataTable').DataTable({!! json_encode(
                     array_merge([

@@ -39,6 +39,7 @@
         $nomina = App\RelPlanillaJugadore::where('planilla_id', $dataTypeContent->id)->with('jugador')->get();
         $index=0;
         $index2=0;
+        $index3=0;
         $asientos= App\Asiento::where('planilla_id', $dataTypeContent->id)->with('jugadores', 'clubes')->get();
         $num_jugadores=count($nomina);
     @endphp
@@ -601,7 +602,7 @@
 
             var ingresos_esperados=0
             var ingresos_pagados=0
-            var mensualidades_esperadas=parseInt("{{$num_jugadores}}")*1400
+            var mensualidades_esperadas=parseInt("{{$num_jugadores}}")*parseInt("{{setting('finanzas.mensualidad_jug')}}")
             var mensualidades_pagadas=0
 
             for (let index = 0; index < asientos.data.length; index++) {

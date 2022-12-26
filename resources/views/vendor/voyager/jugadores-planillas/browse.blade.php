@@ -334,16 +334,14 @@
     <script>
         async function recargar() {
             var user_id="{{Auth::user()->id}}"
-           
-           
             if ("{{Auth::user()->role_id}}"!=1) {
                 $('.mireload').attr("hidden", false)
                 var equipo= await axios("/api/find/club/user/"+user_id)
                 var url_equipo= "/admin/jugadores-planillas?key=clube_id&filter=equals&s="+equipo.data.id
-                console.log("hola")
+                // console.log("hola")
                 const url_actual=window.location.toString()
                 var s="s="+equipo.data.id+""
-                console.log(url_actual)
+                // console.log(url_actual)
                 // if (url_actual.includes(s)) {
                 //     $('.mireload').attr("hidden", true)
 
@@ -351,10 +349,10 @@
                 // else{
                 //     console.log("no se pudo")
                 // }
-                console.log(s)
-                console.log(url_actual.includes("key=clube_id"))
-                console.log(url_actual.includes("filter=equals"))
-                console.log(url_actual.includes(s))
+                // console.log(s)
+                // console.log(url_actual.includes("key=clube_id"))
+                // console.log(url_actual.includes("filter=equals"))
+                // console.log(url_actual.includes(s))
                 if ("{{Auth::user()->role_id}}"!=1 && url_actual.includes("key=clube_id") && url_actual.includes("filter=equals") && url_actual.includes(s)) {
                     $('.mireload').attr("hidden", true)
                 }

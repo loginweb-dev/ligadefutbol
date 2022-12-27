@@ -32,28 +32,18 @@
 </div>
     <div class="page-content edit-add container-fluid">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-sm-12">
                 <div class="panel panel-bordered">
-                    <div class="text-center">
-                        {{-- <h2 class="subs">MUTUAL DE EX JUGADORES DE FUTBOL TRINIDAD</h2>
-                        <span class="subs">FUNDADA EL 8 DE FEBRERO DE 1987 <br> MEDIANTE RESOLUCIÓN PEFECTURAL Nª. 050/99</span> --}}
-                        <h3 class="subs">
-                            NÓMINA DE JUGADORES
-                        </h3>
-                    </div>
-                    <hr>
 
-                    <div class="row">
-                 
-                        <div class="col-md-12 text-center">
-                            {{-- <button class="btn btn-dark btn-block" onclick="prueba()">Prueba</button> --}}
-
-
-                            <div class="col-sm-3">
+                    <div class="row">        
+                            <div class="col-sm-12 text-center">
+                            	<h2>PASO 1.- NÓMINA DE JUGADORES</h2>
+                            	<p>Formulario para el registro de nominas de jugadores del club o equipo: {{ $club_unico->name }}</p>
+                            </div>
+                            <div class="col-sm-4" hidden>
                                 <label for="select_club">Club</label>
                                 <div style="border-style: outset;">                                
                                     <select class="form-control select2" name="select_club" id="select_club">
-                                        {{-- <option value="null">Elegir el Club</option> --}}
                                         @if(Auth::user()->role_id!=1)
                                             <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
                                         @else
@@ -66,7 +56,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 <label for="select_cat">Categoria</label>
                                 <div style="border-style: outset;">    
                                     <select class="form-control select2" name="select_cat" id="select_cat">
@@ -77,7 +67,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 <label for="select_delegado">Delegado</label>
                                 <div style="border-style: outset;">    
                                     <select class="form-control select2" name="select_delegado" id="select_delegado">
@@ -85,57 +75,24 @@
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach  
                                     </select>
-                                    {{-- Agregar Modal              --}}
                                 </div>                   
-                                {{-- <a class="btn-dark btn-block">Modal</a> --}}
                             </div>
-                            <div class="col-sm-3">
-                                <div class="col-md-6 col-sm-6">
-                                    <br>
-                                    <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
-                                </div>
+                            <div class="col-sm-4">
+                                <br />
+                                    <button class="btn btn-sm btn-dark btn-block" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
                             </div>
-                            <div class="col-sm-12">
-                                <hr>
-                            </div>
-                            {{-- <div class="col-sm-6">
-                                <label for="input_fecha">Fecha</label>
-                                <div style="border-style: outset;">
-                                    <input class="form-control" type="date" name="input_fecha" id="input_fecha">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="input_hora">Hora de Entrega</label>
-                                <div style="border-style: outset;">
-                                    <input class="form-control" type="time" name="input_hora" id="input_hora">
-                                </div>
-                            </div> --}}
-                            {{-- <div class="col-md-3 ">
-                                <label for="select_veedor">VªBª Veedor</label>
-        
-                                <select class="form-control select2" name="select_veedor" id="select_veedor">
-                                    @foreach ($delegados  as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach   
-                                </select>
-                            </div> --}}
-            
-                        </div>
-                        <hr>
-                        <div class="col-md-12 text-center">
-                            {{-- <h3 class="subs">
-                                NÓMINA DE JUGADORES
-                            </h3> --}}
-                            <h4 class="subs col-md-12">Jugadores</h4>                                
+                                
+       				</div>
+                    <div class="row"  >        
 
-                            <div class="col-md-4 col-sm-4">
-
+                        <div class="col-sm-12 text-center">
+                            <h2>PASO 2.- JUGADORES</h2>                                
+							<p>Selecina los jugadores exitentes en la lista, tambien puedes agregar uno nuevo.</p>
+                        </div>    
+                            <div class="col-sm-4" >
+                                <label for="select_equipo">Equipo</label>
                                 <div style="border-style: outset;">
                                     <select name="" id="select_equipo" class="form-control select2">
-                                        {{-- <option value="null">Equipos</option> --}}
-                                        {{-- @foreach ($equipos  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach                     --}}
                                         @if(Auth::user()->role_id!=1)
                                             <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
                                         @else
@@ -145,12 +102,15 @@
                                         @endif
                                     </select>
                                 </div>
-                               
                             </div>
-                            <div class="col-md-4 col-sm-4">
+                           
+                            <div class="col-sm-4">
+                               	<label>Lista de jugadores existentes.</label>
                                 <div style="border-style: outset;">
+                                        
                                     <select name="" id="select_jugador" class="form-control select2">
                                         {{-- <option value="null">Jugadores</option> --}}
+
                                         @if(Auth::user()->role_id!=1)
                                             @foreach ($club_unico->jugadores  as $item)
                                                 <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -161,34 +121,28 @@
                                             @endforeach
                                         @endif
                                     </select>
-                                </div>
-                                
+                                </div>                                
                             </div>
-                            <div class="col-md-4 col-sm-4">
-                                <div class="col-md-6 col-sm-6">
-                                    <button  onclick="add_todos()"  class="btn btn-sm btn-dark">Agregar a Todos </button>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <button  onclick="add_fila()"  class="btn btn-sm btn-dark">Agregar Individual </button>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <button   class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_jugador">Crear Jugador</button>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <button  class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_transferencia">Transferencia</button>
-
-                                </div>
+                                        
+                            <div class="col-sm-4">
+                                        <br>
+								
+<div class="btn-group">
+  <button type="button" class="btn btn-dark">Aciones jugadores</button>
+  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a  onclick="add_todos()">Agregar Toda la Lista</a></li>
+    <li><a  onclick="add_fila()">Agregar Jugador Individual</a></li>
+    <li><a   data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
+    <li><a   data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
+  </ul>
+</div>
                             </div>
                           
-                          
-                            {{-- <select name="" id="cluba" class="form-control">
-                                <option value="">Clubes</option>
-                                @foreach ($nomina  as $item)
-                                    <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
-                                @endforeach                    
-                            </select> --}}
-                            <div  class="col-md-12 col-sm-12 table-responsive">
-
+                            <div  class="col-sm-12 table-responsive">
                                 <table class="table table-striped table-bordered" id="table2">
                                     <thead class="thead-dark">
                                         <tr>
@@ -199,107 +153,46 @@
                                             <th class="text-center" scope="col">Nombre</th>
                                             <th class="text-center" scope="col">Mensualidad</th>
                                         </tr>
-
                                     </thead>
                                     <tbody>
-                                        {{-- <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-
-                                        </tr> --}}
                                     </tbody>
-                                
                                 </table>
                             </div>
 
-                            {{-- <h4 class="subs col-md-12">Suplentes</h4>
-
-                            <div class="col-md-4">
-                                <div style="border-style: outset;">
-
-                                    <select name="" id="select_equipo_sup" class="form-control select2">
-                                        <option value="null">EQUIPOS</option>
-                                        @foreach ($equipos  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach                    
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div style="border-style: outset;">
-
-                                    <select name="" id="select_jugador_sup" class="form-control select2">
-                                        
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <button id="table3-new-row-button" onclick="add_fila(2)"  class="btn btn-sm btn-dark">Agregar Jugador</button>
-                            </div>
-                            <div class="col-sm-2">
-                                <button   class="btn btn-sm btn-dark">Realizar Transferencia </button>
-                            </div>
-                            <div  class="col-md-12 col-sm-12 table-responsive">
-
-                                <table class="table table-striped table-bordered" id="table3">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th class="text-center" scope="col">#</th>
-                                            <th class="text-center" scope="col">Edad</th>
-                                            <th class="text-center" scope="col">Polera</th>
-                                            <th class="text-center" scope="col">Nombres y Apellidos</th>
-                                            <th class="text-center" scope="col">Mensualidad</th>
-                                        </tr>
-
-                                    </thead>
-                                    <tbody>
+                        </div>   {{-- close row 2 --}}
+						<div class="row"> 
                         
-                                    </tbody>
-                                </table>
-                            </div> --}}
-
-                            <hr>
-                            <h3 class="subs">TOTALES</h3>
-                            
-                            <div class="col-md-4">
+                        	<div class="col-sm-12 text-center">
+                        		<h2>TOTALES</h2>
+                        		<p>totales en pagos u deudas para el equipo.</p>
+                        	</div>
+                            <div class="col-sm-3">
                                 <label for="input_total">Monto Esperado</label>
                                 <div style="border-style: outset;">
                                     <input class="form-control" id="input_sub_total" name="input_sub_total" type="number">
                                 </div>
                             </div>
             
-                            <div class="col-md-4">
+                            <div class="col-sm-3">
                                 <label for="input_deudas">Monto Adeudado</label>
                                 <div style="border-style: outset;">
                                     <input class="form-control" id="input_deudas" name="input_deudas" type="number">
                                 </div>
                             </div>
                            
-                            <div class="col-md-4">
+                            <div class="col-sm-3">
                                 <label for="input_total">Total Pagado</label>
                                 <div style="border-style: outset;">
                                     <input class="form-control" id="input_total" name="input_total" type="number">
                                 </div>
-                            </div>
-
-                            
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-sm-offset-3 col-sm-6">
-                            <div class="form-group">
+                            </div>     
+                            <div class="col-sm-3">
+                                <br />
+                             	<button class="btn btn-dark btn-block" onclick="misave()">Guardar Formulario</button>
+                            </div>   
                                 
-                                <button class="btn btn-dark btn-block" onclick="misave()">Guardar Formulario</button>
-                            </div>
-                        </div>
-                    </div>
-                   
+                        </div>                                                             
+
 
                 </div>
             </div>
@@ -385,8 +278,8 @@
     </div>
 
     <!-- Modal Crear Delegado-->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_delegado">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_delegado">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Crear Delegado</h5>
@@ -420,8 +313,8 @@
     </div>
 
     <!-- Modal Crear Jugador-->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_jugador">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_jugador">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Crear Jugador</h5>

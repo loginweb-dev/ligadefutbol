@@ -27,6 +27,10 @@
             <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.return_to_list') }}</span>
         </a>
         @endcan
+        
+        <a  class="btn btn-dark">
+            <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">Enviar Lista</span>
+        </a>
     </h1>
     @include('voyager::multilingual.language-selector')
 @stop
@@ -102,15 +106,20 @@
                                                 <hr>
                                             </div> --}}
                                           
-                                            <div class="col-sm-6 form-group">
+                                            <div class="col-sm-4 form-group">
                                                 <label for="input_fecha">Fecha</label>
                         
                                                 <input class="form-control" type="text" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('d-m-Y') }}" readonly>
                                             </div>
-                                            <div class="col-sm-6 form-group">
+                                            <div class="col-sm-4 form-group">
                                                 <label for="input_hora">Hora de Entrega</label>
                         
                                                 <input class="form-control" type="text" name="input_hora" id="input_hora" value="{{ \Carbon\Carbon::parse($dataTypeContent->hora_entrega)->format('H:i') }}"  readonly>
+                                            </div>
+                                           	<div class="col-sm-4 form-group">
+                                                <label for="input_gestion">Gestion</label>
+                        
+                                                <input class="form-control" type="text" name="input_gestion" id="input_gestion"  readonly>
                                             </div>
                                     
                             

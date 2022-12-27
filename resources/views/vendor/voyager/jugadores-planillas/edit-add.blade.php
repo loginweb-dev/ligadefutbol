@@ -31,8 +31,8 @@
     @endif
 </div>
     <div class="page-content edit-add container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
+        {{-- <div class="row">
+            <div class="col-sm-12"> --}}
                 <div class="panel panel-bordered">
 
                     <div class="row">        
@@ -114,20 +114,20 @@
                             <h2>PASO 2.- JUGADORES</h2>                                
 							<p>Selecina los jugadores exitentes en la lista, tambien puedes agregar uno nuevo.</p>
                         </div>    
-                            <div class="col-sm-4" hidden>
-                                <label for="select_equipo">Equipo</label>
-                                <div style="border-style: outset;">
-                                    <select name="" id="select_equipo" class="form-control select2">
-                                        @if(Auth::user()->role_id!=1)
-                                            <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
-                                        @else
-                                            @foreach ($equipos  as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach   
-                                        @endif
-                                    </select>
-                                </div>
+                        <div class="col-sm-4" hidden>
+                            <label for="select_equipo">Equipo</label>
+                            <div style="border-style: outset;">
+                                <select name="" id="select_equipo" class="form-control select2">
+                                    @if(Auth::user()->role_id!=1)
+                                        <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
+                                    @else
+                                        @foreach ($equipos  as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach   
+                                    @endif
+                                </select>
                             </div>
+                        </div>
                            
                             {{-- <div class="col-sm-6 text-center">
                                	<label>Lista de jugadores existentes.</label>
@@ -137,46 +137,46 @@
                                 </div>                                
                             </div> --}}
                                         
-                            <div class="col-sm-12 text-center">
-                                <div class="input-group">
-                                    <label>Lista de jugadores existentes.</label>
+                        <div class="col-sm-12 text-center">
+                            <div class="input-group">
+                                <label>Lista de jugadores existentes.</label>
 
-                                    {{-- <button type="button" class="btn btn-dark">Acciones jugadores</button> --}}
-                                    <div style="border-style: outset;">  
+                                {{-- <button type="button" class="btn btn-dark">Acciones jugadores</button> --}}
+                                <div style="border-style: outset;">  
 
-                                    <select name="" id="select_jugador" class="form-control select2">
-                                        {{-- <option value="null">Jugadores</option> --}}
+                                <select name="" id="select_jugador" class="form-control select2">
+                                    {{-- <option value="null">Jugadores</option> --}}
 
-                                        @if(Auth::user()->role_id!=1)
-                                            @foreach ($club_unico->jugadores  as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach
-                                        @else
-                                            @foreach ($jugadores  as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                    </div>
-                                    <br>
-                                    <span class="input-group-btn ">
-
-                                        <button type="button" class="btn btn-dark dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Acciones
-                                            <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a  onclick="add_todos()">Agregar Toda la Lista</a></li>
-                                            <li><a  onclick="add_fila()">Agregar Jugador Individual</a></li>
-                                            <li><a   data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
-                                            <li><a   data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
-                                        </ul>
-                                    </span>
+                                    @if(Auth::user()->role_id!=1)
+                                        @foreach ($club_unico->jugadores  as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    @else
+                                        @foreach ($jugadores  as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
                                 </div>
+                                <br>
+                                <span class="input-group-btn ">
+
+                                    <button type="button" class="btn btn-dark dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Acciones
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a  onclick="add_todos()">Agregar Toda la Lista</a></li>
+                                        <li><a  onclick="add_fila()">Agregar Jugador Individual</a></li>
+                                        <li><a   data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
+                                        <li><a   data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
+                                    </ul>
+                                </span>
                             </div>
-                          
-                            <div  class="col-sm-12 table-responsive">
+                        </div>
+                        <div class="col-sm-12">
+                            <div  class=" table-responsive">
                                 <table class="table table-striped table-bordered" id="table2">
                                     <thead class="thead-dark">
                                         <tr>
@@ -192,9 +192,11 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                        
 
-                        </div>   {{-- close row 2 --}}
-						<div class="row"> 
+                    </div>   {{-- close row 2 --}}
+					<div class="row"> 
                         
                         	<div class="col-sm-12 text-center">
                         		<h2>TOTALES</h2>
@@ -225,12 +227,12 @@
                              	<button class="btn btn-dark btn-block" onclick="misave()">Guardar Formulario</button>
                             </div>   
                                 
-                        </div>                                                             
+                    </div>                                                             
 
 
                 </div>
-            </div>
-        </div>
+            {{-- </div>
+        </div> --}}
     </div>
 
     <div class="modal fade modal-danger" id="confirm_delete_modal">
@@ -701,7 +703,7 @@
         }
 
         async function add_todos(){
-            var equipo_id=$("#select_equipo").val()
+            var equipo_id=$("#select_club").val()
             var jugadores= await axios("/api/jugadores/planilla/find/jugadores/"+equipo_id)
             
             for (let index = 0; index < jugadores.data.length; index++) {
@@ -961,7 +963,7 @@
 		// 	}
 		// });
 
-        $("#select_equipo").change(async function () { 
+        $("#select_club").change(async function () { 
             $('#select_jugador').find('option').remove().end()
             var equipo_id=this.value
             var jugadores= await axios("/api/jugadores/planilla/find/jugadores/"+equipo_id)

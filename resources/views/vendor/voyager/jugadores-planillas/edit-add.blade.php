@@ -38,9 +38,10 @@
                     <div class="row">        
                             <div class="col-sm-12 text-center">
                             	<h2>PASO 1.- NÓMINA DE JUGADORES</h2>
-                            	<p>Formulario para el registro de nominas de jugadores del club o equipo: {{ $club_unico->name }}</p>
+                            	{{-- <p>Formulario para el registro de nominas de jugadores del club o equipo: {{ $club_unico->name }}</p> --}}
                             </div>
-                            <div class="col-sm-4" hidden>
+
+                            <div class="col-sm-4" id="club_div" hidden>
                                 <label for="select_club">Club</label>
                                 <div style="border-style: outset;">                                
                                     <select class="form-control select2" name="select_club" id="select_club">
@@ -68,6 +69,28 @@
                             </div>
 
                             <div class="col-sm-4">
+                                <div class="input-group">
+                                    <label>Delegado</label>
+                                    <div style="border-style: outset;">  
+                                    <select class="form-control select2" name="select_delegado" id="select_delegado">
+                                        @foreach ($delegados  as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach  
+                                    </select>
+                                    </div>
+                                    <br>
+                                    <span class="input-group-btn">
+                                        <a  class="btn btn-sm  btn-dark" data-toggle="modal" data-target="#modal_delegado" ><span>Crear </span>  <i class="voyager-plus"></i>  </a>    
+                                    </span>
+                                </div>
+                                {{-- <div style="border-style: outset;">    
+                                   
+                                </div> --}}
+                                {{-- <input type="text" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"> --}}
+                                {{-- <span class="input-group-addon" id="basic-addon2">@example.com</span> --}}
+                            </div>
+
+                            {{-- <div class="col-sm-4" hidden>
                                 <label for="select_delegado">Delegado</label>
                                 <div style="border-style: outset;">    
                                     <select class="form-control select2" name="select_delegado" id="select_delegado">
@@ -76,10 +99,12 @@
                                         @endforeach  
                                     </select>
                                 </div>                   
-                            </div>
-                            <div class="col-sm-4">
+                            </div> --}}
+                            <div class="col-sm-4" hidden>
                                 <br />
-                                    <button class="btn btn-sm btn-dark btn-block" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
+                                    <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
+                                    {{-- <button type="button" class="btn btn-dark dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> --}}
+
                             </div>
                                 
        				</div>
@@ -89,7 +114,7 @@
                             <h2>PASO 2.- JUGADORES</h2>                                
 							<p>Selecina los jugadores exitentes en la lista, tambien puedes agregar uno nuevo.</p>
                         </div>    
-                            <div class="col-sm-4" >
+                            <div class="col-sm-4" hidden>
                                 <label for="select_equipo">Equipo</label>
                                 <div style="border-style: outset;">
                                     <select name="" id="select_equipo" class="form-control select2">
@@ -104,10 +129,21 @@
                                 </div>
                             </div>
                            
-                            <div class="col-sm-4">
+                            {{-- <div class="col-sm-6 text-center">
                                	<label>Lista de jugadores existentes.</label>
                                 <div style="border-style: outset;">
                                         
+                                   
+                                </div>                                
+                            </div> --}}
+                                        
+                            <div class="col-sm-12 text-center">
+                                <div class="input-group">
+                                    <label>Lista de jugadores existentes.</label>
+
+                                    {{-- <button type="button" class="btn btn-dark">Acciones jugadores</button> --}}
+                                    <div style="border-style: outset;">  
+
                                     <select name="" id="select_jugador" class="form-control select2">
                                         {{-- <option value="null">Jugadores</option> --}}
 
@@ -121,25 +157,23 @@
                                             @endforeach
                                         @endif
                                     </select>
-                                </div>                                
-                            </div>
-                                        
-                            <div class="col-sm-4">
-                                        <br>
-								
-<div class="btn-group">
-  <button type="button" class="btn btn-dark">Aciones jugadores</button>
-  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu">
-    <li><a  onclick="add_todos()">Agregar Toda la Lista</a></li>
-    <li><a  onclick="add_fila()">Agregar Jugador Individual</a></li>
-    <li><a   data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
-    <li><a   data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
-  </ul>
-</div>
+                                    </div>
+                                    <br>
+                                    <span class="input-group-btn ">
+
+                                        <button type="button" class="btn btn-dark dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Acciones
+                                            <span class="caret"></span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a  onclick="add_todos()">Agregar Toda la Lista</a></li>
+                                            <li><a  onclick="add_fila()">Agregar Jugador Individual</a></li>
+                                            <li><a   data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
+                                            <li><a   data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
+                                        </ul>
+                                    </span>
+                                </div>
                             </div>
                           
                             <div  class="col-sm-12 table-responsive">
@@ -975,6 +1009,17 @@
                 }));
             }         
         }
+
+        //Validar Si es Admin, Manager o Club
+        async function validad_roles() {
+            //Si es Club
+            if ("{{Auth::user()->role_id}}"==3) {
+                
+            }
+            else{//Si es Admin o Manager
+                $("#club_div").attr("hidden", false)
+            }
+        }
         
 
         var params = {};
@@ -1000,7 +1045,7 @@
 
         $('document').ready(async function () {
             //Inicializar Select Jugadores Transferencia
-
+            validad_roles()
             $('#jugador_transferencia').find('option').remove().end()
             var equipo_id=$("#equipo_transferencia").val()
             var jugadores= await axios("/api/jugadores/planilla/find/jugadores/"+equipo_id)

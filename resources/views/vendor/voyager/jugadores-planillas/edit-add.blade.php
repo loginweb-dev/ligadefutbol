@@ -38,7 +38,7 @@
                     <div class="row">        
                             <div class="col-sm-12 text-center">
                             	<h2>PASO 1.- NÓMINA DE JUGADORES</h2>
-                            	<p>Formulario para el registro de nominas de jugadores del club o equipo: {{ $club_unico->name }}</p>
+                            	{{-- <p>Formulario para el registro de nominas de jugadores del club o equipo: {{ $club_unico->name }}</p> --}}
                             </div>
                             <div class="col-sm-4" hidden>
                                 <label for="select_club">Club</label>

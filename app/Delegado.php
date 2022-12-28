@@ -9,7 +9,8 @@ class Delegado extends Model
 {
     protected $fillable = [
         'clube_id',
-        'name'
+        'name',
+        'phone'
     ];
 
     public function clubes()

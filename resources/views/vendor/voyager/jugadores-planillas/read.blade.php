@@ -3,14 +3,17 @@
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
 @section('page_header')
+    @php
+        $equipo_titulo= App\Clube::find($dataTypeContent->clube_id);
+    @endphp
     <h1 class="page-title">
-        <i class="{{ $dataType->icon }}"></i> {{ __('voyager::generic.viewing') }} {{ ucfirst($dataType->getTranslatedAttribute('display_name_singular')) }} &nbsp;
-
-        @can('edit', $dataTypeContent)
+        <i class="{{ $dataType->icon }}"></i> {{ __('voyager::generic.viewing') }} {{ ucfirst($dataType->getTranslatedAttribute('display_name_singular')) }} de {{$equipo_titulo->name}} &nbsp;
+        
+        {{-- @can('edit', $dataTypeContent)
             <a href="{{ route('voyager.'.$dataType->slug.'.edit', $dataTypeContent->getKey()) }}" class="btn btn-info">
                 <i class="glyphicon glyphicon-pencil"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.edit') }}</span>
             </a>
-        @endcan
+        @endcan --}}
         {{-- @can('delete', $dataTypeContent)
             @if($isSoftDeleted)
                 <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
@@ -22,17 +25,34 @@
                 </a>
             @endif
         @endcan --}}
+
+       
+                      
+               
+        
+        
+       
+    </h1>
+    <div class="text-center">
         @can('browse', $dataTypeContent)
         <a href="{{ route('voyager.'.$dataType->slug.'.index') }}" class="btn btn-warning">
             <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.return_to_list') }}</span>
         </a>
         @endcan
-        
-        <a  class="btn btn-dark">
-            <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">Enviar Lista</span>
+    
+    <a  class="btn btn-success">
+            <i class="glyphicon glyphicon-envelope"></i> <span class="hidden-xs hidden-sm">Enviar Lista</span>
         </a>
-    </h1>
-    @include('voyager::multilingual.language-selector')
+    
+    
+    
+    <a  class="btn btn-info">
+            <i class="glyphicon glyphicon-question-sign"></i> <span class="hidden-xs hidden-sm">Aprobar/Rechazar</span>
+        </a>
+        @include('voyager::multilingual.language-selector')
+    </div>
+
+    <hr>
 @stop
 
 @section('content')
@@ -67,7 +87,7 @@
                                  
                                         {{-- <div class="col-md-12"> --}}
                 
-                                            <div class="col-sm-4 form-group">
+                                            <div class="col-sm-4 form-group" hidden>
                                                 <label for="input_club">Club</label>
                                                 <div style="border-style: outset;">                                
                                                     {{-- <select class="form-control select2" name="select_club" id="select_club">
@@ -107,20 +127,22 @@
                                             </div> --}}
                                           
                                             <div class="col-sm-4 form-group">
-                                                <label for="input_fecha">Fecha</label>
-                        
-                                                <input class="form-control" type="text" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('d-m-Y') }}" readonly>
+                                                <label for="input_fecha">Gestión</label>
+                                                <div style="border-style: outset;">                                
+
+                                                <input class="form-control" type="month" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('Y-m') }}" readonly>
+                                                </div>
                                             </div>
-                                            <div class="col-sm-4 form-group">
+                                            {{-- <div class="col-sm-4 form-group">
                                                 <label for="input_hora">Hora de Entrega</label>
                         
                                                 <input class="form-control" type="text" name="input_hora" id="input_hora" value="{{ \Carbon\Carbon::parse($dataTypeContent->hora_entrega)->format('H:i') }}"  readonly>
-                                            </div>
-                                           	<div class="col-sm-4 form-group">
+                                            </div> --}}
+                                           	{{-- <div class="col-sm-4 form-group">
                                                 <label for="input_gestion">Gestion</label>
                         
                                                 <input class="form-control" type="text" name="input_gestion" id="input_gestion"  readonly>
-                                            </div>
+                                            </div> --}}
                                     
                             
                                         {{-- </div> --}}
@@ -322,7 +344,7 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                <div class="col-md-12 col-sm-12 table-responsive" id="tab_pendientes" hidden>
+                                                <div class="col-sm-8 table-responsive" id="tab_pendientes" hidden>
                                                     {{-- <label for="text_area_deudas">Descripción</label>
                                                     <textarea class="form-control" name="text_area_deudas" rows="5" id="text_area_deudas" readonly >{{$dataTypeContent->observacion}}</textarea> --}}
 
@@ -391,36 +413,44 @@
                                             </div>
 
 
-                                            <div class="col-md-4 col-lg-3">
-                                                <div class="col-md-6 col-lg-6 form-group">
-                                                    <label for="input_mens_esperadas">Mensualidades Esperadas</label>
-                                                    <input class="form-control text-center" id="input_mens_esperadas" name="input_mens_esperadas" type="number" readonly >
+                                            <div class="col-sm-4">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label for="input_mens_esperadas">Mensualidades Esperadas</label>
+                                                        <input class="form-control text-center" id="input_mens_esperadas" name="input_mens_esperadas" type="number" readonly >
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="input_mens_pagadas">Mensualidades Pagadas</label>
+                                                        <input class="form-control text-center" id="input_mens_pagadas" name="input_mens_pagadas" type="number" readonly >
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-6 col-lg-6 form-group">
-                                                    <label for="input_mens_pagadas">Mensualidades Pagadas</label>
-                                                    <input class="form-control text-center" id="input_mens_pagadas" name="input_mens_pagadas" type="number" readonly >
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label for="input_otros_esperados">Otros Ingresos Esperados</label>
+                                                        <input class="form-control text-center" id="input_otros_esperados" name="input_otros_esperados" type="number" readonly >
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label for="input_otros_pagados">Otros Ingresos Pagados</label>
+                                                        <input class="form-control text-center" id="input_otros_pagados" name="input_otros_pagados" type="number" readonly >
+                                                    </div>
                                                 </div>
-                                                <hr>
-                                                <div class="col-md-6 col-lg-6 form-group">
-                                                    <label for="input_otros_esperados">Otros Ingresos Esperados</label>
-                                                    <input class="form-control text-center" id="input_otros_esperados" name="input_otros_esperados" type="number" readonly >
+                                                
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <label for="input_subtotal">Total Esperado</label>
+                                                        <input class="form-control text-center" id="input_subtotal" name="input_subtotal" type="number" readonly>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label for="input_deudas">Monto Adeudado</label>
+                                                        <input class="form-control text-center" id="input_deudas" name="input_deudas" type="number" readonly value="{{$dataTypeContent->deuda}}">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label for="input_total">Total Pagado</label>
+                                                        <input class="form-control text-center" id="input_total" name="input_total" type="number" readonly value="{{$dataTypeContent->total}}">
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-6 col-lg-6 form-group">
-                                                    <label for="input_otros_pagados">Otros Ingresos Pagados</label>
-                                                    <input class="form-control text-center" id="input_otros_pagados" name="input_otros_pagados" type="number" readonly >
-                                                </div>
-                                                <div class="col-md-4 form-group">
-                                                    <label for="input_subtotal">Total Esperado</label>
-                                                    <input class="form-control text-center" id="input_subtotal" name="input_subtotal" type="number" readonly>
-                                                </div>
-                                                <div class="col-md-4 form-group">
-                                                    <label for="input_deudas">Monto Adeudado</label>
-                                                    <input class="form-control text-center" id="input_deudas" name="input_deudas" type="number" readonly value="{{$dataTypeContent->deuda}}">
-                                                </div>
-                                                <div class="col-md-4 form-group">
-                                                    <label for="input_total">Total Pagado</label>
-                                                    <input class="form-control text-center" id="input_total" name="input_total" type="number" readonly value="{{$dataTypeContent->total}}">
-                                                </div>
+                                                
+                                               
 
 
                                             </div>

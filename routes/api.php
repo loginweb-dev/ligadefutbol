@@ -240,7 +240,8 @@ Route::post('transferencia/jugador', function(Request $request){
 Route::post('create/delegado', function(Request $request){
     $delegado= App\Delegado::create([
         'clube_id'=>$request->clube_id,
-        'name'=>$request->name
+        'name'=>$request->name,
+        'phone'=>$request->phone
     ]);
     return $delegado;
 });
@@ -248,6 +249,11 @@ Route::post('create/delegado', function(Request $request){
 //Todos los delegados
 Route::get('all/delegados', function(){
     return App\Delegado::where('created_at','!=', null)->orderBy('created_at', 'desc')->get();
+});
+
+//DElegados por equipo
+Route::get('delegados/find/club/{equipo_id}', function($equipo_id){
+    return App\Delegado::where('clube_id', $equipo_id)->get();
 });
 
 //Crear Jugador

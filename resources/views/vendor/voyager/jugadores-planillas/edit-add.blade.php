@@ -3,14 +3,18 @@
     $add  = is_null($dataTypeContent->getKey());
     
     $equipos= App\Clube::all();
-    $jugadores= App\Jugadore::all();
-    $delegados= App\Delegado::all();
+    $ultimo_equipo= end($equipos);
+    $jugadores= App\Jugadore::where('clube_id', $equipos[$ultimo_equipo]->id)->get();
+    $delegados= App\Delegado::where('clube_id', $equipos[$ultimo_equipo]->id)->get();
     $club_unico=false;
     $equipos_transferencia=false;
-    if (Auth::user()->role_id!=1) {
+    if (Auth::user()->role_id==3) {
         $club_unico=App\Clube::where('user_id', Auth::user()->id)->with('jugadores')->first();
         $equipos_transferencia=App\Clube::where('user_id','!=',Auth::user()->id)->get();
+        $delegados_club=App\Delegado::where('clube_id', $club_unico->id)->get();
     }
+    $date= date("Y-m");
+    
 @endphp
 
 @extends('voyager::master')
@@ -37,24 +41,16 @@
 
                     <div class="row">        
                             <div class="col-sm-12 text-center">
-                            	<h2>PASO 1.- NÓMINA DE JUGADORES</h2>
+                            	<h2>PASO 1.- DETALLES DEL CLUB</h2>
                             	{{-- <p>Formulario para el registro de nominas de jugadores del club o equipo: {{ $club_unico->name }}</p> --}}
                             </div>
 
-                            <div class="col-sm-4" id="club_div" hidden>
-                                <label for="select_club">Club</label>
-                                <div style="border-style: outset;">                                
-                                    <select class="form-control select2" name="select_club" id="select_club">
-                                        @if(Auth::user()->role_id!=1)
-                                            <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
-                                        @else
-                                            @foreach ($equipos  as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach   
-                                        @endif
-                                        
-                                    </select>
-                                </div>
+                            <div class="col-sm-4">
+                                <label for="fecha">Gestión</label>
+                                {{-- <div style="border-style: outset;">     --}}
+
+                                <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
+                                {{-- </div> --}}
                             </div>
 
                             <div class="col-sm-4">
@@ -68,19 +64,27 @@
                                 </div>
                             </div>
 
+                           
+
                             <div class="col-sm-4">
                                 <div class="input-group">
                                     <label>Delegado</label>
                                     <div style="border-style: outset;">  
                                     <select class="form-control select2" name="select_delegado" id="select_delegado">
-                                        @foreach ($delegados  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach  
+                                        @if(Auth::user()->role_id==3)
+                                            @foreach ($delegados_club  as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach  
+                                        @else
+                                            @foreach ($delegados  as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach  
+                                        @endif
                                     </select>
                                     </div>
                                     <br>
                                     <span class="input-group-btn">
-                                        <a  class="btn btn-sm  btn-dark" data-toggle="modal" data-target="#modal_delegado" ><span>Crear </span>  <i class="voyager-plus"></i>  </a>    
+                                        <a  class="btn  btn-dark" data-toggle="modal" data-target="#modal_delegado" ><span>Crear </span>  <i class="voyager-plus"></i>  </a>    
                                     </span>
                                 </div>
                                 {{-- <div style="border-style: outset;">    
@@ -89,6 +93,7 @@
                                 {{-- <input type="text" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"> --}}
                                 {{-- <span class="input-group-addon" id="basic-addon2">@example.com</span> --}}
                             </div>
+                         
 
                             {{-- <div class="col-sm-4" hidden>
                                 <label for="select_delegado">Delegado</label>
@@ -118,7 +123,7 @@
                             <label for="select_equipo">Equipo</label>
                             <div style="border-style: outset;">
                                 <select name="" id="select_equipo" class="form-control select2">
-                                    @if(Auth::user()->role_id!=1)
+                                    @if(Auth::user()->role_id==3)
                                         <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
                                     @else
                                         @foreach ($equipos  as $item)
@@ -136,8 +141,23 @@
                                    
                                 </div>                                
                             </div> --}}
+                        <div class="col-sm-6 text-center" id="club_div" hidden>
+                            <label for="select_club">Club</label>
+                            <div style="border-style: outset;">                                
+                                <select class="form-control select2" name="select_club" id="select_club">
+                                    @if(Auth::user()->role_id==3)
+                                        <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
+                                    @else
+                                        @foreach ($equipos  as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach   
+                                    @endif
+                                    
+                                </select>
+                            </div>
+                        </div>
                                         
-                        <div class="col-sm-12 text-center">
+                        <div class="col-sm-6 text-center">
                             <div class="input-group">
                                 <label>Lista de jugadores existentes.</label>
 
@@ -147,7 +167,7 @@
                                 <select name="" id="select_jugador" class="form-control select2">
                                     {{-- <option value="null">Jugadores</option> --}}
 
-                                    @if(Auth::user()->role_id!=1)
+                                    @if(Auth::user()->role_id==3)
                                         @foreach ($club_unico->jugadores  as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
@@ -199,7 +219,7 @@
 					<div class="row"> 
                         
                         	<div class="col-sm-12 text-center">
-                        		<h2>TOTALES</h2>
+                        		<h2>PASO 3.- TOTALES</h2>
                         		<p>totales en pagos u deudas para el equipo.</p>
                         	</div>
                             <div class="col-sm-3">
@@ -274,7 +294,7 @@
                             <label for="equipo_transferencia">Elija el Equipo Actual del Jugador</label>
                             <div style="border-style: outset;">                                
                                 <select class="form-control select2" name="equipo_transferencia" id="equipo_transferencia">
-                                    @if (Auth::user()->role_id!=1)
+                                    @if (Auth::user()->role_id==3)
                                         @foreach ($equipos_transferencia  as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach   
@@ -324,25 +344,25 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container ">
-                       
-                        
-                        <div class="col-sm-6">
+                    
+                        <div class="form-group col-6">
                             <label for="delegado_creation">Nombre Delegado</label>
                             <div style="border-style: outset;">                                
                                 <input type="text" class="form-control" id="delegado_creation" name="delegado_creation" placeholder="Introduzca el nombre del Delegado">
                             </div>
                         </div>
-                       
-                        {{-- <div hidden>
-                            <input type="number" id="input_transferencia">
-                        </div> --}}
-                    </div>
 
+                         <div class="form-group col-6">
+                            <label for=""># Whatsapp</label>
+                            <div style="border-style: outset;">                                
+                                <input type="number" class="form-control" id="wpp_delegado" name="wpp_delegado" placeholder="Ingrese su WhatsApp">
+                            </div>
+                        </div>
+                            
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer mt-3">
                     <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a>
-                    <a type="button" onclick="save_delegado()" class="btn btn-primary">Guardar</a>
+                    <a type="button" onclick="save_delegado()" class="btn btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -500,9 +520,9 @@
         async function guardar_planilla(){
             var clube_id= $("#select_club").val()
             var categoria_jugadores= $("#select_cat").val()
-            // var fecha_entrega=$("#input_fecha").val()
+            var fecha_entrega=$("#fecha_mensual").val()+"-01"
             // var hora_entrega=$("#input_hora").val()
-            var veedor_id= $("#select_veedor").val()
+            // var veedor_id= $("#select_veedor").val()
             var delegado_id=$("#select_delegado").val()
             var deuda=$("#input_deudas").val()
             var total=$("#input_total").val()
@@ -513,9 +533,9 @@
             var detalles={
                 clube_id: clube_id,
                 categoria_jugadores:categoria_jugadores,
-                // fecha_entrega:fecha_entrega,
+                fecha_entrega:fecha_entrega,
                 // hora_entrega:hora_entrega,
-                veedor_id:veedor_id,
+                // veedor_id:veedor_id,
                 delegado_id:delegado_id,
                 deuda:deuda,
                 total:total,
@@ -523,7 +543,7 @@
                 subtotal:subtotal,
                 men_pagadas: total
             }
-          
+            console.log(fecha_entrega)
 
             var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
             
@@ -699,16 +719,17 @@
             // }
             // await axios.post("{{setting('admin.url')}}api/send/message",msj_chatbot )
           
-            location.href="{{setting('admin.url')}}admin/jugadores-planillas"
+            location.href="{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
         }
 
         async function add_todos(){
             var equipo_id=$("#select_club").val()
             var jugadores= await axios("/api/jugadores/planilla/find/jugadores/"+equipo_id)
-            
+            // var cont= count_jugs()+1
+
             for (let index = 0; index < jugadores.data.length; index++) {
                 var jugador= await axios("/api/jugadores/find/"+jugadores.data[index].id)
-                await add_jugador(jugador, (index+1))
+                await add_jugador(jugador)
             }   
             toastr.success("Planilla a Completa Registrada")
         }
@@ -744,8 +765,9 @@
                         }
                     }
                     else{
-                        await add_jugador(jugador, num)
-                      
+                        // await add_jugador(jugador, num)
+                        await add_jugador(jugador)
+
                     }
                 }else{
                     // console.log("Hola2")
@@ -759,7 +781,9 @@
                         toastr.error("El Jugador que intenta ingresar pertenece a otro equipo, realice la transferencia si desea utilizarlo.")
                     }
                     else{
-                        await add_jugador(jugador, num)
+                        // await add_jugador(jugador, num)
+                        await add_jugador(jugador)
+
                     }
                 }
             }
@@ -772,11 +796,12 @@
             
         }
 
-        async function add_jugador(jugador, cont){
+        async function add_jugador(jugador){
             if(comparar_exis_jug(jugador.data.id)){
                 toastr.error("El Jugador: "+jugador.data.name+" ya se encuentra en la nómina")
             }
             else{
+                var cont=count_jugs()+1
                 // if (tipo==1) {
                     // $('#table2').append("<tr><td><input class='tab_jugs_tits_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden>"+cont+"</td><td class='tab_jugs_tits'>"+jugador.data.edad+"</td><td>  "+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>1400</td></tr>");
                     $('#table2').append("<tr><td><input class='tab_jugs_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden>"+cont+"</td><td class='tab_jugs'><input id='check_"+jugador.data.id+"' type='checkbox'></td><td>  "+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>"+parseInt("{{setting('finanzas.mensualidad_jug')}}")+"</td></tr>");
@@ -885,7 +910,8 @@
                 //     cont=cont+ count_jugs(2)
                 // }
                 var jugador= await axios("/api/jugadores/find/"+$("#jugador_transferencia").val() )
-                await add_jugador(jugador, (cont+1))
+                // await add_jugador(jugador, (cont+1))
+                await add_jugador(jugador)
                 toastr.success("Jugador Transferido Exitosamente")
 
             }
@@ -894,7 +920,8 @@
         async function crear_delegado() {
             var midata={
                 clube_id:$("#select_club").val(),
-                name:$("#delegado_creation").val()
+                name:$("#delegado_creation").val(),
+                phone: $("#wpp_delegado").val()
             }
             var delegado= await axios.post("/api/create/delegado", midata)
             if (delegado.data!=null) {
@@ -924,7 +951,8 @@
                 // if ($("#input_transferencia").val()==2) {
                 //     cont=cont+ count_jugs(2)
                 // }
-                await add_jugador(jugador, (cont+1))
+                // await add_jugador(jugador, (cont+1))
+                await add_jugador(jugador)
                 toastr.success("Jugador Creado Exitosamente")
             }
         }
@@ -936,6 +964,10 @@
 				console.log("EDITED");
                 total_mensualidades()
 			},
+            onDelete:function(){
+                console.log("DELETED");
+                total_mensualidades()
+            },
 			advanced: {
 				columnLabel: ''
 			}
@@ -972,7 +1004,17 @@
                     value: jugadores.data[index].id,
                     text: jugadores.data[index].name
                 }));
-            }                                            
+            }
+            var delegados= await axios("/api/delegados/find/club/"+equipo_id)
+            console.log(delegados.data)
+            $('#select_delegado').find('option').remove().end()
+            for (let index = 0; index < delegados.data.length; index++) {
+                $('#select_delegado').append($('<option>', {
+                    value: delegados.data[index].id,
+                    text: delegados.data[index].name
+                }));
+            }
+
         })
         $("#select_equipo_sup").change(async function () { 
 
@@ -1003,7 +1045,9 @@
         //Select Delegado
         async function cargar_delegados() {
             $('#select_delegado').find('option').remove().end()
-            var delegados= await axios("/api/all/delegados")
+            var equipo_id= $("#select_club").val()
+            var delegados= await axios("/api/delegados/find/club/"+equipo_id)
+            // var delegados= await axios("/api/all/delegados")
             for (let index = 0; index < delegados.data.length; index++) {
                 $('#select_delegado').append($('<option>', {
                     value: delegados.data[index].id,
@@ -1045,7 +1089,7 @@
           };
         }
 
-        $('document').ready(async function () {
+        $('document').ready(async function () { 
             //Inicializar Select Jugadores Transferencia
             validad_roles()
             $('#jugador_transferencia').find('option').remove().end()

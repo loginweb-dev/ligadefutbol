@@ -46,9 +46,11 @@
     @endif
    
     @if (Auth::user()->role_id==1 || Auth::user()->role_id==5)
-        <a  class="btn btn-info" data-toggle="modal" data-target="#modal_acciones_planilla">
-            <i class="glyphicon glyphicon-question-sign"></i> <span class="hidden-xs hidden-sm">Aprobar/Rechazar</span>
-        </a>
+        @if($dataTypeContent->activo=="Entregado")
+            <a  class="btn btn-info" data-toggle="modal" data-target="#modal_acciones_planilla">
+                <i class="glyphicon glyphicon-question-sign"></i> <span class="hidden-xs hidden-sm">Aprobar/Rechazar</span>
+            </a>
+        @endif
     @endif
     
         @include('voyager::multilingual.language-selector')
@@ -67,6 +69,15 @@
 @stop
 
 @section('content')
+
+    <div id="voyager-loader" class="mireload" hidden>
+        <?php $admin_loader_img = Voyager::setting('admin.loader', ''); ?>
+        @if($admin_loader_img == '')
+            <img src="{{ voyager_asset('images/logo-icon.png') }}" alt="Voyager Loader">
+        @else
+            <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
+        @endif
+    </div>
 
     @php
         $equipo= App\Clube::find($dataTypeContent->clube_id);
@@ -307,7 +318,8 @@
                                         <td class='text-center'>
                                             @if ($item->estado!="Pagado")
                                                 <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-
+                                            @else
+                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                             @endif
                                         </td>
                                     
@@ -364,7 +376,8 @@
                                             <td class='text-center'>
                                                 @if ($item->estado!="Pagado")
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-
+                                                @else
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
                                             </td>
                                         
@@ -422,7 +435,8 @@
                                             <td class='text-center'>
                                                 @if ($item->estado!="Pagado")
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-
+                                                @else
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
                                             </td>
                                         
@@ -477,7 +491,8 @@
                                         <td class='text-center'>
                                             @if ($item->estado!="Pagado")
                                                 <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-
+                                            @else
+                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                             @endif
                                         </td>
                                     
@@ -530,7 +545,8 @@
                                             <td class='text-center'>
                                                 @if ($item->estado!="Pagado")
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-
+                                                @else
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
                                             </td>
                                         
@@ -585,7 +601,8 @@
                                             <td class='text-center'>
                                                 @if ($item->estado!="Pagado")
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-
+                                                @else
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
                                             </td>
                                         
@@ -711,6 +728,7 @@
                                 <tr>
                                     <th class="text-center" scope="col">Fecha</th>
                                     <th class="text-center" scope="col">Monto Amortizado</th>
+                                    <th class="text-center" scope="col">Editor</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -720,16 +738,18 @@
                 </div>
 
               <div class="col-md-8"></div>
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-md-4" id="div_monto_a_pagar" hidden>
                     <label for="input_monto_a_pagar">Monto a Pagar</label>
                     <input class="form-control form-group" type="number" id="input_monto_a_pagar">
                 </div>
               
 
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Guardar</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <div class="modal-footer" >
+                <div id="div_botones_a_pagar" hidden>
+                    <button onclick="save_asiento_individual()" type="button" class="btn btn-primary">Guardar</button>
+                    <button  type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>      
+                </div>
             </div>
           </div>
         </div>
@@ -822,11 +842,11 @@
                 cancelButtonText: 'NO'
                 }).then((result) => {
                 if (result.isConfirmed) {
+                    $('.mireload').attr("hidden", false)
                     checkbox()
                 }
             })
         }
-
         function save_decision(){
             Swal.fire({
                 title: 'Estas Seguro de Guardar el Estado de la Planilla?',
@@ -847,7 +867,24 @@
                 }
             })
         }
-
+        function save_asiento_individual(){
+            Swal.fire({
+                title: 'Estas Seguro de Pagar el Asiento?',
+                // text: "You won't be able to revert this!",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'SI',
+                cancelButtonText: 'NO'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                // location.href = "{{setting('admin.url')}}admin/jugadores-planillas"
+                    comprobar_monto_asiento()
+                    // location.href = "/admin/jugadores-planillas"
+                }
+            })
+        }
         async function acciones_planilla(){
             var midata={
                 observacion: $("#text_area_observacion").val(),
@@ -859,17 +896,31 @@
                 location.reload()
             }
         }
-
         async function checkbox() {
             var asientos= await axios("{{setting('admin.url')}}api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
             for (let index = 0; index < asientos.data.length; index++) {
                 // if (asientos.data.estado!="Pagado") {
-                    if (asientos.data.estado!="Pagado" && $("#check_"+asientos.data[index].id+"").prop('checked')) {
+                    if (asientos.data[index].estado!="Pagado" && $("#check_"+asientos.data[index].id+"").prop('checked')) {
                         console.log("siuuu")
+                        console.log(asientos.data[index].id)
+
+                        var observacion="Ya pagó el total de la deuda"
+
+                        var midata={
+                            asiento_id: asientos.data[index].id,
+                            monto_restante: 0,
+                            monto_pagado: asientos.data[index].monto_restante,
+                            estado: "Pagado",
+                            user_id: parseInt("{{Auth::user()->id}}"),
+                            observacion:observacion
+                        }
+                        console.log(midata)
+                        await axios.post("/api/update/asiento", midata)
                     }
                 // }
                
             }
+            location.reload()
            
         }
 
@@ -880,16 +931,26 @@
 
             $("#input_id_asiento_modal").val(parseInt(id))
             var asiento= await axios("{{setting('admin.url')}}api/find/asiento/"+(parseInt(id)))
+            
             console.log()
             $("#table_modal_pagos").append("<tr><td class='text-center'>"+asiento.data.categorias.title+"</td> <td class='text-center'>"+asiento.data.monto+"</td> <td class='text-center'>"+asiento.data.monto_pagado+"</td> <td class='text-center'>"+asiento.data.monto_restante+"</td> <td class='text-center'>"+asiento.data.observacion+"</td></tr>")
+            console.log(asiento.data)
+            // $("#table_historial_pagos").append("<tr><td class='text-center'>"+asiento.data.fecha+"<br><small>"+asiento.data.published+"</small></td><td class='text-center'>"+asiento.data.monto_pagado+"</td></tr>")
             
-            $("#table_historial_pagos").append("<tr><td>"+asiento.data.created_at+"</td><td>"+asiento.data.monto_pagado+"</td></tr>")
-
             if (asiento.data.detalles.length>0) {
                 // $("#visualizar_historial").attr("hidden", false)
                 for (let index = 0; index < asiento.data.detalles.length; index++) {
-                    $("#table_historial_pagos").append("<tr><td>"+asiento.data.detalles[index].created_at+"</td><td>"+asiento.data.detalles[index].monto_pagado+"</td></tr>")
+                    var usuario= await axios("/api/find/user/id/"+asiento.data.detalles[index].user_id)
+                    $("#table_historial_pagos").append("<tr><td class='text-center'>"+asiento.data.detalles[index].fecha+"<br><small>"+asiento.data.detalles[index].published+"</small></td><td class='text-center'>"+asiento.data.detalles[index].monto_pagado+"</td><td class='text-center'>"+usuario.data.name+"</td></tr>")
                 }
+            }
+            if (asiento.data.estado=="Pagado") {
+                $("#div_monto_a_pagar").attr("hidden", true)
+                $("#div_botones_a_pagar").attr("hidden", true)
+            }
+            else{
+                $("#div_monto_a_pagar").attr("hidden", false)
+                $("#div_botones_a_pagar").attr("hidden", false)
             }
         }
 
@@ -1016,6 +1077,52 @@
             }
         });
 
+        async function comprobar_monto_asiento() {
+            var monto_a_pagar= parseInt($("#input_monto_a_pagar").val())
+            var asiento_id=$("#input_id_asiento_modal").val()
+            var asiento= await axios("/api/find/asiento/"+asiento_id)
+            if (monto_a_pagar>asiento.data.monto_restante) {
+                toastr.error("El monto que intenta ingresar es mayor del requerido")
+                $("#input_monto_a_pagar").val(asiento.data.monto_restante)
+            }
+            if (monto_a_pagar<=asiento.data.monto_restante) {
+                $('.mireload').attr("hidden", false)
+                $("#modal_pago .close").click()
+                await pagar_asiento_individual(asiento)
+            }
+
+        }
+
+
+        async function pagar_asiento_individual(asiento) {
+            var monto_a_pagar= parseInt($("#input_monto_a_pagar").val())
+            var asiento_id=$("#input_id_asiento_modal").val()
+            // var asiento= await axios("/api/find/asiento/"+asiento_id)
+            var estado=""
+            var observacion=""
+            if (monto_a_pagar<asiento.data.monto_restante) {
+                estado="Pendiente"
+                observacion="Debe Mensualidad"
+            }
+            else{
+                estado="Pagado"
+                observacion="Ya pagó el total de la deuda"
+            }
+            var midata={
+                asiento_id: parseInt(asiento_id),
+                monto_restante: (asiento.data.monto_restante-monto_a_pagar),
+                monto_pagado: monto_a_pagar,
+                estado: estado,
+                user_id: parseInt("{{Auth::user()->id}}"),
+                observacion:observacion
+            }
+            console.log(midata)
+            var asiento= await axios.post("/api/update/asiento", midata)
+            if (asiento.data) {
+                location.reload()          
+            }
+
+        }
         //  $("#minimizar_historial").attr("hidden", false)
 
         var deleteFormAction;

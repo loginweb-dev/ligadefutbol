@@ -158,6 +158,12 @@ Route::post('asiento/save', function(Request $request){
         'monto_restante'=> $request->monto_restante
     ]);
 
+    $detalle=App\AsientoDetalle::create([
+        'asiento_id'=> $asiento->id,
+        'monto_pagado'=> $request->monto_pagado,
+        'user_id'=> $request->editor_id
+    ]);
+
     return $asiento;
 });
 
@@ -297,4 +303,28 @@ Route::get('get/jugadores/planilla/{planilla_id}', function($planilla_id){
 //Find Cat Asiento
 Route::get('find/cat/asientos/{categoria_id}', function($categoria_id){
     return App\AsientoCategoria::find($categoria_id);
+});
+
+//Update Asiento and Create Asiento Detalle
+Route::post('update/asiento', function(Request $request){
+
+    $asiento=App\Asiento::find($request->asiento_id);
+    $asiento->monto_restante= $request->monto_restante;
+    $asiento->monto_pagado= ($asiento->monto_pagado+$request->monto_pagado);
+    $asiento->estado= $request->estado;
+    $asiento->observacion= $request->observacion;
+    $asiento->save();
+
+    $detalle= App\AsientoDetalle::create([
+        'asiento_id'=> $request->asiento_id,
+        'monto_pagado'=> $request->monto_pagado,
+        'user_id'=> $request->user_id
+    ]);
+
+    return true;
+});
+
+//Find User ID
+Route::get('find/user/id/{user_id}', function($user_id){
+    return User::find($user_id);
 });

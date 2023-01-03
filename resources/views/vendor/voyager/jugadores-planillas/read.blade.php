@@ -56,6 +56,15 @@
 
     <hr>
 @stop
+@section('css')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{-- <style>
+        tbody tr:hover {  
+        background-color: lightblue;  
+        color: #666666;  
+        }
+    </style> --}}
+@stop
 
 @section('content')
 
@@ -231,8 +240,8 @@
                     <label for="select_cat_asientos">Tipo Asientos</label>
                     <div style="border-style: outset;">    
                         <select class="form-control select2" name="select_cat_asientos" id="select_cat_asientos">
-                            <option value="cat_jugadores">Jugadores</option>
-                            <option value="cat_grupales">Club</option>
+                            <option value="jugadores">Jugadores</option>
+                            <option value="club">Club</option>
                         </select>
                     </div>
                 </div>
@@ -248,10 +257,10 @@
                 </div>
                 <div class="col-sm-4 form-group">
                     <label for="input_buscar_tab">Buscar</label>
-                        <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto de Búsqueda">
+                        <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto">
                 </div>
                 <div class="col-sm-12 table-responsive" id="tab_todos_jugadores">
-                    <table class="table table-striped table-bordered" id="tabla_todos">
+                    <table class="table table-striped table-bordered" id="tabla_tab_todos_jugadores">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -309,7 +318,7 @@
                     </table>
                 </div>
                 <div class="col-sm-12 table-responsive" id="tab_pendientes_jugadores" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_pendientes">
+                    <table class="table table-striped table-bordered" id="tabla_tab_pendientes_jugadores">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -367,7 +376,7 @@
                     </table>
                 </div>
                 <div class="col-sm-12 table-responsive" id="tab_pagados_jugadores" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_pagados">
+                    <table class="table table-striped table-bordered" id="tabla_tab_pagados_jugadores">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -425,7 +434,7 @@
                     </table>
                 </div>
                 <div class="col-sm-12 table-responsive" id="tab_todos_club" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_todos">
+                    <table class="table table-striped table-bordered" id="tabla_tab_todos_club">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -479,7 +488,7 @@
                     </table>
                 </div>
                 <div class="col-sm-12 table-responsive" id="tab_pendientes_club" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_pendientes">
+                    <table class="table table-striped table-bordered" id="tabla_tab_pendientes_club">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -533,7 +542,7 @@
                     </table>
                 </div>
                 <div class="col-sm-12 table-responsive" id="tab_pagados_club" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_pagados">
+                    <table class="table table-striped table-bordered" id="tabla_tab_pagados_club">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -933,13 +942,13 @@
 
         async function visualizar_tabs(value){
             var seleccionado= value
-            console.log("hola")
+            $("#input_buscar_tab").val("")
             var array_jugs=['tab_todos_jugadores','tab_pendientes_jugadores','tab_pagados_jugadores']
             var array_club=['tab_todos_club', 'tab_pendientes_club', 'tab_pagados_club']
-            if ($("#select_cat_asientos").val()=="cat_jugadores") {
-                console.log("hola1")
+            if ($("#select_cat_asientos").val()=="jugadores") {
+                var tabla="tabla_"+seleccionado+"_jugadores"
+                jQuery("#"+tabla+" tbody>tr").show();
                 $('#'+seleccionado+"_jugadores").attr("hidden", false)
-                console.log(seleccionado+"_jugadores")
                 for (let index = 0; index < array_jugs.length; index++) {
                     if (array_jugs[index]!=value+"_jugadores") {
                         $('#'+array_jugs[index]).attr("hidden", true)
@@ -950,8 +959,9 @@
                 }
                 
             }
-            if ($("#select_cat_asientos").val()=="cat_grupales") {
-                console.log("hola2")
+            if ($("#select_cat_asientos").val()=="club") {
+                var tabla="tabla_"+seleccionado+"_club"
+                jQuery("#"+tabla+" tbody>tr").show();
                 $('#'+seleccionado+"_club").attr("hidden", false)
                 for (let index = 0; index < array_club.length; index++) {
                     if (array_club[index]!=value+"_club") {
@@ -985,6 +995,26 @@
                 $("#div_historial").attr("hidden", true)
             }
          }
+
+         jQuery("#input_buscar_tab").keyup(function(){
+            var cat_asientos= $("#select_cat_asientos").val()
+            var filtro_select= $("#select_tabs").val()
+            var tabla= "tabla_"+filtro_select+"_"+cat_asientos
+            if( jQuery(this).val() != ""){
+                jQuery("#"+tabla+" tbody>tr").hide();
+                jQuery("#"+tabla+" td:contiene-palabra('" + jQuery(this).val() + "')").parent("tr").show();
+            }
+            else{
+                jQuery("#"+tabla+" tbody>tr").show();
+            }
+        });
+        
+        jQuery.extend(jQuery.expr[":"], 
+        {
+            "contiene-palabra": function(elem, i, match, array) {
+                return (elem.textContent || elem.innerText || jQuery(elem).text() || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+            }
+        });
 
         //  $("#minimizar_historial").attr("hidden", false)
 

@@ -39,16 +39,18 @@
             <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.return_to_list') }}</span>
         </a>
         @endcan
-    
-    <a  class="btn btn-success">
+    @if ($dataTypeContent->activo=='Aprobado')
+        <a  class="btn btn-success">
             <i class="glyphicon glyphicon-envelope"></i> <span class="hidden-xs hidden-sm">Enviar Lista</span>
         </a>
-    
-    
-    
-    <a  class="btn btn-info">
+    @endif
+   
+    @if (Auth::user()->role_id==1 || Auth::user()->role_id==5)
+        <a  class="btn btn-info" data-toggle="modal" data-target="#modal_acciones_planilla">
             <i class="glyphicon glyphicon-question-sign"></i> <span class="hidden-xs hidden-sm">Aprobar/Rechazar</span>
         </a>
+    @endif
+    
         @include('voyager::multilingual.language-selector')
     </div>
 
@@ -64,420 +66,574 @@
         $index=0;
         $index2=0;
         $index3=0;
-        $asientos= App\Asiento::where('planilla_id', $dataTypeContent->id)->with('jugadores', 'clubes')->get();
+        $index4=0;
+        $asientos= App\Asiento::where('planilla_id', $dataTypeContent->id)->with('jugadores', 'clubes', 'categorias')->get();
         $num_jugadores=count($nomina);
     @endphp
-    {{-- <div class="page-content read container-fluid"> --}}
     <div class="panel panel-bordered" style="padding-bottom:5px;">
+                    
+        <!--Información Planilla -->                         
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-sm-4 form-group text-center">
+                <label for="select_cat">Categoria</label>
+                <div style="border-style: outset;">    
+                    <input type="text" class="form-control text-center" id="input_cat" value="{{$dataTypeContent->categoria_jugadores}}" readonly>
+                </div>
+            </div>
 
-                {{-- <div class="panel panel-bordered" style="padding-bottom:5px;">
-                    <div class="page-content edit-add container-fluid">
-                        <div class="row">
-                            <div class="col-md-12"> --}}
-                                {{-- <div class="panel panel-bordered"> --}}
-                                    {{-- <div class="text-center">
-                                        <h2 class="subs">MUTUAL DE EX JUGADORES DE FUTBOL TRINIDAD</h2>
-                                        <span class="subs">FUNDADA EL 8 DE FEBRERO DE 1987 <br> MEDIANTE RESOLUCIÓN PREFECTURAL Nª. 050/99</span>
-                                    </div> --}}
-                                    <hr>
+            <div class="col-sm-4 form-group text-center">
+                <label for="select_delegado">Delegado</label>
+                <div style="border-style: outset;">    
                 
-                                    {{-- <div class="row"> --}}
-                                 
-                                        {{-- <div class="col-md-12"> --}}
-                
-                                            <div class="col-sm-4 form-group" hidden>
-                                                <label for="input_club">Club</label>
-                                                <div style="border-style: outset;">                                
-                                                    {{-- <select class="form-control select2" name="select_club" id="select_club">
-                                                        <option value="null">Elegir el Club</option>
-                                                        @foreach ($equipos  as $item)
-                                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                        @endforeach     
-                                                    </select> --}}
-                                                    <input type="text" class="form-control" id="input_club" value="{{$equipo->name}}" readonly>
-                                                </div>
-                                            </div>
-                
-                                            <div class="col-sm-4 form-group">
-                                                <label for="select_cat">Categoria</label>
-                                                <div style="border-style: outset;">    
-                                                    {{-- <select class="form-control select2" name="select_cat" id="select_cat">
-                                                        <option value="">Elegir Categoria</option>
-                                                        <option value="Senior">Senior</option>
-                                                        <option value="Especial">Especial</option>
-                                                    </select> --}}
+                    <input type="text" class="form-control text-center" id="input_delegdo" value="{{$delegado->name}}" readonly>
 
-                                                    <input type="text" class="form-control" id="input_cat" value="{{$dataTypeContent->categoria_jugadores}}" readonly>
+                </div>                   
+            </div>
+            
+            <div class="col-sm-4 form-group text-center">
+                <label for="input_fecha">Gestión</label>
+                <div style="border-style: outset;">                                
 
-                                                </div>
-                                            </div>
-                
-                                            <div class="col-sm-4 form-group">
-                                                <label for="select_delegado">Delegado</label>
-                                                <div style="border-style: outset;">    
-                                               
-                                                    <input type="text" class="form-control" id="input_delegdo" value="{{$delegado->name}}" readonly>
+                <input class="form-control text-center" type="month" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('Y-m') }}" readonly>
+                </div>
+            </div>
+        
+            <div class="col-sm-6 text-center">
+                <label for="">Estado de Planilla</label>
+                <div style="border-style: outset;"> 
+                    <input class="form-control text-center" type="text" value="{{$dataTypeContent->activo}}" readonly>
+                </div>
+            </div>
+            <div class="col-sm-6 text-center">
+                <label for="">Observaciones</label>
+                <div style="border-style: outset;" >  
+                    <textarea class="form-control text-center" name="text_area_observacion_defecto" rows="2" id="text_area_observacion_defecto" readonly >{{$dataTypeContent->observacion}}</textarea>
+                </div>
+            </div>
 
-                                                </div>                   
-                                            </div>
-                                            {{-- <div class="col-sm-12">
-                                                <hr>
-                                            </div> --}}
-                                          
-                                            <div class="col-sm-4 form-group">
-                                                <label for="input_fecha">Gestión</label>
-                                                <div style="border-style: outset;">                                
+        </div>
 
-                                                <input class="form-control" type="month" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('Y-m') }}" readonly>
-                                                </div>
-                                            </div>
-                                            {{-- <div class="col-sm-4 form-group">
-                                                <label for="input_hora">Hora de Entrega</label>
+        <!--Jugadores -->                                                   
+        <div class="row">
+            <div class="col-sm-12 text-center" >
+                <h3 class="subs">
+                    NÓMINA DE JUGADORES
+                </h3>
+                <h4 class="subs col-md-12">Titulares</h4>
+            </div>              
+            <div  class="col-sm-12 table-responsive">
+            
+                <table class="table table-striped table-bordered" id="table2">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-center" scope="col">#</th>
+                            <th class="text-center" scope="col">Edad</th>
+                            <th class="text-center" scope="col">Polera</th>
+                            <th class="text-center" scope="col">Nombres y Apellidos</th>
+                            <th class="text-center" scope="col">Mensualidad</th>
+                        </tr>
                         
-                                                <input class="form-control" type="text" name="input_hora" id="input_hora" value="{{ \Carbon\Carbon::parse($dataTypeContent->hora_entrega)->format('H:i') }}"  readonly>
-                                            </div> --}}
-                                           	{{-- <div class="col-sm-4 form-group">
-                                                <label for="input_gestion">Gestion</label>
+
+                    </thead>
+                    <tbody>
+                        @foreach ($nomina as $item)
+                            @if ($item->titular==1)
+                                @php
+                                    $index=$index+1;
+                                @endphp
+
+                                <tr>
+                                    <td class="text-center">
+                                        {{$index}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->edad}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->polera}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->name}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->mensualidad}}
+                                    </td>
+                                </tr>
+
+                            @endif
+                          
+                         
+                        @endforeach
                         
-                                                <input class="form-control" type="text" name="input_gestion" id="input_gestion"  readonly>
-                                            </div> --}}
-                                    
-                            
-                                        {{-- </div> --}}
-                                        <hr>
-                                        {{-- <div class="col-md-12 text-center"> --}}
+      
+                    </tbody>
+                   
+                </table>
+            </div>
+              
+            <div class="col-sm-12 text-center" >
 
-                                            <div class="text-center" >
+                <h4 class="subs col-md-12">Suplentes</h4>
+            </div>
 
-                                                <h3 class="subs">
-                                                    NÓMINA DE JUGADORES
-                                                </h3>
-                                                
-                                                <h4 class="subs col-md-12">Titulares</h4>
+            <div  class="col-sm-12 table-responsive">
+                <table class="table table-striped table-bordered" id="table3">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-center" scope="col">#</th>
+                            <th class="text-center" scope="col">Edad</th>
+                            <th class="text-center" scope="col">Polera</th>
+                            <th class="text-center" scope="col">Nombres y Apellidos</th>
+                            <th class="text-center" scope="col">Mensualidad</th>
+                        </tr>
 
-                                            </div>
-                                          
-                                            <div  class="col-md-12 col-sm-12 table-responsive">
-                                                <table class="table table-striped table-bordered" id="table2">
-                                                    <thead class="thead-dark">
-                                                        <tr>
-                                                            <th class="text-center" scope="col">#</th>
-                                                            <th class="text-center" scope="col">Edad</th>
-                                                            <th class="text-center" scope="col">Polera</th>
-                                                            <th class="text-center" scope="col">Nombres y Apellidos</th>
-                                                            <th class="text-center" scope="col">Mensualidad</th>
-                                                        </tr>
-                                                        
-                    
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($nomina as $item)
-                                                            @if ($item->titular==1)
-                                                                @php
-                                                                    $index=$index+1;
-                                                                @endphp
-    
-                                                                <tr>
-                                                                    <td class="text-center">
-                                                                        {{$index}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        {{$item->jugador->edad}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        {{$item->jugador->polera}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        {{$item->jugador->name}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        {{$item->mensualidad}}
-                                                                    </td>
-                                                                </tr>
-    
-                                                            @endif
-                                                          
-                                                         
-                                                        @endforeach
-                                                        
-                                      
-                                                    </tbody>
-                                                   
-                                                </table>
-                                            </div>
-                                              
-                                            <div class="text-center" >
+                    </thead>
+                    <tbody>
+                        @foreach ($nomina as $item)
+                            @if ($item->titular==2)
+                                @php
+                                    $index=$index+1;
+                                @endphp
 
-                                                <h4 class="subs col-md-12">Suplentes</h4>
-                                            </div>
-                
-                                            <div  class="col-md-12 col-sm-12 table-responsive">
-                                                <table class="table table-striped table-bordered" id="table3">
-                                                    <thead class="thead-dark">
-                                                        <tr>
-                                                            <th class="text-center" scope="col">#</th>
-                                                            <th class="text-center" scope="col">Edad</th>
-                                                            <th class="text-center" scope="col">Polera</th>
-                                                            <th class="text-center" scope="col">Nombres y Apellidos</th>
-                                                            <th class="text-center" scope="col">Mensualidad</th>
-                                                        </tr>
-                    
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($nomina as $item)
-                                                        @if ($item->titular==2)
-                                                            @php
-                                                                $index=$index+1;
-                                                            @endphp
+                                <tr>
+                                    <td class="text-center">
+                                        {{$index}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->edad}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->polera}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->name}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->mensualidad}}
+                                    </td>
+                                </tr>
 
-                                                            <tr>
-                                                                <td class="text-center">
-                                                                    {{$index}}
-                                                                </td>
-                                                                <td class='text-center'>
-                                                                    {{$item->jugador->edad}}
-                                                                </td>
-                                                                <td class='text-center'>
-                                                                    {{$item->jugador->polera}}
-                                                                </td>
-                                                                <td class='text-center'>
-                                                                    {{$item->jugador->name}}
-                                                                </td>
-                                                                <td class='text-center'>
-                                                                    {{$item->mensualidad}}
-                                                                </td>
-                                                            </tr>
-
-                                                        @endif
-                                                    
-                                                    
-                                                    @endforeach
-                                        
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="col-md-9 form-group">
-
-                                            </div>
-                
-                                            <hr>
-
-                                            <div class="text-center" >
-
-                                                <h3 class="subs col-md-12">DETALLES</h3>
-                                            </div>
-                                            <div class="col-md-8 col-sm-12">
-                                                <div class="col-md-3 col-sm-12 form-group">
-                                                    <label for="select_tabs">Filtros</label>
-                                                    <div style="border-style: outset;">    
-                                                        <select class="form-control select2" name="select_tabs" id="select_tabs">
-                                                            <option value="Todos">Todos</option>
-                                                            <option value="Pendientes">Pendientes</option>
-                                                            <option value="Pagados">Pagados</option>
-                                                        </select>
-                                                    </div>
-
-                                                </div>
-                                                <div class="col-md-5 form-group">
-                                                    <label for="input_buscar_tab">Buscar</label>
-                                                        <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto de Búsqueda">
-                                                </div>
-                                                <div class="col-md-12 col-sm-12 table-responsive" id="tab_todos">
-                                                    {{-- <label for="text_area_deudas">Descripción</label>
-                                                    <textarea class="form-control" name="text_area_deudas" rows="5" id="text_area_deudas" readonly >{{$dataTypeContent->observacion}}</textarea> --}}
-
-                                                    <table class="table table-striped table-bordered" id="table3">
-                                                        <thead class="thead-dark">
-                                                            <tr>
-                                                                <th class="text-center" scope="col">#</th>
-                                                                <th class="text-center" scope="col">Jugador</th>
-                                                                <th class="text-center" scope="col">Detalle</th>
-                                                                <th class="text-center" scope="col">Monto</th>
-                                                                <th class="text-center" scope="col">Estado</th>
-                                                                <th class="text-center" scope="col">Observación</th>
-                                                                <th class="text-center" scope="col">Acción</th>
-
-
-                                                            </tr>
-                                                            
-                        
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($asientos as $item)
-                                                                @php
-                                                                    $index2=$index2+1;
-                                                                @endphp
-
-                                                                <tr>
-                                                                    <td class="text-center">
-                                                                        {{$index2}}
-                                                                        @if ($item->estado!="Pagado")
-                                                                            <input id="check_{{$item->id}}" type="checkbox">
-                                                                        @endif
-                                                                    </td>
-                                                                    <td>
-                                                                        {{$item->jugadores->name}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        {{$item->detalle}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        {{$item->monto}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        {{$item->estado}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        {{$item->observacion}}
-                                                                    </td>
-                                                                    <td class='text-center'>
-                                                                        @if ($item->estado!="Pagado")
-                                                                            <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-
-                                                                        @endif
-                                                                    </td>
-                                                                
-                                                                </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="col-sm-8 table-responsive" id="tab_pendientes" hidden>
-                                                    {{-- <label for="text_area_deudas">Descripción</label>
-                                                    <textarea class="form-control" name="text_area_deudas" rows="5" id="text_area_deudas" readonly >{{$dataTypeContent->observacion}}</textarea> --}}
-
-                                                    <table class="table table-striped table-bordered" id="table3">
-                                                        <thead class="thead-dark">
-                                                            <tr>
-                                                                <th class="text-center" scope="col">#</th>
-                                                                <th class="text-center" scope="col">Jugador</th>
-                                                                <th class="text-center" scope="col">Detalle</th>
-                                                                <th class="text-center" scope="col">Monto</th>
-                                                                <th class="text-center" scope="col">Estado</th>
-                                                                <th class="text-center" scope="col">Observación</th>
-                                                                <th class="text-center" scope="col">Acción</th>
-
-
-                                                            </tr>
-                                                            
-                        
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($asientos as $item)
-                                                                @if($item->estado!="Pagado")
-
-                                                                    @php
-                                                                        $index3=$index3+1;
-                                                                    @endphp
-
-                                                                    <tr>
-                                                                        <td class="text-center">
-                                                                            {{$index3}}
-                                                                            <input id="check_{{$item->id}}" type="checkbox">
-                                                                        </td>
-                                                                        <td>
-                                                                            {{$item->jugadores->name}}
-                                                                        </td>
-                                                                        <td class='text-center'>
-                                                                            {{$item->detalle}}
-                                                                        </td>
-                                                                        <td class='text-center'>
-                                                                            {{$item->monto}}
-                                                                        </td>
-                                                                        <td class='text-center'>
-                                                                            {{$item->estado}}
-                                                                        </td>
-                                                                        <td class='text-center'>
-                                                                            {{$item->observacion}}
-                                                                        </td>
-                                                                        <td class='text-center'>
-                                                                            @if ($item->estado!="Pagado")
-                                                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-
-                                                                            @endif
-                                                                        </td>
-                                                                    
-                                                                    </tr>
-                                                                @endif
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="col-sm-12 col-md-12">
-                                                    <a class="btn btn-dark btn-block form-group" onclick="validar_check()">Pagar Seleccionados</a>
-                                                </div>
-                                                <hr>
-
-                                            </div>
-
-
-                                            <div class="col-sm-4">
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        <label for="input_mens_esperadas">Mensualidades Esperadas</label>
-                                                        <input class="form-control text-center" id="input_mens_esperadas" name="input_mens_esperadas" type="number" readonly >
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <label for="input_mens_pagadas">Mensualidades Pagadas</label>
-                                                        <input class="form-control text-center" id="input_mens_pagadas" name="input_mens_pagadas" type="number" readonly >
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        <label for="input_otros_esperados">Otros Ingresos Esperados</label>
-                                                        <input class="form-control text-center" id="input_otros_esperados" name="input_otros_esperados" type="number" readonly >
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <label for="input_otros_pagados">Otros Ingresos Pagados</label>
-                                                        <input class="form-control text-center" id="input_otros_pagados" name="input_otros_pagados" type="number" readonly >
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        <label for="input_subtotal">Total Esperado</label>
-                                                        <input class="form-control text-center" id="input_subtotal" name="input_subtotal" type="number" readonly>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <label for="input_deudas">Monto Adeudado</label>
-                                                        <input class="form-control text-center" id="input_deudas" name="input_deudas" type="number" readonly value="{{$dataTypeContent->deuda}}">
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <label for="input_total">Total Pagado</label>
-                                                        <input class="form-control text-center" id="input_total" name="input_total" type="number" readonly value="{{$dataTypeContent->total}}">
-                                                    </div>
-                                                </div>
-                                                
-                                               
-
-
-                                            </div>
-                                           
-                
-                                            
-                                        {{-- </div> --}}
-                                    {{-- </div> --}}
-                
-                
-                                    {{-- <div class="row">
-                                        <div class="col-sm-offset-3 col-sm-6">
-                                            <div class="form-group">
-                                                
-                                                <button class="btn btn-dark btn-block" onclick="misave()">Guardar Formulario</button>
-                                            </div>
-                                        </div>
-                                    </div> --}}
-                                   
-                
-                                {{-- </div> --}}
-                            {{-- </div>
-                        </div>
-                    </div>
-                </div> --}}
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
+                   
+        <!--Detalles Asientos y Totales-->                                                      
+        <div class="row">
+            <div class="col-sm-12 text-center" >
+                <h3 class="subs col-md-12">DETALLES</h3>
+            </div>
+            <!-- Parte Izquierda Lienzo , Asientos -->
+            <div class="col-sm-8">
+                <div class="col-sm-4 form-group">
+                    <label for="select_cat_asientos">Tipo Asientos</label>
+                    <div style="border-style: outset;">    
+                        <select class="form-control select2" name="select_cat_asientos" id="select_cat_asientos">
+                            <option value="cat_jugadores">Jugadores</option>
+                            <option value="cat_grupales">Club</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label for="select_tabs">Filtros</label>
+                    <div style="border-style: outset;">    
+                        <select class="form-control select2" name="select_tabs" id="select_tabs">
+                            <option value="tab_todos">Todos</option>
+                            <option value="tab_pendientes">Pendientes</option>
+                            <option value="tab_pagados">Pagados</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4 form-group">
+                    <label for="input_buscar_tab">Buscar</label>
+                        <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto de Búsqueda">
+                </div>
+                <div class="col-sm-12 table-responsive" id="tab_todos_jugadores">
+                    <table class="table table-striped table-bordered" id="tabla_todos">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center" scope="col">#</th>
+                                <th class="text-center" scope="col">Jugador</th>
+                                <th class="text-center" scope="col">Categoria</th>
+                                <th class="text-center" scope="col">Monto</th>
+                                <th class="text-center" scope="col">Estado</th>
+                                <th class="text-center" scope="col">Observación</th>
+                                <th class="text-center" scope="col">Acción</th>
+
+
+                            </tr>
+                            
+
+                        </thead>
+                        <tbody>
+                            @foreach ($asientos as $item)
+                                @if ($item->categorias->tipo=="jugador")                                    
+                                    @php
+                                        $index2=$index2+1;
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center">
+                                            {{$index2}}
+                                            @if ($item->estado!="Pagado")
+                                                <input id="check_{{$item->id}}" type="checkbox">
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{$item->jugadores->name}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->categorias->title}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->monto}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->estado}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->observacion}}
+                                        </td>
+                                        <td class='text-center'>
+                                            @if ($item->estado!="Pagado")
+                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+
+                                            @endif
+                                        </td>
+                                    
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 table-responsive" id="tab_pendientes_jugadores" hidden>
+                    <table class="table table-striped table-bordered" id="tabla_pendientes">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center" scope="col">#</th>
+                                <th class="text-center" scope="col">Jugador</th>
+                                <th class="text-center" scope="col">Categoria</th>
+                                <th class="text-center" scope="col">Monto</th>
+                                <th class="text-center" scope="col">Estado</th>
+                                <th class="text-center" scope="col">Observación</th>
+                                <th class="text-center" scope="col">Acción</th>
+
+
+                            </tr>
+                            
+
+                        </thead>
+                        <tbody>
+                            @foreach ($asientos as $item)
+                                @if($item->estado!="Pagado")
+                                    @if ($item->categorias->tipo=="jugador")                                    
+                                        @php
+                                            $index3=$index3+1;
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">
+                                                {{$index3}}
+                                                <input id="check_{{$item->id}}" type="checkbox">
+                                            </td>
+                                            <td>
+                                                {{$item->jugadores->name}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->categorias->title}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->monto}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->estado}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->observacion}}
+                                            </td>
+                                            <td class='text-center'>
+                                                @if ($item->estado!="Pagado")
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+
+                                                @endif
+                                            </td>
+                                        
+                                        </tr>
+                                    @endif
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 table-responsive" id="tab_pagados_jugadores" hidden>
+                    <table class="table table-striped table-bordered" id="tabla_pagados">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center" scope="col">#</th>
+                                <th class="text-center" scope="col">Jugador</th>
+                                <th class="text-center" scope="col">Categoria</th>
+                                <th class="text-center" scope="col">Monto</th>
+                                <th class="text-center" scope="col">Estado</th>
+                                <th class="text-center" scope="col">Observación</th>
+                                <th class="text-center" scope="col">Acción</th>
+
+
+                            </tr>
+                            
+
+                        </thead>
+                        <tbody>
+                            @foreach ($asientos as $item)
+                                @if($item->estado=="Pagado")
+                                    @if ($item->categorias->tipo=="jugador")                                    
+                                        @php
+                                            $index4=$index4+1;
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">
+                                                {{$index4}}
+                                                {{-- <input id="check_{{$item->id}}" type="checkbox"> --}}
+                                            </td>
+                                            <td>
+                                                {{$item->jugadores->name}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->categorias->title}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->monto}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->estado}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->observacion}}
+                                            </td>
+                                            <td class='text-center'>
+                                                @if ($item->estado!="Pagado")
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+
+                                                @endif
+                                            </td>
+                                        
+                                        </tr>
+                                    @endif
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 table-responsive" id="tab_todos_club" hidden>
+                    <table class="table table-striped table-bordered" id="tabla_todos">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center" scope="col">#</th>
+                                <th class="text-center" scope="col">Categoria</th>
+                                <th class="text-center" scope="col">Monto</th>
+                                <th class="text-center" scope="col">Estado</th>
+                                <th class="text-center" scope="col">Observación</th>
+                                <th class="text-center" scope="col">Acción</th>
+
+
+                            </tr>
+                            
+
+                        </thead>
+                        <tbody>
+                            @foreach ($asientos as $item)
+                                @if ($item->categorias->tipo=="planilla")                                    
+                                    @php
+                                        $index2=$index2+1;
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center">
+                                            {{$index2}}
+                                            @if ($item->estado!="Pagado")
+                                                <input id="check_{{$item->id}}" type="checkbox">
+                                            @endif
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->categorias->title}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->monto}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->estado}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->observacion}}
+                                        </td>
+                                        <td class='text-center'>
+                                            @if ($item->estado!="Pagado")
+                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+
+                                            @endif
+                                        </td>
+                                    
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 table-responsive" id="tab_pendientes_club" hidden>
+                    <table class="table table-striped table-bordered" id="tabla_pendientes">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center" scope="col">#</th>
+                                <th class="text-center" scope="col">Categoria</th>
+                                <th class="text-center" scope="col">Monto</th>
+                                <th class="text-center" scope="col">Estado</th>
+                                <th class="text-center" scope="col">Observación</th>
+                                <th class="text-center" scope="col">Acción</th>
+
+
+                            </tr>
+                            
+
+                        </thead>
+                        <tbody>
+                            @foreach ($asientos as $item)
+                                @if($item->estado!="Pagado")
+                                    @if ($item->categorias->tipo=="planilla")                                    
+                                        @php
+                                            $index3=$index3+1;
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">
+                                                {{$index3}}
+                                                <input id="check_{{$item->id}}" type="checkbox">
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->categorias->title}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->monto}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->estado}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->observacion}}
+                                            </td>
+                                            <td class='text-center'>
+                                                @if ($item->estado!="Pagado")
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+
+                                                @endif
+                                            </td>
+                                        
+                                        </tr>
+                                    @endif
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 table-responsive" id="tab_pagados_club" hidden>
+                    <table class="table table-striped table-bordered" id="tabla_pagados">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center" scope="col">#</th>
+                                <th class="text-center" scope="col">Categoria</th>
+                                <th class="text-center" scope="col">Monto</th>
+                                <th class="text-center" scope="col">Estado</th>
+                                <th class="text-center" scope="col">Observación</th>
+                                <th class="text-center" scope="col">Acción</th>
+
+
+                            </tr>
+                            
+
+                        </thead>
+                        <tbody>
+                            @foreach ($asientos as $item)
+                                @if($item->estado=="Pagado")
+                                    @if ($item->categorias->tipo=="planilla")                                    
+                                        @php
+                                            $index4=$index4+1;
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">
+                                                {{$index4}}
+                                                {{-- <input id="check_{{$item->id}}" type="checkbox"> --}}
+                                            </td>
+                                          
+                                            <td class='text-center'>
+                                                {{$item->categorias->title}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->monto}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->estado}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->observacion}}
+                                            </td>
+                                            <td class='text-center'>
+                                                @if ($item->estado!="Pagado")
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+
+                                                @endif
+                                            </td>
+                                        
+                                        </tr>
+                                    @endif
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                    <a class="btn btn-dark btn-block form-group" onclick="validar_check()">Pagar Seleccionados</a>
+                </div>
+            </div>
+            <!-- Parte Derecha Lienzo , Inputs Totales -->
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="input_mens_esperadas">Mensualidades Esperadas</label>
+                        <input class="form-control text-center" id="input_mens_esperadas" name="input_mens_esperadas" type="number" readonly >
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="input_mens_pagadas">Mensualidades Pagadas</label>
+                        <input class="form-control text-center" id="input_mens_pagadas" name="input_mens_pagadas" type="number" readonly >
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="input_otros_esperados">Otros Ingresos Esperados</label>
+                        <input class="form-control text-center" id="input_otros_esperados" name="input_otros_esperados" type="number" readonly >
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="input_otros_pagados">Otros Ingresos Pagados</label>
+                        <input class="form-control text-center" id="input_otros_pagados" name="input_otros_pagados" type="number" readonly >
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="input_subtotal">Total Esperado</label>
+                        <input class="form-control text-center" id="input_subtotal" name="input_subtotal" type="number" readonly>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="input_deudas">Monto Adeudado</label>
+                        <input class="form-control text-center" id="input_deudas" name="input_deudas" type="number" readonly value="{{$dataTypeContent->deuda}}">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="input_total">Total Pagado</label>
+                        <input class="form-control text-center" id="input_total" name="input_total" type="number" readonly value="{{$dataTypeContent->total}}">
+                    </div>
+                </div>
+                
+               
+
+
+            </div>
+        </div>           
     </div>
 
     {{-- Single delete modal --}}
@@ -501,6 +657,7 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <!--Modal Pagos -->
     <div class="modal" tabindex="-1" id="modal_pago" role="dialog">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -518,7 +675,7 @@
                     <table class="table table-striped table-bordered" id="table_modal_pagos">
                         <thead class="thead-dark">
                             <tr>
-                                <th class="text-center" scope="col">Detalle</th>
+                                <th class="text-center" scope="col">Categoria</th>
                                 <th class="text-center" scope="col">Monto Adeudado</th>
                                 <th class="text-center" scope="col">Monto Pagado</th>
                                 <th class="text-center" scope="col">Monto Restante a Pagar</th>
@@ -533,6 +690,24 @@
                         </tbody>
                     </table>
 
+                </div>
+                <div class="col-sm-12">
+                    <button id="visualizar_historial" onclick="historial_pagos(1)">Ver Historial de Pagos</button>
+                    <button id="minimizar_historial" onclick="historial_pagos(0)" hidden>Minimizar Historial de Pagos</button>
+                </div>
+                <div class="col-sm-12" id="div_historial" hidden>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" id="table_historial_pagos">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-center" scope="col">Fecha</th>
+                                    <th class="text-center" scope="col">Monto Amortizado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
               <div class="col-md-8"></div>
@@ -551,6 +726,43 @@
         </div>
     </div>
 
+    <!-- Modal Aprobar Rechazar-->
+    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_acciones_planilla">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tomar Acción Sobre Planilla</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    
+                        <div class="form-group col-6">
+                            <label for="select_accion">Acción Decisiva</label>
+                            <div style="border-style: outset;">                                
+                                <select class="form-control select2" name="select_accion" id="select_accion">
+                                    <option value="Aprobado">Aprobar</option>
+                                    <option value="Rechazado">Rechazar</option>
+                                </select>
+                            </div>
+                        </div>
+
+                         <div class="form-group col-6">
+                            <label for="">Observaciones</label>
+                            <div style="border-style: outset;">                                
+                                <textarea class="form-control" name="text_area_observacion" rows="5" id="text_area_observacion"  ></textarea>
+                            </div>
+                        </div>
+                            
+                </div>
+                <div class="modal-footer mt-3">
+                    <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a>
+                    <a type="button" onclick="save_decision()" class="btn btn-dark">Guardar</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @stop
 
@@ -606,6 +818,39 @@
             })
         }
 
+        function save_decision(){
+            Swal.fire({
+                title: 'Estas Seguro de Guardar el Estado de la Planilla?',
+                // text: "You won't be able to revert this!",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'SI',
+                cancelButtonText: 'NO'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                // location.href = "{{setting('admin.url')}}admin/jugadores-planillas"
+                    $('.mireload').attr("hidden", false)
+                    $("#modal_acciones_planilla .close").click()
+                    acciones_planilla()
+                    // location.href = "/admin/jugadores-planillas"
+                }
+            })
+        }
+
+        async function acciones_planilla(){
+            var midata={
+                observacion: $("#text_area_observacion").val(),
+                planilla_id: "{{$dataTypeContent->id}}",
+                decision: $("#select_accion").val()
+            }
+            var decision= await axios.post("/api/save/decision/planilla", midata)
+            if (decision.data) {
+                location.reload()
+            }
+        }
+
         async function checkbox() {
             var asientos= await axios("{{setting('admin.url')}}api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
             for (let index = 0; index < asientos.data.length; index++) {
@@ -621,10 +866,22 @@
 
         async function set_input_modal(id) {
             $('#table_modal_pagos tbody').empty();
+            $('#table_historial_pagos tbody').empty();
+
 
             $("#input_id_asiento_modal").val(parseInt(id))
             var asiento= await axios("{{setting('admin.url')}}api/find/asiento/"+(parseInt(id)))
-            $("#table_modal_pagos").append("<tr><td class='text-center'>"+asiento.data.detalle+"</td> <td class='text-center'>"+asiento.data.monto+"</td> <td class='text-center'>0</td> <td class='text-center'>"+asiento.data.monto+"</td> <td class='text-center'>"+asiento.data.observacion+"</td></tr>")
+            console.log()
+            $("#table_modal_pagos").append("<tr><td class='text-center'>"+asiento.data.categorias.title+"</td> <td class='text-center'>"+asiento.data.monto+"</td> <td class='text-center'>"+asiento.data.monto_pagado+"</td> <td class='text-center'>"+asiento.data.monto_restante+"</td> <td class='text-center'>"+asiento.data.observacion+"</td></tr>")
+            
+            $("#table_historial_pagos").append("<tr><td>"+asiento.data.created_at+"</td><td>"+asiento.data.monto_pagado+"</td></tr>")
+
+            if (asiento.data.detalles.length>0) {
+                // $("#visualizar_historial").attr("hidden", false)
+                for (let index = 0; index < asiento.data.detalles.length; index++) {
+                    $("#table_historial_pagos").append("<tr><td>"+asiento.data.detalles[index].created_at+"</td><td>"+asiento.data.detalles[index].monto_pagado+"</td></tr>")
+                }
+            }
         }
 
         async function ingresos() {
@@ -645,7 +902,7 @@
             var mensualidades_pagadas=0
 
             for (let index = 0; index < asientos.data.length; index++) {
-                if (asientos.data[index].detalle!="Mensualidades") {
+                if (asientos.data[index].categorias.title!="Mensualidades") {
                     if (asientos.data[index].estado=="Pagado") {
                         ingresos_pagados+=parseInt(asientos.data[index].monto)
                     }
@@ -673,7 +930,63 @@
 
             
         }
+
+        async function visualizar_tabs(value){
+            var seleccionado= value
+            console.log("hola")
+            var array_jugs=['tab_todos_jugadores','tab_pendientes_jugadores','tab_pagados_jugadores']
+            var array_club=['tab_todos_club', 'tab_pendientes_club', 'tab_pagados_club']
+            if ($("#select_cat_asientos").val()=="cat_jugadores") {
+                console.log("hola1")
+                $('#'+seleccionado+"_jugadores").attr("hidden", false)
+                console.log(seleccionado+"_jugadores")
+                for (let index = 0; index < array_jugs.length; index++) {
+                    if (array_jugs[index]!=value+"_jugadores") {
+                        $('#'+array_jugs[index]).attr("hidden", true)
+                    }
+                }
+                for (let index = 0; index < array_club.length; index++) {
+                    $('#'+array_club[index]).attr("hidden", true)
+                }
+                
+            }
+            if ($("#select_cat_asientos").val()=="cat_grupales") {
+                console.log("hola2")
+                $('#'+seleccionado+"_club").attr("hidden", false)
+                for (let index = 0; index < array_club.length; index++) {
+                    if (array_club[index]!=value+"_club") {
+                        $('#'+array_club[index]).attr("hidden", true)
+                    }
+                }
+                for (let index = 0; index < array_jugs.length; index++) {
+                    $('#'+array_jugs[index]).attr("hidden", true)
+                }
+            }
+        }
+
+        $("#select_tabs").change(async function () {
+            visualizar_tabs(this.value)
+        })
+
+        $("#select_cat_asientos").change(async function(){
+            visualizar_tabs( $("#select_tabs").val())
+        })
          ingresos()
+
+         function historial_pagos(valor) {
+            if (valor) {
+                $("#visualizar_historial").attr("hidden", true)
+                $("#minimizar_historial").attr("hidden", false)
+                $("#div_historial").attr("hidden", false)
+            }
+            else{
+                $("#visualizar_historial").attr("hidden", false)
+                $("#minimizar_historial").attr("hidden", true)
+                $("#div_historial").attr("hidden", true)
+            }
+         }
+
+        //  $("#minimizar_historial").attr("hidden", false)
 
         var deleteFormAction;
         $('.delete').on('click', function (e) {

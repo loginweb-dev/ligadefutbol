@@ -2,7 +2,7 @@
     $edit = !is_null($dataTypeContent->getKey());
     $add  = is_null($dataTypeContent->getKey());
 
-    $nomina = App\JugadoresPlanilla::where('activo', true)->with('clubes')->get();
+    $nomina = App\JugadoresPlanilla::where('activo', 'Aprobado')->with('clubes')->get();
     $jugadores = App\Jugadore::all();
     $clubes = App\Clube::all();
 @endphp
@@ -37,7 +37,7 @@
                            
 
                             
-                            <div class="col-md-6 form-group">
+                            <div class="col-sm-6 form-group">
                                 <label for="select_tipo">Tipo</label>
                                 <div style="border-style: outset;">                                
                                     <select class="form-control select2" name="select_tipo" id="select_tipo">
@@ -48,11 +48,11 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6 form-group">
-                                <label for="select_detalle">Detalle</label>
+                            <div class="col-sm-6 form-group">
+                                <label for="select_categoria">Categoria</label>
                                 <div style="border-style: outset;">                                
 
-                                    <select class="form-control select2" name="select_detalle" id="select_detalle">
+                                    <select class="form-control select2" name="select_categoria" id="select_categoria">
                                         
  
                                     </select>
@@ -63,7 +63,7 @@
                            
 
 
-                            <div class="col-md-4 form-group">
+                            <div class="col-sm-4 form-group" >
                                 <label for="select_planilla">Planilla</label>
                                 <div style="border-style: outset;">                                
 
@@ -75,18 +75,22 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4 form-group">
+                            <div class="col-sm-4 form-group" id="div_jugador">
                                 <label for="select_jugador">Jugador</label>
                                 <div style="border-style: outset;">                                
                                     <select class="form-control select2" name="select_jugador" id="select_jugador">
-                                        @foreach ($jugadores  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
+                                        
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-sm-4 form-group">
+                                <label for="input_monto">Monto</label>
+                                <div style="border-style: outset;">                               
+                                    <input  id="input_monto" type="number" min="1" class="form-control">
+                                </div>
+                            </div>
 
-                            <div class="col-md-4 form-group">
+                            {{-- <div class="col-md-4 form-group">
                                 <label for="select_club">Club</label>
                                 <div style="border-style: outset;">                                
                                     <select class="form-control select2" name="select_club" id="select_club">
@@ -95,18 +99,13 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-6 form-group">
                                 <label for="text_descripcion">Descripción</label>
                                 <textarea class="form-control" name="text_descripcion" id="text_descripcion" rows="5"></textarea>
                             </div>
 
-                            <div class="col-md-6 form-group">
-                                <label for="input_monto">Monto</label>
-                                <div style="border-style: outset;">                               
-                                    <input  id="input_monto" type="number" min="1" class="form-control">
-                                </div>
-                            </div>
+                            
 
                             <div class="col-md-6 form-group">
                                 <br>
@@ -162,37 +161,59 @@
     <script>
 
         async function cargar_detalle(tipo) {
-            $('#select_detalle').find('option').remove().end()
-            var detalles=""
-            if (tipo=="Ingreso") {
-                detalles= [{id:1, value:"Mensualidades"}, {id:2, value:"Arbitraje"}, {id:3, value:"Tarjetas Amarillas"}, {id:4, value:"Wal Kolbert"}, {id:5, value:"Multas por Faltas a Reunión"}, {id:6, value:"Multas o Sanciones"}, {id:7, value:"Otros Ingresos"}, {id:8, value:"Mortuoria"}, {id:9, value:"Pago de Colaboración"}]
-                for (let index = 0; index < detalles.length; index++) {
-                    $('#select_detalle').append($('<option>', {
-                        value: detalles[index].value,
-                        text: detalles[index].value
+            $('#select_categoria').find('option').remove().end()
+
+            var detalles= await axios("/api/get/cat/asientos/"+tipo)
+            for (let index = 0; index < detalles.data.length; index++) {
+                    $('#select_categoria').append($('<option>', {
+                        value: detalles.data[index].id,
+                        text: detalles.data[index].title
                     }));
                 }
-            }
-            else{
-                detalles= [{id:1, value:"Arbitro"}, {id:2, value:"Pasa Pelotas"}, {id:3, value:"Médico"}, {id:4, value:"Cobrador"}, {id:5, value:"Planillero"}, {id:6, value:"Veedor"}]
-                for (let index = 0; index < detalles.length; index++) {
-                    $('#select_detalle').append($('<option>', {
-                        value: detalles[index].value,
-                        text: detalles[index].value
+            // var detalles=""
+            // if (tipo=="Ingreso") {
+            //     detalles= [{id:1, value:"Mensualidades"}, {id:2, value:"Arbitraje"}, {id:3, value:"Tarjetas Amarillas"}, {id:4, value:"Wal Kolbert"}, {id:5, value:"Multas por Faltas a Reunión"}, {id:6, value:"Multas o Sanciones"}, {id:7, value:"Otros Ingresos"}, {id:8, value:"Mortuoria"}, {id:9, value:"Pago de Colaboración"}]
+            //     for (let index = 0; index < detalles.length; index++) {
+            //         $('#select_detalle').append($('<option>', {
+            //             value: detalles[index].value,
+            //             text: detalles[index].value
+            //         }));
+            //     }
+            // }
+            // else{
+            //     detalles= [{id:1, value:"Arbitro"}, {id:2, value:"Pasa Pelotas"}, {id:3, value:"Médico"}, {id:4, value:"Cobrador"}, {id:5, value:"Planillero"}, {id:6, value:"Veedor"}]
+            //     for (let index = 0; index < detalles.length; index++) {
+            //         $('#select_detalle').append($('<option>', {
+            //             value: detalles[index].value,
+            //             text: detalles[index].value
+            //         }));
+            //     }
+            // }
+
+        }
+
+        async function cargar_jugadores() {
+            $('#select_jugador').find('option').remove().end()
+            var planilla_id=$("#select_planilla").val()
+
+            var jugadores= await axios("/api/get/jugadores/planilla/"+planilla_id)
+            for (let index = 0; index < jugadores.data.length; index++) {
+                    $('#select_jugador').append($('<option>', {
+                        value: jugadores.data[index].jugador.id,
+                        text: jugadores.data[index].jugador.name
                     }));
                 }
-            }
 
         }
 
         async function misave() {
             midata={
                 tipo:$("#select_tipo").val(),
-                detalle:$("#select_detalle").val(),
+                cat_asiento_id:$("#select_categoria").val(),
                 monto:$("#input_monto").val(),
                 editor_id:$("#input_editor").val(),
                 planilla_id:$("#select_planilla").val(),
-                clube_id:$("#select_club").val(),
+                // clube_id:$("#select_club").val(),
                 jugador_id:$("#select_jugador").val(),
                 observacion:$("#text_descripcion").val(),
                 estado:"Pagado",
@@ -200,7 +221,6 @@
                 monto_restante: 0
             }
             var asiento= await axios.post("{{setting('admin.url')}}api/asiento/save", midata)
-
             if (asiento.data) {
                 location.href="{{setting('admin.url')}}admin/asientos"
             }
@@ -208,6 +228,24 @@
 
         $("#select_tipo").change(async function () { 
            cargar_detalle(this.value)                         
+        })
+        $("#select_planilla").change(async function () { 
+            cargar_jugadores(this.value)
+        })
+        $("#select_categoria").change(async function () { 
+            var categoria_id= this.value
+            var categoria= await axios("/api/find/cat/asientos/"+categoria_id)
+            console.log(categoria_id)
+            console.log("hola")
+            console.log(categoria.data)
+            if (categoria.data.tipo=="jugador") {
+                $("#div_jugador").attr("hidden", false);
+                cargar_jugadores()
+            }
+            else if (categoria.data.tipo=="planilla") {
+                $("#div_jugador").attr("hidden", true);
+                $('#select_jugador').find('option').remove().end()
+            }
         })
         var params = {};
         var $file;
@@ -280,7 +318,8 @@
             $('[data-toggle="tooltip"]').tooltip();
 
             cargar_detalle("Ingreso")
-            $("#input_editor").val("{{Auth::user()->id}}")                         
+            $("#input_editor").val("{{Auth::user()->id}}") 
+            cargar_jugadores()                        
         });
     </script>
 @stop

@@ -5,22 +5,24 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use App\Jugadore;
+use App\AsientoDetalle;
 
 class Asiento extends Model
 {
     use SoftDeletes;
     protected $fillable = [
         'tipo',
-        'detalle',
         'monto',
         'editor_id',
         'planilla_id',
-        'clube_id',
+        // 'clube_id',
         'jugador_id',
         'observacion',
         'estado',
         'monto_pagado',
-        'monto_restante'
+        'monto_restante',
+        'cat_asiento_id'
     ];
 
     public function clubes()
@@ -30,5 +32,12 @@ class Asiento extends Model
     public function jugadores()
 	{
 		return $this->belongsTo(Jugadore::class, 'jugador_id');
-	}		
+	}
+    public function categorias(){
+        return $this->belongsTo(AsientoCategoria::class, 'cat_asiento_id');
+    }
+    public function detalles()
+	{
+		return $this->hasMany(AsientoDetalle::class);
+	}			
 }

@@ -616,15 +616,15 @@
                 if (mensualidad<monto_dinero) {
                     var data={
                         tipo: "Ingreso",
-                        detalle:"Mensualidades",
-                        monto: (monto_dinero-mensualidad),
+                        cat_asiento_id:1,
+                        monto: monto_dinero,
                         editor_id:parseInt("{{Auth::user()->id}}"),
                         planilla_id: planilla_id,
                         clube_id: $("#select_club").val(),
                         jugador_id: parseInt(jugs_id[(i-1)]),
                         observacion: "Debe Mensualidad",
                         estado: "Pendiente",
-                        monto_pagado: 0,
+                        monto_pagado: mensualidad,
                         monto_restante:(monto_dinero-mensualidad)
                     }
                     var asiento= await axios.post("{{setting('admin.url')}}api/asiento/save", data)
@@ -633,7 +633,7 @@
                 else{
                     var data={
                         tipo: "Ingreso",
-                        detalle:"Mensualidades",
+                        cat_asiento_id:1,
                         monto: monto_dinero,
                         editor_id:parseInt("{{Auth::user()->id}}"),
                         planilla_id: planilla_id,

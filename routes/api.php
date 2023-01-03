@@ -80,9 +80,11 @@ Route::group(['prefix' => 'jugadores'], function () {
     });
 
     Route::post('planilla/save', function (Request $request) {
-        $ult_planilla= App\JugadoresPlanilla::where('clube_id', $request->clube_id)->where('categoria_jugadores', $request->categoria_jugadores)->where('activo', 1)->first();
+        // $ult_planilla= App\JugadoresPlanilla::where('clube_id', $request->clube_id)->where('categoria_jugadores', $request->categoria_jugadores)->where('activo', 1)->first();
+        $ult_planilla= App\JugadoresPlanilla::where('clube_id', $request->clube_id)->where('activo', 'Aprobado')->first();
+
         if ($ult_planilla) {
-            $ult_planilla->activo=0;
+            $ult_planilla->activo='Inactivo';
             $ult_planilla->save();
         }
             $planilla= App\JugadoresPlanilla::create([
@@ -97,7 +99,7 @@ Route::group(['prefix' => 'jugadores'], function () {
                 'total'=> $request->total,
                 'observacion'=> $request->observacion,
                 'hora_entrega'=>$request->hora_entrega,
-                'activo'=>1
+                'activo'=>'Entregado'
             ]);
         return $planilla;
     });
@@ -144,11 +146,11 @@ Route::group(['prefix' => 'jugadores'], function () {
 Route::post('asiento/save', function(Request $request){
     $asiento=App\Asiento::create([
         'tipo'=> $request->tipo,
-        'detalle'=> $request->detalle,
+        'cat_asiento_id'=> $request->cat_asiento_id,
         'monto'=> $request->monto,
         'editor_id'=> $request->editor_id,
         'planilla_id'=> $request->planilla_id,
-        'clube_id'=> $request->clube_id,
+        // 'clube_id'=> $request->clube_id,
         'jugador_id'=> $request->jugador_id,
         'observacion'=> $request->observacion,
         'estado'=> $request->estado,
@@ -160,12 +162,12 @@ Route::post('asiento/save', function(Request $request){
 });
 
 Route::get('asientos/get/planilla/{planilla_id}', function($planilla_id){
-    $asientos=App\Asiento::where('planilla_id', $planilla_id)->get();
+    $asientos=App\Asiento::where('planilla_id', $planilla_id)->with('categorias')->get();
     return $asientos;
 });
 
 Route::get('find/asiento/{asiento_id}', function($asiento_id){
-    $asiento=App\Asiento::find($asiento_id);
+    $asiento=App\Asiento::where('id', $asiento_id)->with('detalles', 'categorias')->first();
     return $asiento;
 });
 
@@ -271,4 +273,28 @@ Route::post('create/jugador', function(Request $request){
         
     ]);
     return $jugador;
+});
+
+//Save Decision Planilla
+Route::post('save/decision/planilla', function(Request $request){
+    $planilla= App\JugadoresPlanilla::find($request->planilla_id);
+    $planilla->observacion= $request->observacion;
+    $planilla->activo= $request->decision;
+    $planilla->save();
+    return true;
+});
+
+//Get Cat Asientos I u O
+Route::get('get/cat/asientos/{tipo}', function($tipo){
+    return App\AsientoCategoria::where('ingreso_egreso', $tipo)->get();
+});
+
+//Get Jugadores Planilla
+Route::get('get/jugadores/planilla/{planilla_id}', function($planilla_id){
+    return App\RelPlanillaJugadore::where('planilla_id', $planilla_id)->with('jugador')->get();
+});
+
+//Find Cat Asiento
+Route::get('find/cat/asientos/{categoria_id}', function($categoria_id){
+    return App\AsientoCategoria::find($categoria_id);
 });

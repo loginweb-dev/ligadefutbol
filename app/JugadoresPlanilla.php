@@ -22,7 +22,8 @@ class JugadoresPlanilla extends Model
 		'hora_entrega',
 		'activo',
 		'subtotal',
-		'men_pagadas'
+		'men_pagadas',
+		'cant_jugs_deudores'
     ];
     
     protected $appends=['published', 'fecha'];

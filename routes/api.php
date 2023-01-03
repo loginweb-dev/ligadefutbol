@@ -168,7 +168,7 @@ Route::post('asiento/save', function(Request $request){
 });
 
 Route::get('asientos/get/planilla/{planilla_id}', function($planilla_id){
-    $asientos=App\Asiento::where('planilla_id', $planilla_id)->with('categorias')->get();
+    $asientos=App\Asiento::where('planilla_id', $planilla_id)->with('categorias', 'jugadores')->get();
     return $asientos;
 });
 
@@ -327,4 +327,12 @@ Route::post('update/asiento', function(Request $request){
 //Find User ID
 Route::get('find/user/id/{user_id}', function($user_id){
     return User::find($user_id);
+});
+
+//Update Cantidad Jugadores Deudores
+Route::post('update/cant/jugs/deudores', function(Request $request){
+    $planilla=App\JugadoresPlanilla::find($request->planilla_id);
+    $planilla->cant_jugs_deudores=$request->cant_jugs_deudores;
+    $planilla->save();
+    return true;
 });

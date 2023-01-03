@@ -246,7 +246,7 @@
                 <h3 class="subs col-md-12">DETALLES</h3>
             </div>
             <!-- Parte Izquierda Lienzo , Asientos -->
-            <div class="col-sm-8">
+            <div class="col-sm-8" id="div_izquierdo_detalles" hidden>
                 <div class="col-sm-4 form-group">
                     <label for="select_cat_asientos">Tipo Asientos</label>
                     <div style="border-style: outset;">    
@@ -618,7 +618,7 @@
                 </div>
             </div>
             <!-- Parte Derecha Lienzo , Inputs Totales -->
-            <div class="col-sm-4">
+            <div class="col-sm-4" id="div_derecho_detalles" hidden>
                 <div class="row">
                     <div class="col-sm-6">
                         <label for="input_mens_esperadas">Mensualidades Esperadas</label>
@@ -641,22 +641,37 @@
                 </div>
                 
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <label for="input_subtotal">Total Esperado</label>
                         <input class="form-control text-center" id="input_subtotal" name="input_subtotal" type="number" readonly>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <label for="input_deudas">Monto Adeudado</label>
                         <input class="form-control text-center" id="input_deudas" name="input_deudas" type="number" readonly value="{{$dataTypeContent->deuda}}">
                     </div>
-                    <div class="col-sm-4">
+                   
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
                         <label for="input_total">Total Pagado</label>
                         <input class="form-control text-center" id="input_total" name="input_total" type="number" readonly value="{{$dataTypeContent->total}}">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="input_jugadores_deudores">Cant. Jugadores Deudores</label>
+                        <input class="form-control text-center" id="input_jugadores_deudores" name="input_jugadores_deudores" type="number" readonly>
                     </div>
                 </div>
                 
                
 
+
+            </div>
+            <div class="col-sm-12" id="div_total_detalles">
+                @if ($dataTypeContent->activo=="Entregado")
+                    <h4 class="text-center">Esta Planilla aun no ha sido aprobada o rechazada, espere a que se tome una decisión porfavor.</h4>
+                @elseif($dataTypeContent->activo=="Rechazado")
+                    <h4 class="text-center">Esta Planilla fue Rechazada, verifique los motivos en la parte superior en Observaciones.</h4>
+                @endif
 
             </div>
         </div>           
@@ -970,6 +985,7 @@
             var ingresos_pagados=0
             var mensualidades_esperadas=parseInt("{{$num_jugadores}}")*parseInt("{{setting('finanzas.mensualidad_jug')}}")
             var mensualidades_pagadas=0
+            const unicos = [];
 
             for (let index = 0; index < asientos.data.length; index++) {
                 if (asientos.data[index].categorias.title!="Mensualidades") {
@@ -982,21 +998,33 @@
                 }
                 else{
                     if (asientos.data[index].estado=="Pagado") {
-                        mensualidades_pagadas+=parseInt(asientos.data[index].monto)
+                        mensualidades_pagadas+=parseInt(asientos.data[index].monto_pagado)
                     }
                     
+                }
+                if (asientos.data[index].estado!="Pagado" && asientos.data[index].categorias.tipo=="jugador") {
+                    const valor = asientos.data[index].jugadores.id;
+                    if (unicos.indexOf(valor) < 0) {
+                    unicos.push(valor);
+                    }
                 }
             }
             $("#input_otros_esperados").val(ingresos_esperados)
             $("#input_otros_pagados").val(ingresos_pagados)
 
             $("#input_mens_esperadas").val(mensualidades_esperadas)
-            mensualidades_pagadas+=parseInt("{{$dataTypeContent->men_pagadas}}")
+            //mensualidades_pagadas+=parseInt("{{$dataTypeContent->men_pagadas}}")
             $("#input_mens_pagadas").val(mensualidades_pagadas)
 
             $("#input_subtotal").val((mensualidades_esperadas+ingresos_esperados))
             $("#input_deudas").val((mensualidades_esperadas+ingresos_esperados-ingresos_pagados-mensualidades_pagadas))
             $("#input_total").val(ingresos_pagados+mensualidades_pagadas)
+            $("#input_jugadores_deudores").val(unicos.length)
+            var midata={
+                cant_jugs_deudores:unicos.length,
+                planilla_id: parseInt("{{$dataTypeContent->id}}")
+            }
+            await axios.post("/api/update/cant/jugs/deudores", midata)
 
             
         }
@@ -1043,6 +1071,7 @@
             visualizar_tabs( $("#select_tabs").val())
         })
          ingresos()
+         validacion_estado()
 
          function historial_pagos(valor) {
             if (valor) {
@@ -1093,6 +1122,19 @@
 
         }
 
+        async function validacion_estado() {
+            if("{{$dataTypeContent->activo}}"=="Entregado" || "{{$dataTypeContent->activo}}"=="Rechazado"){
+                $("#div_total_detalles").attr("hidden", false)
+                $("#div_izquierdo_detalles").attr("hidden", true)
+                $("#div_derecho_detalles").attr("hidden", true)
+            }
+            else{
+                $("#div_total_detalles").attr("hidden", true)
+                $("#div_izquierdo_detalles").attr("hidden", false)
+                $("#div_derecho_detalles").attr("hidden", false)
+            }
+        }
+
 
         async function pagar_asiento_individual(asiento) {
             var monto_a_pagar= parseInt($("#input_monto_a_pagar").val())
@@ -1123,7 +1165,6 @@
             }
 
         }
-        //  $("#minimizar_historial").attr("hidden", false)
 
         var deleteFormAction;
         $('.delete').on('click', function (e) {

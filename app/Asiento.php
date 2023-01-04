@@ -25,6 +25,14 @@ class Asiento extends Model
         'cat_asiento_id'
     ];
 
+    protected $appends=['published', 'fecha'];
+	public function getPublishedAttribute(){
+		return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']) )->diffForHumans();
+	}
+	public function getFechaAttribute(){
+		return date('Y-m-d H:i', strtotime($this->attributes['created_at']));
+	}
+
     public function clubes()
 	{
 		return $this->belongsTo(Clube::class, 'clube_id');

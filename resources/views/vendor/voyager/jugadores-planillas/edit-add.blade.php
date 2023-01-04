@@ -575,7 +575,7 @@
             var jugs_id=[];
             // var jugs_sups_id=[];
             var titular=0
-
+            var cant_jugs_deudas=0
 
             var table2 = document.getElementById("table2");
 
@@ -614,6 +614,7 @@
                 await axios.post("/api/jugadores/rel/planilla/jugs/save", midata)
                 var monto_dinero= parseInt("{{setting('finanzas.mensualidad_jug')}}")
                 if (mensualidad<monto_dinero) {
+                    cant_jugs_deudas+=1
                     var data={
                         tipo: "Ingreso",
                         cat_asiento_id:1,
@@ -650,6 +651,12 @@
                console.log(midata)
             
             }
+
+            var midata={
+                cant_jugs_deudores:cant_jugs_deudas,
+                planilla_id: planilla_id
+            }
+            await axios.post("/api/update/cant/jugs/deudores", midata)
 
             // var table3 = document.getElementById("table3");
 
@@ -718,7 +725,7 @@
             //     telefono:"59171130523"
             // }
             // await axios.post("{{setting('admin.url')}}api/send/message",msj_chatbot )
-          
+            
             location.href="{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
         }
 

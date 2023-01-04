@@ -9,6 +9,7 @@ use App\Clube;
 use App\RelPlanillaJugadore;
 class JugadoresPlanilla extends Model
 {
+	use SoftDeletes;
 	protected $fillable = [
         'clube_id',
         'categoria_jugadores',
@@ -21,11 +22,18 @@ class JugadoresPlanilla extends Model
 		'hora_entrega',
 		'activo',
 		'subtotal',
-		'men_pagadas'
+		'men_pagadas',
+		'cant_jugs_deudores'
     ];
     
-    use SoftDeletes;
-    public function clubes()
+    protected $appends=['published', 'fecha'];
+	public function getPublishedAttribute(){
+		return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']) )->diffForHumans();
+	}
+	public function getFechaAttribute(){
+		return date('Y-m-d', strtotime($this->attributes['created_at']));
+	}
+	public function clubes()
 	{
 		return $this->belongsTo(Clube::class, 'clube_id');
 	}	

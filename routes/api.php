@@ -99,9 +99,11 @@ Route::group(['prefix' => 'jugadores'], function () {
                 'total'=> $request->total,
                 'observacion'=> $request->observacion,
                 'hora_entrega'=>$request->hora_entrega,
-                'activo'=>'Entregado'
+                'activo'=>'Entregado',
+                'user_id'=>$request->user_id
             ]);
-        return $planilla;
+            $planilla2= App\JugadoresPlanilla::where('id', $planilla->id)->with('clubes', 'delegado', 'user')->first();
+        return $planilla2;
     });
 
     Route::post('rel/planilla/save', function (Request $request) {
@@ -335,4 +337,23 @@ Route::post('update/cant/jugs/deudores', function(Request $request){
     $planilla->cant_jugs_deudores=$request->cant_jugs_deudores;
     $planilla->save();
     return true;
+});
+
+
+
+//Delete Dependencias de Planilla por ser Rechazada
+Route::post('delete/planilla', function(Request $request){
+    $asientos= App\Asiento::where('planilla_id', $request->planilla_id)->with('detalles')->get();
+    foreach ($asientos as $item) {
+        foreach ($item->detalles as $item2) {
+            $item2->delete();
+        }
+        $item->delete();
+    }
+    $asientos= App\Asiento::where('planilla_id', $request->planilla_id)->with('detalles')->get();
+    return $asientos;
+});
+
+Route::post('prueba/planilla', function(Request $request){
+    return App\JugadoresPlanilla::where('id', $request->planilla_id)->with('clubes', 'delegado', 'user')->first();
 });

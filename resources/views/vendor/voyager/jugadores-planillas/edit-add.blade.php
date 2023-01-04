@@ -38,6 +38,7 @@
         {{-- <div class="row">
             <div class="col-sm-12"> --}}
                 <div class="panel panel-bordered">
+                    <a class="btn btn-dark" onclick="probar_mensaje_whatsapp()"> Prueba Formato Wpp</a>
 
                     <div class="row">        
                             <div class="col-sm-12 text-center">
@@ -516,6 +517,83 @@
             })
         }
 
+        async function probar_mensaje_whatsapp() {
+            var fecha= new Date()
+            var mitext= ""
+                mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
+                mitext+="Fecha: 10-01-2023"+fecha
+                mitext+="*Jugador (Titular)*:\n"
+                mitext+="- Juan Carlos Perez Suarez\n"
+                mitext+="*Camiseta*:\n"
+                mitext+="- Nª21\n"
+                mitext+="*Mensualidad (1400Bs)*:\n"
+                mitext+="- Pago Registrado con un monto de: 1200Bs\n"
+                mitext+="- Saldo Deudor: 200Bs\n\n"
+                mitext+="Nota.- Se debe realizar el pago del saldo deudor lo mas antes posible porfavor, ya que en caso de que en su nómina hayan 5 jugadores deudores no podrán disputar el siguiente partido."
+
+            var midata={
+                    phone: '70269362',
+                    message: mitext
+                }
+                // console.log("1 "+midata)
+                await axios.post("/api/whaticket/send", midata)
+        }
+
+        async function notificacion_planilla_creada() {
+             var mitext= ""
+                mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
+                mitext+="Fecha: 10-01-2023\n"
+                mitext+="*Titulares*:\n"
+                mitext+="1.- Juan Carlos Perez Suarez\n"
+                mitext+="2.- Pedro Manuel Hurtado Monasterio\n"
+                mitext+="3.- Ramon de la Fuente Martinez\n"
+                mitext+="4.- Juan Carlos Perez Suarez\n"
+                mitext+="5.- Nanario Gonzales Bere Paco\n"
+                mitext+="6.- Pedro Manuel Hurtado Monasterio\n"
+                mitext+="7.- Ramon de la Fuente Martinez\n"
+                mitext+="8.- Ramon de la Fuente Martinez\n"
+                mitext+="9.- Juan Carlos Perez Suarez\n"
+                mitext+="10.- Ramon de la Fuente Martinez\n"
+                mitext+="11.- Ramon de la Fuente Martinez\n\n"
+                mitext+="*Suplentes*:\n"
+                mitext+="12.- Ramon de la Fuente Martinez\n"
+                mitext+="13.- Pedro Manuel Hurtado Monasterio\n"
+                mitext+="14.- Pedro Manuel Hurtado Monasterio\n"
+                mitext+="15.- Pedro Manuel Hurtado Monasterio\n\n"
+                mitext+="Se enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
+                mitext+="Puede Verificar el Estado de la misma en: "+"https://ligadefutbol.loginweb.dev/admin/admin/jugadores-planillas/1\n"
+
+
+
+            var midata={
+                    phone: '70269362',
+                    message: mitext
+                }
+                // console.log("1 "+midata)
+                await axios.post("/api/whaticket/send", midata)
+        }
+
+        async function notificacion_asientos_jugadores(fecha, titularidad, nombre, camiseta, men_pagada, phone) {
+            var deuda=parseFloat("{{setting('finanzas.mensualidad_jug')}}").toFixed(2) -parseFloat(men_pagada).toFixed(2)
+            var mitext= ""
+                mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
+                mitext+="Fecha: "+fecha+"\n\n"
+                mitext+="*Jugador ("+titularidad+")*:\n"
+                mitext+=""+nombre+"\n"
+                mitext+="*Camiseta*:\n"
+                mitext+="- Nª"+camiseta+"\n"
+                mitext+="*Mensualidad ({{setting('finanzas.mensualidad_jug')}}Bs)*:\n"
+                mitext+="- Pago Registrado con un monto de: "+men_pagada+"Bs\n"
+                mitext+="- Saldo Deudor: "+deuda+"Bs\n\n"
+                mitext+="Nota.- Se debe realizar el pago del saldo deudor lo mas antes posible porfavor, ya que en caso de que en su nómina hayan 5 jugadores deudores no podrán disputar el siguiente partido."
+            var midata={
+                    phone: phone.toString(),
+                    message: mitext
+                }
+                // console.log("1 "+midata)
+                await axios.post("/api/whaticket/send", midata)
+        }
+
 
         async function guardar_planilla(){
             var clube_id= $("#select_club").val()
@@ -541,14 +619,17 @@
                 total:total,
                 observacion:observacion,
                 subtotal:subtotal,
-                men_pagadas: total
+                men_pagadas: total,
+                user_id: parseInt("{{Auth::user()->id}}")
             }
             console.log(fecha_entrega)
 
             var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
-            
-            await generar_nomina(planilla.data.id)
-            // await generar_nomina(1)
+            console.log(planilla.data)
+            var phone_club=(planilla.data.clubes.wpp).toString()
+            var phone_delegado=(planilla.data.delegado.phone).toString()
+           
+            await generar_nomina(planilla.data.id, phone_club, phone_delegado, planilla.data.fecha)
 
           
         
@@ -569,10 +650,11 @@
             return validador;
         }
 
-        async function generar_nomina(planilla_id){
+        async function generar_nomina(planilla_id, phone_club, phone_delegado, fecha){
             var jugs=[];
             // var jugs_sups=[];
             var jugs_id=[];
+            var jugs_phone=[];
             // var jugs_sups_id=[];
             var titular=0
             var cant_jugs_deudas=0
@@ -584,9 +666,24 @@
                 jugs_id[index]=this.value
                 index+=1
             })
+            var index2=0
+            $('.tab_jugs_phone').each(function() {
+                jugs_phone[index2]=this.value
+                index2+=1
+            })
 
-            // console.log(jugs_tits_id)
+            //MENSAJE PLANILLA
+            //Cabecera
+            var mitext= ""
+                mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
+                mitext+="Fecha: "+fecha+"\n"
+                mitext+="*Titulares*:\n"
 
+            //Cuerpo
+            var wpp_titulares=""
+            var wpp_index_tits=0
+            var wpp_suplentes=""
+            var wpp_index_sups=0
             for (var i = 1, row; row = table2.rows[i]; i++) {
                 // console.log("Numero: "+row.cells[0].innerText+" Edad: "+row.cells[1].innerText+" Polera: "+row.cells[2].innerText+" N y A: "+ row.cells[3].innerText+ " Mensualidad: "+row.cells[4].innerText)
 
@@ -600,9 +697,26 @@
 
                 if ($("#check_"+parseInt(jugs_id[(i-1)])+"").prop('checked')) {
                     titular=2
+                    //Cuerpo Suplentes
+                    wpp_index_sups+=1
+                    wpp_suplentes+=wpp_index_sups+".- "+row.cells[3].innerText+"\n"
+
+                    //var jugador= await axios("/api/jugadores/find/"+parseInt(jugs_id[(i-1)]))
+                    //Mensaje Asientos Suplentes
+                    //console.log(jugador.data)
+                    await notificacion_asientos_jugadores(fecha, "Suplente", "- "+row.cells[3].innerText, "- "+row.cells[2].innerText, row.cells[4].innerText, jugs_phone[(i-1)])
                 }
                 else{
                     titular=1
+                    //Cuerpo Titulares
+                    wpp_index_tits+=1
+                    wpp_titulares+=wpp_index_tits+".- "+row.cells[3].innerText+"\n"
+
+                    //Mensaje Asientos Titulares
+                    //var jugador= await axios("/api/jugadores/find/"+parseInt(jugs_id[(i-1)]))
+                    //console.log(jugador.data)
+                    await notificacion_asientos_jugadores(fecha, "Titular", "- "+row.cells[3].innerText, "- "+row.cells[2].innerText, row.cells[4].innerText, jugs_phone[(i-1)])
+
                 }
 
                 var midata={
@@ -651,80 +765,41 @@
                console.log(midata)
             
             }
+            //Armando el cuerpo
+            mitext+=wpp_titulares
+            mitext+="\n*Suplentes*:\n"
+            mitext+=wpp_suplentes
+            mitext+="\nSe enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
+            //Condicional de repetidos
+            if (phone_club==phone_delegado) {
+                mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}/admin/jugadores-planillas/"+planilla_id
+                var midata={
+                    phone: phone_club,
+                    message: mitext
+                }
+                await axios.post("/api/whaticket/send", midata)
+            }
+            else{
+                var midata={
+                    phone: phone_club,
+                    message: mitext
+                }
+                await axios.post("/api/whaticket/send", midata)
+                mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}/admin/jugadores-planillas/"+planilla_id
+                var midata2={
+                    phone: phone_delegado,
+                    message: mitext
+                }
+                await axios.post("/api/whaticket/send", midata2)
+            }
+
+
 
             var midata={
                 cant_jugs_deudores:cant_jugs_deudas,
                 planilla_id: planilla_id
             }
             await axios.post("/api/update/cant/jugs/deudores", midata)
-
-            // var table3 = document.getElementById("table3");
-
-            // var index2=0;
-            // $('.tab_jugs_sups_id').each(function(){
-            //     jugs_sups_id[index2]=this.value
-            //     index2+=1
-            // })
-
-            // // console.log(jugs_sups_id)
-
-            // for (var i = 1, row; row = table3.rows[i]; i++) {
-            //     var mensualidad= 0
-            //     if (row.cells[4].innerText!="") {
-            //         mensualidad= parseInt(row.cells[4].innerText)
-            //     }
-            //     else{
-            //         mensualidad= 0
-            //     }
-            //     var midata2={
-            //         planilla_id:planilla_id,
-            //         jugador_id: parseInt(jugs_sups_id[(i-1)]),
-            //         titular: 2,
-            //         mensualidad: mensualidad
-            //     }
-            //     await axios.post("/api/jugadores/rel/planilla/jugs/save", midata2)
-            //     if (mensualidad<1400) {
-            //         var data2={
-            //             tipo: "Ingreso",
-            //             detalle:"Mensualidades",
-            //             monto: (1400-mensualidad),
-            //             editor_id:parseInt("{{Auth::user()->id}}"),
-            //             planilla_id: planilla_id,
-            //             clube_id: $("#select_club").val(),
-            //             jugador_id: parseInt(jugs_sups_id[(i-1)]),
-            //             observacion: "Debe Mensualidad",
-            //             estado: "Pendiente",
-            //             monto_pagado: 0,
-            //             monto_restante:(1400-mensualidad)
-            //         }
-            //         var asiento= await axios.post("{{setting('admin.url')}}api/asiento/save", data2)
-
-            //     }
-            //     else{
-            //         var data2={
-            //             tipo: "Ingreso",
-            //             detalle:"Mensualidades",
-            //             monto: 1400,
-            //             editor_id:parseInt("{{Auth::user()->id}}"),
-            //             planilla_id: planilla_id,
-            //             clube_id: $("#select_club").val(),
-            //             jugador_id: parseInt(jugs_sups_id[(i-1)]),
-            //             observacion: "Pagó Total Mensualidad",
-            //             estado: "Pagado",
-            //             monto_pagado: 1400,
-            //             monto_restante:0
-            //         }
-            //         var asiento= await axios.post("{{setting('admin.url')}}api/asiento/save", data2)
-
-            //     }
-            //     console.log(midata2)
-            // }
-
-            // var msj_chatbot={
-            //     msj: "Hola que tal, prueba desde Roman",
-            //     telefono:"59171130523"
-            // }
-            // await axios.post("{{setting('admin.url')}}api/send/message",msj_chatbot )
             
             location.href="{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
         }
@@ -811,7 +886,7 @@
                 var cont=count_jugs()+1
                 // if (tipo==1) {
                     // $('#table2').append("<tr><td><input class='tab_jugs_tits_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden>"+cont+"</td><td class='tab_jugs_tits'>"+jugador.data.edad+"</td><td>  "+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>1400</td></tr>");
-                    $('#table2').append("<tr><td><input class='tab_jugs_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden>"+cont+"</td><td class='tab_jugs'><input id='check_"+jugador.data.id+"' type='checkbox'></td><td>  "+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>"+parseInt("{{setting('finanzas.mensualidad_jug')}}")+"</td></tr>");
+                    $('#table2').append("<tr><td><input class='tab_jugs_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden><input class='tab_jugs_phone' type='number' value="+jugador.data.phone+" hidden>"+cont+"</td><td class='tab_jugs'><input id='check_"+jugador.data.id+"' type='checkbox'></td><td>  "+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>"+parseInt("{{setting('finanzas.mensualidad_jug')}}")+"</td></tr>");
 
                     example2.init();
                 // }

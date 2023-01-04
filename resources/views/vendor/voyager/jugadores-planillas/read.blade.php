@@ -120,8 +120,16 @@
         
             <div class="col-sm-6 text-center">
                 <label for="">Estado de Planilla</label>
-                <div style="border-style: outset;"> 
-                    <input class="form-control text-center" type="text" value="{{$dataTypeContent->activo}}" readonly>
+                <div style="border-style: outset;">
+                    @if ($dataTypeContent->activo=="Entregado")
+                        <input style="background-color: #17A2B8" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                    @elseif ($dataTypeContent->activo=="Aprobado")
+                        <input style="background-color: #28A745" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                    @elseif ($dataTypeContent->activo=="Rechazado")
+                        <input style="background-color: #DC3545" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                    @elseif ($dataTypeContent->activo=="Inactivo")
+                        <input style="background-color: #FFC107" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                    @endif 
                 </div>
             </div>
             <div class="col-sm-6 text-center">
@@ -905,6 +913,9 @@
                 observacion: $("#text_area_observacion").val(),
                 planilla_id: "{{$dataTypeContent->id}}",
                 decision: $("#select_accion").val()
+            }
+            if ($("#select_accion").val()=="Rechazado") {
+                await axios.post("/api/delete/planilla", {planilla_id: parseInt("{{$dataTypeContent->id}}")})
             }
             var decision= await axios.post("/api/save/decision/planilla", midata)
             if (decision.data) {

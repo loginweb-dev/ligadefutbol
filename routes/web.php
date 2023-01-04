@@ -14,8 +14,8 @@ use RicardoPaes\Whaticket\Api;
 */
 
 Route::get('/', function () {
-    // return redirect("/admin/profile");
-    return view('welcome');
+    return redirect("/admin/profile");
+    //return view('welcome');
 });
 
 

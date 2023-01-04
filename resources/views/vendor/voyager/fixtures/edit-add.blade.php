@@ -9,118 +9,129 @@
 
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        table {
+            border: 1px solid;
+        }
+        table tbody tr {
+            border: 1px solid;
+        }
+        table thead tr {
+            border: 1px solid;
+        }
+    </style>
 @stop
 
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
 @section('page_header')
-    {{-- <h1 class="page-title">
-        <i class="{{ $dataType->icon }}"></i>
-        {{ __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular') }}
-    </h1>
-    @include('voyager::multilingual.language-selector') --}}
     <div class="col-sm-offset-2  col-sm-8">
         <div class="text-center">
-            <h2 class="">FORMULARIO DE NUEVO FIXTURE</h2>
-            {{-- <H4>MUTUAL DE EX JUFADORES DE FUTBOL TRINIDAD</H4> --}}
+            <h2>NUEVO FIXTURE</h2>
+            <p>formulario para la creacion de fitures</p>
         </div>
     </div>
 @stop
 
 @section('content')
-    <div class="page-content edit-add container-fluid">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-5">
-                <label for="">Titulo</label>
-                <textarea class="form-control" name="" id="" cols="" rows="4"></textarea>
-            </div>
-            <div class="col-sm-7">
-                <div class="table-responsive">
-                <table class="table">
-                    <tr>
-                        <td>
+            <div class="col-sm-8">
+            
+                    <div class="row">
+                        <div class="col-sm-4">
                             <label for="">Fecha</label>
                             <input type="date" name="" id="mifecha" class="form-control">
-                        </td>
-                        <td>
-                            <label for="">Hora</label>
-                            <input type="time" name="" id="mihora" class="form-control">
-                        </td>
-                        <td>
-                            <label for="">Veedor</label>
-                            <div style="border-style: outset;">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Delegado</label>
+                            <div class="form-group" style="border-style: outset;">
                                 <select name="" id="delegado_id" class="select2 form-control">
                                     @foreach ($delegados as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach                                    
                                 </select>
-                            <div>
-                        </td>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            {{-- <label for="">Accion</label><br> --}}
+                            <br>
+                            <a href="#" class="btn btn-dark" onclick="add_date()">Agregar</a>                                                          
+                        </div>
+                    </div>
+                    <div class="row">
+        
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-primary" onclick="add()">2.Encuentro</a>   
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" class="btn btn-danger" onclick="remove_list()">3.Limpiar</a>
+                        </div>
+                    </div>
 
-
-                    </tr>
-                    <tr>
-
-                        <td>
-                            <label for="">Equipo "A"</label>
-                            <div style="border-style: outset;">
-                                <select name="" id="equipo_a" class="select2 form-control">
-                                    @foreach ($equipos as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach                                    
-                                </select>
-                            <div>
-                        </td>
-                        <td>
-                            <label for="">Equipo "B"</label>
-                            <div style="border-style: outset;">
-                                <select name="" id="equipo_b" class="select2 form-control">
-                                    @foreach ($equipos as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach                                    
-                                </select>
-                            <div>
-                        </td>
-
-                        <td>
-                            <label for="">Descansa</label>
-                            <div style="border-style: outset;">
-                                <select name="" id="" class="select2 form-control">
-                                    @foreach ($equipos as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach                                    
-                                </select>
-                            <div>
-                        </td>
-                    </tr>
-                </table>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <button  onclick="save()" class="btn btn-primary btn-block">Guardar Fecha</button>
-            </div>
-            <div class="col-sm-7">
-                <button  onclick="add()" class="btn btn-dark btn-block">Agregar Encuentro</button>
-            </div>
-            <div class="col-md-12">
-                <div class="panel panel-bordered">
-                    <div class="table-responsive">
-                    <table class="table table-striped table-bordered" id="example">
+                <label for="">Lista de  encuentros</label>
+                <div class="form-group table-responsive">
+                    
+                    <table class="table" id="example">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Fecha</th>
                                 <th scope="col">Hora</th>
                                 <th scope="col">Equipo A</th>
-                                <th scope="col">Goles</th>
-                                <th scope="col"></th>
+                                <th scope="col">-</th>
                                 <th scope="col">Equipo B</th>
-                                <th scope="col">Goles</th>
                               </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
-                    </div>
+                </div>
+
+       
+            </div>
+            <div class="col-sm-4">     
+    
+                <label for="">Equipo "A"</label>   
+                <div class="form-group" style="border-style: outset;">                                    
+                    <select name="" id="equipo_a" class="select2 form-control">
+                        @foreach ($equipos as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach                                    
+                    </select>
+                </div>
+                <label for="">Equipo "B"</label>     
+                <div class="form-group" style="border-style: outset;">
+                                
+                    <select name="" id="equipo_b" class="select2 form-control">
+                        @foreach ($equipos as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach                                    
+                    </select>                    
+                </div>
+                <div class="form-group">
+                    <label for="">Hora</label>
+                    <input type="time" name="" id="mihora" class="form-control">
+                </div>
+                <div class="form-group">
+                    
+                </div>
+           
+
+                <div class="form-group">
+                    <label for="">Titulo</label>
+                    <textarea name="" id="" cols="0" rows="3" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="">Equipo que descansa</label>
+                    <div style="border-style: outset;">
+                        <select name="" id="" class="select2 form-control">
+                            @foreach ($equipos as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach                                    
+                        </select>
+                    </div> 
+                </div>
+                <div class="form-group">
+                    <a href="#" class="btn btn-block btn-primary">Guardar y enviar fixture</a>
                 </div>
             </div>
         </div>
@@ -153,18 +164,6 @@
 @section('javascript')
     <script>
 
-
-        var example1 = new BSTable("example", {
-			editableColumns:"4,7",
-			onEdit:function() {
-				console.log("EDITED");
-			},
-			advanced: {
-				columnLabel: ''
-			}
-		});
-
-        // var example1 = new BSTable("example");
         var params = {};
         var $file;
 
@@ -237,21 +236,32 @@
         });
 
         var count = 1 
-        function add() {
-            Swal.fire({
-                title: 'Estas Segur@ de Agregar?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'SI',
-                cancelButtonText: 'NO'
-                }).then(async (result) => {
-                if (result.isConfirmed) {                                        
-                    $('#example').append("<tr><td>"+(count++)+"</td><td>"+$("#mifecha").val()+"</td><td>"+$("#mihora").val()+"</td><td>"+$("#equipo_a option:selected").text()+"</td><td>0</td><td>VS</td><td>"+$("#equipo_b option:selected").text()+"</td><td>0</td></tr>");
-                    example1.init();
-                }
-            }) 
+        function add() {                                       
+            $('#example').append("<tr><td>"+(count++)+"</td><td>"+$("#mihora").val()+"</td><td>"+$("#equipo_a option:selected").text()+"</td><td>vs</td><td>"+$("#equipo_b option:selected").text()+"</td></tr>");
+            Toast.fire({
+                icon: 'success',
+                title: 'successfully'
+            })
+        }
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        function add_date() {       
+            var midel = $('#delegado_id :selected').text()                               
+            $('#example').append("<tr><td colspan='5' class='text-center'>"+$("#mifecha").val()+"<br>"+midel+"</td></tr>");
+            Toast.fire({
+                icon: 'success',
+                title: 'successfully'
+            })
         }
 
         function save() {
@@ -268,6 +278,15 @@
                     location.href = "/admin/fixtures"
                 }
             }) 
+        }
+
+        function remove_list() {                                       
+            $('#example tbody tr').remove();
+            count = 1
+            Toast.fire({
+                icon: 'success',
+                title: 'successfully'
+            })
         }
 
     </script>

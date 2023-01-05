@@ -37,8 +37,8 @@
 @section('content')
     <div class="page-content read container-fluid">
         <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-bordered" style="padding-bottom:5px;">
+            <div class="col-sm-6">
+                {{-- <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <table class="table">
                         <thead>
                             <tr>
@@ -57,7 +57,27 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
+                </div> --}}
+                {{-- {{ $dataType->readRows }}
+                {{ $dataTypeContent->{$dataType->readRows[0]->field} }} --}}
+                {{-- <table class="table" border="1">
+                    <tr>
+                        <td>Categoria:</td>
+                        <td>{{ $dataTypeContent->{$dataType->readRows[0]->field} }}</td>
+                    </tr>
+                </table> --}}
+                @php
+                    $ea = App\JugadoresPlanilla::where('id', $dataTypeContent->planilla_a_id)->first();
+                    $b = App\JugadoresPlanilla::where('id', $dataTypeContent->planilla_b_id)->first();
+                @endphp
+                <h2> Planilla Equipo A</h2>
+               {{ $dataTypeContent->planilla_a_id }}
+                {{ $ea }}
+            </div>
+            <div class="col-sm-6">
+                <h2> Planilla Equipo B</h2>
+                {{ $dataTypeContent->planilla_b_id }}
+                {{ $b }}
             </div>
         </div>
     </div>

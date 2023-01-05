@@ -336,3 +336,18 @@ Route::post('update/cant/jugs/deudores', function(Request $request){
     $planilla->save();
     return true;
 });
+
+// mi code -------------------------------------------------------
+Route::group(['prefix' => 'features'], function () {
+    Route::post('save', function(Request $request){
+        $misave =  App\Fixture::create($request->all());
+        return $misave;
+    });
+});
+
+Route::group(['prefix' => 'encuentros'], function () {
+    Route::post('save', function(Request $request){
+        $misave =  App\Partido::create($request->all());
+        return $misave;
+    });
+});

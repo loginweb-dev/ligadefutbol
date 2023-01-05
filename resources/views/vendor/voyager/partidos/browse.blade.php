@@ -8,9 +8,9 @@
             <i class="{{ $dataType->icon }}"></i> {{ $dataType->getTranslatedAttribute('display_name_plural') }}
         </h1>
         @can('add', app($dataType->model_name))
-            <a href="{{ route('voyager.'.$dataType->slug.'.create') }}" class="btn btn-sm btn-dark btn-add-new">
+            {{-- <a href="{{ route('voyager.'.$dataType->slug.'.create') }}" class="btn btn-sm btn-dark btn-add-new">
                 <i class="voyager-plus"></i> <span>{{ __('voyager::generic.add_new') }}</span>
-            </a>
+            </a> --}}
         @endcan
         @can('delete', app($dataType->model_name))
             {{-- @include('voyager::partials.bulk-delete') --}}

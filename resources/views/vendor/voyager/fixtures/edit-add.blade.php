@@ -2,6 +2,7 @@
     $edit = !is_null($dataTypeContent->getKey());
     $add  = is_null($dataTypeContent->getKey());
     $equipos = App\Clube::all();
+    $planillas = App\JugadoresPlanilla::where("activo", "Aprobado")->with("clubes")->get();
     $delegados = App\Delegado::all();
 @endphp
 
@@ -19,6 +20,10 @@
         table thead tr {
             border: 1px solid;
         }
+        .nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
     </style>
 @stop
 
@@ -44,7 +49,7 @@
                             <input type="date" name="" id="mifecha" class="form-control">
                         </div>
                         <div class="col-sm-4">
-                            <label for="">Delegado</label>
+                            <label for="">Veedor</label>
                             <div class="form-group" style="border-style: outset;">
                                 <select name="" id="delegado_id" class="select2 form-control">
                                     @foreach ($delegados as $item)
@@ -54,22 +59,25 @@
                             </div>
                         </div>
                         <div class="col-sm-4">
-                            {{-- <label for="">Accion</label><br> --}}
                             <br>
-                            <a href="#" class="btn btn-dark" onclick="add_date()">Agregar</a>                                                          
-                        </div>
-                    </div>
-                    <div class="row">
-        
-                        <div class="col-sm-4">
-                            <a href="#" class="btn btn-primary" onclick="add()">2.Encuentro</a>   
-                        </div>
-                        <div class="col-sm-4">
-                            <a href="#" class="btn btn-danger" onclick="remove_list()">3.Limpiar</a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark">Acciones</button>
+                                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                <li><a href="#" onclick="add_date()">1.- Agregar Fecha</a></li>
+                                <li><a href="#" onclick="add()">2.- Agregar Encuentro</a></li>
+                                <li><a href="#" onclick="remove_list()">3.- Limpiar Lista</a></li>
+                                {{-- <li role="separator" class="divider"></li>
+                                <li><a href="#">Separated link</a></li> --}}
+                                </ul>
+                            </div>                                                     
                         </div>
                     </div>
 
-                <label for="">Lista de  encuentros</label>
+                <label for="">Lista o Feature</label>
                 <div class="form-group table-responsive">
                     
                     <table class="table" id="example">
@@ -77,6 +85,7 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Hora</th>
+                                <th scope="col">Categoria</th>
                                 <th scope="col">Equipo A</th>
                                 <th scope="col">-</th>
                                 <th scope="col">Equipo B</th>
@@ -89,12 +98,20 @@
        
             </div>
             <div class="col-sm-4">     
-    
+               
+                    <label for="">Categoria</label>
+                    <div class="form-group" style="border-style: outset;">
+                        <select name="" id="categoria" class="select2 form-control">                        
+                                <option value="Senior">Senior</option>
+                                <option value="Especial">Especial</option>                                                       
+                        </select>
+                    </div>
+               
                 <label for="">Equipo "A"</label>   
                 <div class="form-group" style="border-style: outset;">                                    
                     <select name="" id="equipo_a" class="select2 form-control">
-                        @foreach ($equipos as $item)
-                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @foreach ($planillas as $item)
+                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
                         @endforeach                                    
                     </select>
                 </div>
@@ -102,8 +119,8 @@
                 <div class="form-group" style="border-style: outset;">
                                 
                     <select name="" id="equipo_b" class="select2 form-control">
-                        @foreach ($equipos as $item)
-                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @foreach ($planillas as $item)
+                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
                         @endforeach                                    
                     </select>                    
                 </div>
@@ -118,20 +135,20 @@
 
                 <div class="form-group">
                     <label for="">Titulo</label>
-                    <textarea name="" id="" cols="0" rows="3" class="form-control"></textarea>
+                    <textarea name="" id="title" cols="0" rows="3" class="form-control">{{ setting('features.title') }}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="">Equipo que descansa</label>
                     <div style="border-style: outset;">
-                        <select name="" id="" class="select2 form-control">
-                            @foreach ($equipos as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        <select name="" id="descansa_id" class="select2 form-control">
+                            @foreach ($planillas as $item)
+                                <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
                             @endforeach                                    
                         </select>
                     </div> 
                 </div>
                 <div class="form-group">
-                    <a href="#" class="btn btn-block btn-primary">Guardar y enviar fixture</a>
+                    <a href="#" class="btn btn-block btn-dark" onclick="save()">Guardar y Enviar</a>
                 </div>
             </div>
         </div>
@@ -163,7 +180,8 @@
 
 @section('javascript')
     <script>
-
+        localStorage.removeItem('encuentros');
+        
         var params = {};
         var $file;
 
@@ -236,8 +254,18 @@
         });
 
         var count = 1 
+        var encuentros = []
         function add() {                                       
-            $('#example').append("<tr><td>"+(count++)+"</td><td>"+$("#mihora").val()+"</td><td>"+$("#equipo_a option:selected").text()+"</td><td>vs</td><td>"+$("#equipo_b option:selected").text()+"</td></tr>");
+            $('#example').append("<tr><td>"+(count++)+"</td><td>"+$("#mihora").val()+"</td><td>"+$("#categoria option:selected").text()+"</td><td>"+$("#equipo_a option:selected").text()+"</td><td>vs</td><td>"+$("#equipo_b option:selected").text()+"</td></tr>");
+            encuentros.push({
+                fecha: $("#mifecha").val(),
+                hora: $("#mihora").val(),
+                planilla_a_id: $("#equipo_a option:selected").val(),
+                planilla_b_id: $("#equipo_b option:selected").val(),
+                veedor_id: $('#delegado_id :selected').val(),
+                categoria: $('#categoria :selected').val()
+            })
+            localStorage.setItem("encuentros", JSON.stringify(encuentros));
             Toast.fire({
                 icon: 'success',
                 title: 'successfully'
@@ -257,16 +285,16 @@
         })
         function add_date() {       
             var midel = $('#delegado_id :selected').text()                               
-            $('#example').append("<tr><td colspan='5' class='text-center'>"+$("#mifecha").val()+"<br>"+midel+"</td></tr>");
+            $('#example').append("<tr><td colspan='6' class='text-center'>"+$("#mifecha").val()+"<br>"+midel+"</td></tr>");
             Toast.fire({
                 icon: 'success',
                 title: 'successfully'
             })
         }
 
-        function save() {
+        async function save() {
             Swal.fire({
-                title: 'Estas Segur@ de Guardar la FECHA?',
+                title: 'Estas Segur@ de Guardar la FEATURE?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -275,6 +303,17 @@
                 cancelButtonText: 'NO'
                 }).then(async (result) => {
                 if (result.isConfirmed) {           
+                    var newf = await axios.post("/api/features/save", {
+                        title: $("#title").val(),
+                        user_id: "{{ Auth::user()->id }}",
+                        descansa_id: $("#descansa_id").val()
+                    })
+                    var enc = JSON.parse(localStorage.getItem("encuentros"))
+                    for (let index = 0; index < enc.length; index++) {
+                        var newecn =enc[index]
+                        newecn["fixture_id"] = newf.data.id
+                        var newf = await axios.post("/api/encuentros/save/", newecn)
+                    }
                     location.href = "/admin/fixtures"
                 }
             }) 
@@ -282,12 +321,18 @@
 
         function remove_list() {                                       
             $('#example tbody tr').remove();
+            localStorage.removeItem('encuentros');
             count = 1
             Toast.fire({
                 icon: 'success',
                 title: 'successfully'
             })
         }
-
+        
+        var today = new Date().toISOString().split('T')[0];
+        var now = new Date(Date.now());
+        var mitime = now.getHours() + ":" + now.getMinutes();
+        $('#mifecha').val(today);
+        $('#mihora').val(mitime);
     </script>
 @stop

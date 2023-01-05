@@ -38,7 +38,7 @@
         {{-- <div class="row">
             <div class="col-sm-12"> --}}
                 <div class="panel panel-bordered">
-                    <a class="btn btn-dark" onclick="probar_mensaje_whatsapp()"> Prueba Formato Wpp</a>
+                    {{-- <a class="btn btn-dark" onclick="probar_mensaje_whatsapp()"> Prueba Formato Wpp</a> --}}
 
                     <div class="row">        
                             <div class="col-sm-12 text-center">
@@ -536,7 +536,7 @@
                     message: mitext
                 }
                 // console.log("1 "+midata)
-                await axios.post("/api/whaticket/send", midata)
+                //await axios.post("/api/whaticket/send", midata)
         }
 
         async function notificacion_planilla_creada() {
@@ -570,7 +570,7 @@
                     message: mitext
                 }
                 // console.log("1 "+midata)
-                await axios.post("/api/whaticket/send", midata)
+                //await axios.post("/api/whaticket/send", midata)
         }
 
         async function notificacion_asientos_jugadores(fecha, titularidad, nombre, camiseta, men_pagada, phone) {
@@ -591,7 +591,7 @@
                     message: mitext
                 }
                 // console.log("1 "+midata)
-                await axios.post("/api/whaticket/send", midata)
+                //await axios.post("/api/whaticket/send", midata)
         }
 
 
@@ -777,20 +777,20 @@
                     phone: phone_club,
                     message: mitext
                 }
-                await axios.post("/api/whaticket/send", midata)
+                //await axios.post("/api/whaticket/send", midata)
             }
             else{
                 var midata={
                     phone: phone_club,
                     message: mitext
                 }
-                await axios.post("/api/whaticket/send", midata)
+                //await axios.post("/api/whaticket/send", midata)
                 mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
                 var midata2={
                     phone: phone_delegado,
                     message: mitext
                 }
-                await axios.post("/api/whaticket/send", midata2)
+                //await axios.post("/api/whaticket/send", midata2)
             }
 
 

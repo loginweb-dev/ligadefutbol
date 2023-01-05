@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use TCG\Voyager\Models\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class AsientoDetalle extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'asiento_id',
         'monto_pagado',

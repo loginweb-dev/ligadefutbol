@@ -561,7 +561,7 @@
                 mitext+="14.- Pedro Manuel Hurtado Monasterio\n"
                 mitext+="15.- Pedro Manuel Hurtado Monasterio\n\n"
                 mitext+="Se enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
-                mitext+="Puede Verificar el Estado de la misma en: "+"https://ligadefutbol.loginweb.dev/admin/admin/jugadores-planillas/1\n"
+                mitext+="Puede Verificar el Estado de la misma en: "+"https://ligadefutbol.loginweb.dev/admin/jugadores-planillas/1\n"
 
 
 
@@ -772,7 +772,7 @@
             mitext+="\nSe enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
             //Condicional de repetidos
             if (phone_club==phone_delegado) {
-                mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}/admin/jugadores-planillas/"+planilla_id
+                mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
                 var midata={
                     phone: phone_club,
                     message: mitext
@@ -785,7 +785,7 @@
                     message: mitext
                 }
                 await axios.post("/api/whaticket/send", midata)
-                mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}/admin/jugadores-planillas/"+planilla_id
+                mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
                 var midata2={
                     phone: phone_delegado,
                     message: mitext

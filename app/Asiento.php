@@ -30,7 +30,7 @@ class Asiento extends Model
 		return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']) )->diffForHumans();
 	}
 	public function getFechaAttribute(){
-		return date('Y-m-d H:i', strtotime($this->attributes['created_at']));
+		return date('d-m-Y H:m', strtotime($this->attributes['created_at']));
 	}
 
     public function clubes()

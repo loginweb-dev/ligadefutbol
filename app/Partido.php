@@ -25,4 +25,17 @@ class Partido extends Model
         // 'juez_3',
         // 'juez_4'
     ];
+
+    public function fixture()
+	{
+		return $this->belongsTo(Fixture::class, 'fixture_id');
+	}
+    public function planilla_a()
+	{
+		return $this->belongsTo(JugadoresPlanilla::class, 'planilla_a_id');        
+	}
+    public function planilla_b()
+	{
+		return $this->belongsTo(JugadoresPlanilla::class, 'planilla_b_id');
+	}
 }

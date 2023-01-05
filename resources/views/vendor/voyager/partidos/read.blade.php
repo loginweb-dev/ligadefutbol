@@ -1,5 +1,10 @@
 @extends('voyager::master')
 
+@php
+    $ea = App\JugadoresPlanilla::where('id', $dataTypeContent->planilla_a_id)->with("clubes")->first();
+    $b = App\JugadoresPlanilla::where('id', $dataTypeContent->planilla_b_id)->with("clubes")->first();
+@endphp
+
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
 @section('page_header')
@@ -11,7 +16,7 @@
                 <i class="glyphicon glyphicon-pencil"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.edit') }}</span>
             </a>
         @endcan
-        @can('delete', $dataTypeContent)
+        {{-- @can('delete', $dataTypeContent)
             @if($isSoftDeleted)
                 <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
@@ -21,14 +26,14 @@
                     <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
                 </a>
             @endif
-        @endcan
+        @endcan --}}
         @can('browse', $dataTypeContent)
-        <a href="{{ route('voyager.'.$dataType->slug.'.index') }}" class="btn btn-warning">
+        <a href="{{ route('voyager.'.$dataType->slug.'.index') }}" class="btn btn-sm btn-dark">
             <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.return_to_list') }}</span>
         </a>
         @endcan
-        <a href="#" class="btn btn-primary">
-            <i class="glyphicon glyphicon-pencil"></i> <span class="hidden-xs hidden-sm">Imprimir</span>
+        <a href="#" class="btn btn-sm btn-success">
+            <i class="glyphicon glyphicon-send"></i> <span class="hidden-xs hidden-sm">Enviar</span>
         </a>
     </h1>
     @include('voyager::multilingual.language-selector')
@@ -38,46 +43,16 @@
     <div class="page-content read container-fluid">
         <div class="row">
             <div class="col-sm-6">
-                {{-- <div class="panel panel-bordered" style="padding-bottom:5px;">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Llave</th>
-                                <th>Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>                        
-                            @foreach($dataType->readRows as $row)
-                                <tr>
-                                    <td>{{  $loop->index + 1 }}</td>
-                                    <td>{{  $row->display_name }}</td>
-                                    <td>{{  $dataTypeContent->{$row->field} }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div> --}}
-                {{-- {{ $dataType->readRows }}
-                {{ $dataTypeContent->{$dataType->readRows[0]->field} }} --}}
-                {{-- <table class="table" border="1">
-                    <tr>
-                        <td>Categoria:</td>
-                        <td>{{ $dataTypeContent->{$dataType->readRows[0]->field} }}</td>
-                    </tr>
-                </table> --}}
-                @php
-                    $ea = App\JugadoresPlanilla::where('id', $dataTypeContent->planilla_a_id)->first();
-                    $b = App\JugadoresPlanilla::where('id', $dataTypeContent->planilla_b_id)->first();
-                @endphp
                 <h2> Planilla Equipo A</h2>
-               {{ $dataTypeContent->planilla_a_id }}
-                {{ $ea }}
+                <table class="table">
+                    <tr>
+                        <td>{{ $ea->clubes->name }}</td>
+                    </tr>
+                </table>
             </div>
             <div class="col-sm-6">
                 <h2> Planilla Equipo B</h2>
-                {{ $dataTypeContent->planilla_b_id }}
-                {{ $b }}
+                <td>{{ $b->clubes->name }}</td>
             </div>
         </div>
     </div>

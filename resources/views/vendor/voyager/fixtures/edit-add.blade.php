@@ -41,39 +41,35 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-8">
-            
+            <div class="col-sm-8">            
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
+                            <label for="">Veedor & Categoria</label>
+                            <form class="form-inline">                               
+                                <div class="form-group" style="border-style: outset;">
+                                    <select name="" id="delegado_id" class="select2 form-control">
+                                        @foreach ($delegados as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach                                    
+                                    </select>
+                                </div>
+                                <div class="form-group" style="border-style: outset;">
+                                    <select name="" id="categoria" class="select2 form-control">                        
+                                            <option value="Senior">Senior</option>
+                                            <option value="Especial">Especial</option>                                                       
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-6">
                             <label for="">Fecha</label>
-                            <input type="date" name="" id="mifecha" class="form-control">
-                        </div>
-                        <div class="col-sm-4">
-                            <label for="">Veedor</label>
-                            <div class="form-group" style="border-style: outset;">
-                                <select name="" id="delegado_id" class="select2 form-control">
-                                    @foreach ($delegados as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach                                    
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <br>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-dark">Acciones</button>
-                                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                <li><a href="#" onclick="add_date()">1.- Agregar Fecha</a></li>
-                                <li><a href="#" onclick="add()">2.- Agregar Encuentro</a></li>
-                                <li><a href="#" onclick="remove_list()">3.- Limpiar Lista</a></li>
-                                {{-- <li role="separator" class="divider"></li>
-                                <li><a href="#">Separated link</a></li> --}}
-                                </ul>
-                            </div>                                                     
+                            <div class="input-group">
+                                <input type="date" name="" id="mifecha" class="form-control">
+                                <span class="input-group-btn">
+                                  <button class="btn btn-dark btn-md" type="button" onclick="add_date()">Agregar</button>
+                                  <button class="btn btn-secundary btn-md" type="button" onclick="remove_list()">Limpiar</button>
+                                </span>
+                            </div>                           
                         </div>
                     </div>
 
@@ -97,16 +93,7 @@
 
        
             </div>
-            <div class="col-sm-4">     
-               
-                    <label for="">Categoria</label>
-                    <div class="form-group" style="border-style: outset;">
-                        <select name="" id="categoria" class="select2 form-control">                        
-                                <option value="Senior">Senior</option>
-                                <option value="Especial">Especial</option>                                                       
-                        </select>
-                    </div>
-               
+            <div class="col-sm-4">                              
                 <label for="">Equipo "A"</label>   
                 <div class="form-group" style="border-style: outset;">                                    
                     <select name="" id="equipo_a" class="select2 form-control">
@@ -126,29 +113,32 @@
                 </div>
                 <div class="form-group">
                     <label for="">Hora</label>
-                    <input type="time" name="" id="mihora" class="form-control">
-                </div>
-                <div class="form-group">
                     
+                    <div class="input-group">
+                        <input type="time" name="" id="mihora" class="form-control">
+                        <span class="input-group-btn">
+                          <button class="btn btn-dark btn-lg" type="button" onclick="add()">Agregar</button>
+                        </span>
+                      </div>
                 </div>
-           
-
                 <div class="form-group">
                     <label for="">Titulo</label>
                     <textarea name="" id="title" cols="0" rows="3" class="form-control">{{ setting('features.title') }}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="">Equipo que descansa</label>
-                    <div style="border-style: outset;">
-                        <select name="" id="descansa_id" class="select2 form-control">
-                            @foreach ($planillas as $item)
-                                <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
-                            @endforeach                                    
-                        </select>
-                    </div> 
-                </div>
-                <div class="form-group">
-                    <a href="#" class="btn btn-block btn-dark" onclick="save()">Guardar y Enviar</a>
+                    <div class="input-group">
+                        <div style="border-style: outset;">
+                            <select name="" id="descansa_id" class="select2 form-control">
+                                @foreach ($planillas as $item)
+                                    <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
+                                @endforeach                                    
+                            </select>
+                        </div> 
+                        <span class="input-group-btn">
+                          <button class="btn btn-primary btn-lg" type="button" onclick="save()">Guardar</button>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

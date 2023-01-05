@@ -10,21 +10,6 @@
 
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>
-        table {
-            border: 1px solid;
-        }
-        table tbody tr {
-            border: 1px solid;
-        }
-        table thead tr {
-            border: 1px solid;
-        }
-        .nopadding {
-   padding: 0 !important;
-   margin: 0 !important;
-}
-    </style>
 @stop
 
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))

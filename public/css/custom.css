@@ -1,0 +1,11 @@
+table {
+    border: 1px solid;
+}
+table tbody tr {
+    border: 1px solid;
+}
+table thead tr {
+    border: 1px solid;
+}
+
+

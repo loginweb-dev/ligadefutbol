@@ -914,12 +914,90 @@
                 planilla_id: "{{$dataTypeContent->id}}",
                 decision: $("#select_accion").val()
             }
+            var planilla= await axios.post("/api/find/planilla", {planilla_id: parseInt("{{$dataTypeContent->id}}")})
+            var phone_club=(planilla.data.clubes.wpp).toString()
+            var phone_delegado=(planilla.data.delegado.phone).toString()
+            var mitext=""
+
             if ($("#select_accion").val()=="Rechazado") {
                 await axios.post("/api/delete/planilla", {planilla_id: parseInt("{{$dataTypeContent->id}}")})
+               //Creación del Mensaje a Enviar por ser Planilla Rechazada
+                
+                    mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Rechazada* ------------------------\n\n"
+                    mitext+="*Club*:\n"
+                    mitext+="- "+planilla.data.clubes.name+"\n"
+                    mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
+                    mitext+="*Observación*:\n"
+                    mitext+="- "+$("#text_area_observacion").val()
+                    mitext+="\n\nNota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"
+
+                
+
             }
+            else{
+                mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Aprobada* ------------------------\n\n"
+                    mitext+="*Club*:\n"
+                    mitext+="- "+planilla.data.clubes.name+"\n"
+                    mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
+                    mitext+="*Observación*:\n"
+                    mitext+="- "+$("#text_area_observacion").val()
+                    mitext+="\n\nNota.- Pueden proceder a realizar los pagos de las deudas que deben si es que las tienen.\n\n"
+
+            }
+            await mensaje_decision_planilla(phone_club, phone_delegado, mitext)
+
             var decision= await axios.post("/api/save/decision/planilla", midata)
             if (decision.data) {
                 location.reload()
+            }
+        }
+
+        async function mensaje_decision_planilla(phone_club, phone_delegado, mitext) {
+
+            if (phone_club==phone_delegado) {
+                
+                var newpassword=Math.random().toString().substring(2, 6)
+                var midata_cred = {
+                    clube_id: parseInt("{{$dataTypeContent->clube_id}}"),
+                    password: newpassword
+                }
+                var user= await axios.post("/api/reset/credenciales/club", midata_cred)
+                console.log("hola")
+                mitext+="*Credenciales*:\n"
+                mitext+="Usuario: "+user.data.email+"\n"
+                mitext+="Contraseña: "+newpassword+"\n\n"
+                mitext+="Link del Sistema: {{setting('admin.url')}}"
+                
+                var midata={
+                    phone: phone_club,
+                    message: mitext
+                }
+                await axios.post("/api/whaticket/send", midata)
+            }
+            else{
+                console.log("hola2")
+                var midata={
+                    phone: phone_delegado,
+                    message: mitext
+                }
+                await axios.post("/api/whaticket/send", midata)
+
+                var newpassword=Math.random().toString().substring(2, 6)
+                var midata_cred = {
+                    clube_id: parseInt("{{$dataTypeContent->clube_id}}"),
+                    password: newpassword
+                }
+                var user= await axios.post("/api/reset/credenciales/club", midata_cred)
+                mitext+="*Credenciales*:\n"
+                mitext+="Usuario: "+user.data.email+"\n"
+                mitext+="Contraseña: "+newpassword+"\n\n"
+                mitext+="Link del Sistema: {{setting('admin.url')}}"
+
+                var midata2={
+                    phone: phone_club,
+                    message: mitext
+                }
+                await axios.post("/api/whaticket/send", midata2)
             }
         }
         async function checkbox() {

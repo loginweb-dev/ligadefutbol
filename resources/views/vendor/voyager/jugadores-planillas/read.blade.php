@@ -915,8 +915,14 @@
                 decision: $("#select_accion").val()
             }
             var planilla= await axios.post("/api/find/planilla", {planilla_id: parseInt("{{$dataTypeContent->id}}")})
-            var phone_club=(planilla.data.clubes.wpp).toString()
-            var phone_delegado=(planilla.data.delegado.phone).toString()
+            var phone_club=planilla.data.clubes.wpp
+            var phone_delegado=planilla.data.delegado.phone
+            if (await validacion_wpp(phone_club)) {
+                phone_club=phone_club.toString()
+            }
+            if (await validacion_wpp(phone_delegado)) {
+                phone_delegado=phone_delegado.toString()
+            }
             var mitext=""
 
             if ($("#select_accion").val()=="Rechazado") {

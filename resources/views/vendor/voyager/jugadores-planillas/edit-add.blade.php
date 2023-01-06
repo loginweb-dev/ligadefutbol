@@ -45,25 +45,37 @@
                             	<h2>PASO 1.- DETALLES DEL CLUB</h2>
                             	{{-- <p>Formulario para el registro de nominas de jugadores del club o equipo: {{ $club_unico->name }}</p> --}}
                             </div>
-
-                            <div class="col-sm-4">
-                                <label for="fecha">Gestión</label>
-                                {{-- <div style="border-style: outset;">     --}}
-
-                                <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
-                                {{-- </div> --}}
+                            <div class="col-sm-4 text-center" id="club_div" hidden>
+                                <label for="select_club">Club</label>
+                                <div style="border-style: outset;">                                
+                                    <select class="form-control select2" name="select_club" id="select_club">
+                                        @if(Auth::user()->role_id==3)
+                                            <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
+                                        @else
+                                            @foreach ($equipos  as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach   
+                                        @endif
+                                        
+                                    </select>
+                                </div>
                             </div>
 
                             <div class="col-sm-4">
+                                <label for="fecha">Gestión</label>
+
+                                <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
+                            </div>
+
+                            {{-- <div class="col-sm-4">
                                 <label for="select_cat">Categoria</label>
                                 <div style="border-style: outset;">    
                                     <select class="form-control select2" name="select_cat" id="select_cat">
-                                        {{-- <option value="">Elegir Categoria</option> --}}
                                         <option value="Senior">Senior</option>
                                         <option value="Especial">Especial</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
 
                            
 
@@ -142,7 +154,7 @@
                                    
                                 </div>                                
                             </div> --}}
-                        <div class="col-sm-6 text-center" id="club_div" hidden>
+                        {{-- <div class="col-sm-6 text-center" id="club_div" hidden>
                             <label for="select_club">Club</label>
                             <div style="border-style: outset;">                                
                                 <select class="form-control select2" name="select_club" id="select_club">
@@ -156,7 +168,20 @@
                                     
                                 </select>
                             </div>
+                        </div> --}}
+
+                        <div class="col-sm-6">
+                            <label for="select_cat">Categoria</label>
+                            <div style="border-style: outset;">    
+                                <select class="form-control select2" name="select_cat" id="select_cat">
+                                    {{-- <option value="">Elegir Categoria</option> --}}
+                                    <option value="Senior">Senior</option>
+                                    <option value="Especial">Especial</option>
+                                </select>
+                            </div>
                         </div>
+
+           
                                         
                         <div class="col-sm-6 text-center">
                             <div class="input-group">
@@ -642,8 +667,16 @@
 
             var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
             console.log(planilla.data)
-            var phone_club=(planilla.data.clubes.wpp).toString()
-            var phone_delegado=(planilla.data.delegado.phone).toString()
+            
+            var phone_club=planilla.data.clubes.wpp
+            var phone_delegado=planilla.data.delegado.phone
+
+            if (await validacion_wpp(phone_club)) {
+                phone_club=phone_club.toString()
+            }
+            if (await validacion_wpp(phone_delegado)) {
+                phone_delegado= phone_delegado.toString()
+            }
            
             await generar_nomina(planilla.data.id, phone_club, phone_delegado, planilla.data.fecha)
 

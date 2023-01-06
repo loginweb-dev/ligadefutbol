@@ -1,8 +1,12 @@
 @extends('voyager::master')
 
+@php
+    $jugadores = App\Jugadore::where('clube_id', $dataTypeContent->id)->get();
+@endphp
+
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
-@section('page_header')
+{{-- @section('page_header')
     <h1 class="page-title">
         <i class="{{ $dataType->icon }}"></i> {{ __('voyager::generic.viewing') }} {{ ucfirst($dataType->getTranslatedAttribute('display_name_singular')) }} &nbsp;
 
@@ -29,15 +33,44 @@
         @endcan
     </h1>
     @include('voyager::multilingual.language-selector')
-@stop
+@stop --}}
 
 @section('content')
-    <div class="page-content read container-fluid">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-bordered" style="padding-bottom:5px;">
-                    <h1>CARNET DEl JUGADOR</h1>
-                </div>
+            <div class="col-sm-8">        
+                <h2>Jugadores del Equipo</h2>
+                <table class="table">
+                    <thead>
+                        <tr class="active">                       
+                            <th>#</th>
+                            <th>Jugador</th>
+                            <th>Edad</th>
+                            <th>Polera</th>
+                            <th>Whatsapp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($jugadores as $item)
+                            <tr>
+                                <td>{{ $item->id }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td>{{ $item->edad }}</td>
+                                <td>{{ $item->polera }}</td>
+                                <td>{{ $item->phone }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>            
+            </div>
+            <div class="col-sm-4">        
+                <h2>Datos del Equipo</h2>     
+                <table class="table">
+                    <tr class="active">
+                        <td>Nombre: </td>
+                        <td>{{ $dataTypeContent->name }}</td>    
+                    </tr>    
+                </table>       
             </div>
         </div>
     </div>

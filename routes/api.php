@@ -214,7 +214,15 @@ Route::post('credenciales', function(Request $request){
     }
     return $user;
 });
-
+//Restablecer Password encontrando usuario por equipo
+Route::post('reset/credenciales/club', function(Request $request){
+    $club=App\Clube::where('id', $request->clube_id)->with('user')->first();
+    if ($club->user!=null) {
+        $club->user->password=Hash::make($request->password);
+        $club->user->save();
+    }
+    return $club->user;
+});
 //Mensaje con Whaticket
 Route::post('/whaticket/send', function (Request $request) {
     $message = $request->message;
@@ -370,5 +378,9 @@ Route::post('delete/planilla', function(Request $request){
 });
 
 Route::post('prueba/planilla', function(Request $request){
+    return App\JugadoresPlanilla::where('id', $request->planilla_id)->with('clubes', 'delegado', 'user')->first();
+});
+
+Route::post('find/planilla', function(Request $request){
     return App\JugadoresPlanilla::where('id', $request->planilla_id)->with('clubes', 'delegado', 'user')->first();
 });

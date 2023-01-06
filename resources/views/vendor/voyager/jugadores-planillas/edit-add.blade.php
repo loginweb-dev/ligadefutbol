@@ -518,18 +518,21 @@
         }
 
         async function probar_mensaje_whatsapp() {
-            var fecha= new Date()
-            var mitext= ""
-                mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
-                mitext+="Fecha: 10-01-2023"+fecha
-                mitext+="*Jugador (Titular)*:\n"
-                mitext+="- Juan Carlos Perez Suarez\n"
-                mitext+="*Camiseta*:\n"
-                mitext+="- Nª21\n"
-                mitext+="*Mensualidad (1400Bs)*:\n"
-                mitext+="- Pago Registrado con un monto de: 1200Bs\n"
-                mitext+="- Saldo Deudor: 200Bs\n\n"
-                mitext+="Nota.- Se debe realizar el pago del saldo deudor lo mas antes posible porfavor, ya que en caso de que en su nómina hayan 5 jugadores deudores no podrán disputar el siguiente partido."
+                var planilla= await axios.post("/api/find/planilla", {planilla_id: 22})
+                var phone_club=(planilla.data.clubes.wpp).toString()
+                var phone_delegado=(planilla.data.delegado.phone).toString()
+                var mitext=""
+                    mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Rechazada* ------------------------\n\n"
+                    mitext+="*Club*:\n"
+                    mitext+="- "+planilla.data.clubes.name+"\n"
+                    mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
+                    mitext+="*Observación*:\n"
+                    mitext+="- "+$("#text_area_observacion").val()+"\n\n"
+                    mitext+="Nota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"
+                    mitext+="*Credenciales*:\n"
+                    mitext+="Usuario: \n"
+                    mitext+="Contraseña: \n\n"
+                    mitext+="Link del Sistema: {{setting('admin.url')}}"
 
             var midata={
                     phone: '70269362',
@@ -570,7 +573,7 @@
                     message: mitext
                 }
                 // console.log("1 "+midata)
-                await axios.post("/api/whaticket/send", midata)
+                //await axios.post("/api/whaticket/send", midata)
         }
 
         async function notificacion_asientos_jugadores(fecha, titularidad, nombre, camiseta, men_pagada, phone) {
@@ -591,7 +594,7 @@
                     message: mitext
                 }
                 // console.log("1 "+midata)
-                await axios.post("/api/whaticket/send", midata)
+                //await axios.post("/api/whaticket/send", midata)
         }
 
 
@@ -772,25 +775,45 @@
             mitext+="\nSe enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
             //Condicional de repetidos
             if (phone_club==phone_delegado) {
-                mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
+                var newpassword=Math.random().toString().substring(2, 6)
+                var midata_cred = {
+                    clube_id: parseInt($("#select_club").val()),
+                    password: newpassword
+                }
+                var user= await axios.post("/api/reset/credenciales/club", midata_cred)
+                mitext+="*Credenciales*:\n"
+                mitext+="Usuario: "+user.data.email+"\n"
+                mitext+="Contraseña: "+newpassword+"\n\n"
+                mitext+="Link del Sistema: {{setting('admin.url')}}"
+                // mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
                 var midata={
                     phone: phone_club,
                     message: mitext
                 }
-                await axios.post("/api/whaticket/send", midata)
+                //await axios.post("/api/whaticket/send", midata)
             }
             else{
                 var midata={
-                    phone: phone_club,
-                    message: mitext
-                }
-                await axios.post("/api/whaticket/send", midata)
-                mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
-                var midata2={
                     phone: phone_delegado,
                     message: mitext
                 }
-                await axios.post("/api/whaticket/send", midata2)
+                //await axios.post("/api/whaticket/send", midata)
+                var newpassword=Math.random().toString().substring(2, 6)
+                var midata_cred = {
+                    clube_id: parseInt($("#select_club").val()),
+                    password: newpassword
+                }
+                var user= await axios.post("/api/reset/credenciales/club", midata_cred)
+                mitext+="*Credenciales*:\n"
+                mitext+="Usuario: "+user.data.email+"\n"
+                mitext+="Contraseña: "+newpassword+"\n\n"
+                mitext+="Link del Sistema: {{setting('admin.url')}}"
+                // mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
+                var midata2={
+                    phone: phone_club,
+                    message: mitext
+                }
+                //await axios.post("/api/whaticket/send", midata2)
             }
 
 

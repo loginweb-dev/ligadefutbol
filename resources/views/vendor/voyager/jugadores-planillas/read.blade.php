@@ -955,49 +955,53 @@
         async function mensaje_decision_planilla(phone_club, phone_delegado, mitext) {
 
             if (phone_club==phone_delegado) {
-                
-                var newpassword=Math.random().toString().substring(2, 6)
-                var midata_cred = {
-                    clube_id: parseInt("{{$dataTypeContent->clube_id}}"),
-                    password: newpassword
+                if (await validacion_wpp(phone_club)) {
+                    var newpassword=Math.random().toString().substring(2, 6)
+                    var midata_cred = {
+                        clube_id: parseInt("{{$dataTypeContent->clube_id}}"),
+                        password: newpassword
+                    }
+                    var user= await axios.post("/api/reset/credenciales/club", midata_cred)
+                    console.log("hola")
+                    mitext+="*Credenciales*:\n"
+                    mitext+="Usuario: "+user.data.email+"\n"
+                    mitext+="Contraseña: "+newpassword+"\n\n"
+                    mitext+="Link del Sistema: {{setting('admin.url')}}"
+                    var midata={
+                        phone: phone_club,
+                        message: mitext
+                    }
+                    await axios.post("/api/whaticket/send", midata)
                 }
-                var user= await axios.post("/api/reset/credenciales/club", midata_cred)
-                console.log("hola")
-                mitext+="*Credenciales*:\n"
-                mitext+="Usuario: "+user.data.email+"\n"
-                mitext+="Contraseña: "+newpassword+"\n\n"
-                mitext+="Link del Sistema: {{setting('admin.url')}}"
-                
-                var midata={
-                    phone: phone_club,
-                    message: mitext
-                }
-                await axios.post("/api/whaticket/send", midata)
             }
             else{
                 console.log("hola2")
-                var midata={
-                    phone: phone_delegado,
-                    message: mitext
+                if (await validacion_wpp(phone_delegado)) {
+                    var midata={
+                        phone: phone_delegado,
+                        message: mitext
+                    }
+                    await axios.post("/api/whaticket/send", midata)
                 }
-                await axios.post("/api/whaticket/send", midata)
 
-                var newpassword=Math.random().toString().substring(2, 6)
-                var midata_cred = {
-                    clube_id: parseInt("{{$dataTypeContent->clube_id}}"),
-                    password: newpassword
-                }
-                var user= await axios.post("/api/reset/credenciales/club", midata_cred)
-                mitext+="*Credenciales*:\n"
-                mitext+="Usuario: "+user.data.email+"\n"
-                mitext+="Contraseña: "+newpassword+"\n\n"
-                mitext+="Link del Sistema: {{setting('admin.url')}}"
+                if (await validacion_wpp(phone_club)) {
+                    var newpassword=Math.random().toString().substring(2, 6)
+                    var midata_cred = {
+                        clube_id: parseInt("{{$dataTypeContent->clube_id}}"),
+                        password: newpassword
+                    }
+                    var user= await axios.post("/api/reset/credenciales/club", midata_cred)
+                    mitext+="*Credenciales*:\n"
+                    mitext+="Usuario: "+user.data.email+"\n"
+                    mitext+="Contraseña: "+newpassword+"\n\n"
+                    mitext+="Link del Sistema: {{setting('admin.url')}}"
 
-                var midata2={
-                    phone: phone_club,
-                    message: mitext
+                    var midata2={
+                        phone: phone_club,
+                        message: mitext
+                    }
+                    await axios.post("/api/whaticket/send", midata2)
                 }
-                await axios.post("/api/whaticket/send", midata2)
             }
         }
         async function checkbox() {
@@ -1026,6 +1030,15 @@
             }
             location.reload()
            
+        }
+        async function validacion_wpp(phone){
+            var wpp=parseInt(phone)
+            if (wpp<=79999999 && wpp>=60000000) {
+                return true;
+            }
+            else{
+                return false;
+            }
         }
 
         async function set_input_modal(id) {

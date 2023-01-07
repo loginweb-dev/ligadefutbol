@@ -1,260 +1,80 @@
 @extends('voyager::master')
 
+@php
+    $equipo= App\Clube::find($dataTypeContent->clube_id);
+    $delegado= App\Delegado::find($dataTypeContent->delegado_id);
+    $nomina = App\RelPlanillaJugadore::where('planilla_id', $dataTypeContent->id)->with('jugador')->get();
+    $index=0;
+    $index2=0;
+    $index3=0;
+    $index4=0;
+    $asientos= App\Asiento::where('planilla_id', $dataTypeContent->id)->with('jugadores', 'clubes', 'categorias')->get();
+    $num_jugadores=count($nomina);
+    $equipo_titulo= App\Clube::find($dataTypeContent->clube_id);
+@endphp
+
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
-@section('page_header')
-    @php
-        $equipo_titulo= App\Clube::find($dataTypeContent->clube_id);
-    @endphp
-    <h1 class="page-title">
-        <i class="{{ $dataType->icon }}"></i> {{ __('voyager::generic.viewing') }} {{ ucfirst($dataType->getTranslatedAttribute('display_name_singular')) }} de {{$equipo_titulo->name}} &nbsp;
-        
-        {{-- @can('edit', $dataTypeContent)
-            <a href="{{ route('voyager.'.$dataType->slug.'.edit', $dataTypeContent->getKey()) }}" class="btn btn-info">
-                <i class="glyphicon glyphicon-pencil"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.edit') }}</span>
-            </a>
-        @endcan --}}
-        {{-- @can('delete', $dataTypeContent)
-            @if($isSoftDeleted)
-                <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
-                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
-                </a>
-            @else
-                <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
-                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
-                </a>
-            @endif
-        @endcan --}}
-
-       
-                      
-               
-        
-        
-       
-    </h1>
-    <div class="text-center">
-        @can('browse', $dataTypeContent)
-        <a href="{{ route('voyager.'.$dataType->slug.'.index') }}" class="btn btn-warning">
-            <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.return_to_list') }}</span>
-        </a>
-        @endcan
-    @if ($dataTypeContent->activo=='Aprobado')
-        <a  class="btn btn-success">
-            <i class="glyphicon glyphicon-envelope"></i> <span class="hidden-xs hidden-sm">Enviar Lista</span>
-        </a>
-    @endif
-   
-    @if (Auth::user()->role_id==1 || Auth::user()->role_id==5)
-        @if($dataTypeContent->activo=="Entregado")
-            <a  class="btn btn-info" data-toggle="modal" data-target="#modal_acciones_planilla">
-                <i class="glyphicon glyphicon-question-sign"></i> <span class="hidden-xs hidden-sm">Aprobar/Rechazar</span>
-            </a>
-        @endif
-    @endif
-    
-        @include('voyager::multilingual.language-selector')
-    </div>
-
-    <hr>
-@stop
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    {{-- <style>
-        tbody tr:hover {  
-        background-color: lightblue;  
-        color: #666666;  
-        }
-    </style> --}}
 @stop
 
 @section('content')
-
-    <div id="voyager-loader" class="mireload" hidden>
-        <?php $admin_loader_img = Voyager::setting('admin.loader', ''); ?>
-        @if($admin_loader_img == '')
-            <img src="{{ voyager_asset('images/logo-icon.png') }}" alt="Voyager Loader">
-        @else
-            <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
-        @endif
-    </div>
-
-    @php
-        $equipo= App\Clube::find($dataTypeContent->clube_id);
-        $delegado= App\Delegado::find($dataTypeContent->delegado_id);
-        $nomina = App\RelPlanillaJugadore::where('planilla_id', $dataTypeContent->id)->with('jugador')->get();
-        $index=0;
-        $index2=0;
-        $index3=0;
-        $index4=0;
-        $asientos= App\Asiento::where('planilla_id', $dataTypeContent->id)->with('jugadores', 'clubes', 'categorias')->get();
-        $num_jugadores=count($nomina);
-    @endphp
-    <div class="panel panel-bordered" style="padding-bottom:5px;">
-                    
-        <!--Información Planilla -->                         
+    <div class="container-fluid">
+        <!--Información Planilla -->     
+                   
         <div class="row">
-            <div class="col-sm-4 form-group text-center">
-                <label for="select_cat">Categoria</label>
-                <div style="border-style: outset;">    
-                    <input type="text" class="form-control text-center" id="input_cat" value="{{$dataTypeContent->categoria_jugadores}}" readonly>
-                </div>
-            </div>
-
-            <div class="col-sm-4 form-group text-center">
-                <label for="select_delegado">Delegado</label>
-                <div style="border-style: outset;">    
-                
-                    <input type="text" class="form-control text-center" id="input_delegdo" value="{{$delegado->name}}" readonly>
-
-                </div>                   
-            </div>
-            
-            <div class="col-sm-4 form-group text-center">
-                <label for="input_fecha">Gestión</label>
-                <div style="border-style: outset;">                                
-
-                <input class="form-control text-center" type="month" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('Y-m') }}" readonly>
-                </div>
-            </div>
         
-            <div class="col-sm-6 text-center">
-                <label for="">Estado de Planilla</label>
-                <div style="border-style: outset;">
-                    @if ($dataTypeContent->activo=="Entregado")
-                        <input style="background-color: #17A2B8" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
-                    @elseif ($dataTypeContent->activo=="Aprobado")
-                        <input style="background-color: #28A745" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
-                    @elseif ($dataTypeContent->activo=="Rechazado")
-                        <input style="background-color: #DC3545" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
-                    @elseif ($dataTypeContent->activo=="Inactivo")
-                        <input style="background-color: #FFC107" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
-                    @endif 
-                </div>
+            <div class="col-sm-12 text-center">
+                @if (Auth::user()->role_id==1 || Auth::user()->role_id==5)
+                    @if($dataTypeContent->activo=="Entregado")
+                        <a  class="btn btn-info" data-toggle="modal" data-target="#modal_acciones_planilla">
+                            <i class="glyphicon glyphicon-question-sign"></i> <span class="hidden-xs hidden-sm">Aprobar/Rechazar</span>
+                        </a>
+                    @endif
+                @endif 
+                <h2>#{{$equipo_titulo->id}} - {{$equipo_titulo->name}}</h2>
+                {{-- <label for="">Estado de Planilla</label> --}}
+                @if ($dataTypeContent->activo=="Entregado")
+                    <input style="background-color: #17A2B8" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                @elseif ($dataTypeContent->activo=="Aprobado")
+                    <input style="background-color: #28A745" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                @elseif ($dataTypeContent->activo=="Rechazado")
+                    <input style="background-color: #DC3545" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                @elseif ($dataTypeContent->activo=="Inactivo")
+                    <input style="background-color: #FFC107" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                @endif 
+               
             </div>
-            <div class="col-sm-6 text-center">
-                <label for="">Observaciones</label>
-                <div style="border-style: outset;" >  
-                    <textarea class="form-control text-center" name="text_area_observacion_defecto" rows="2" id="text_area_observacion_defecto" readonly >{{$dataTypeContent->observacion}}</textarea>
-                </div>
+            <div class="col-sm-3 form-group text-center">
+                <label for="select_cat">Categoria</label>  
+                <input type="text" class="form-control text-center" id="input_cat" value="{{$dataTypeContent->categoria_jugadores}}" readonly>
             </div>
 
-        </div>
-
-        <!--Jugadores -->                                                   
-        <div class="row">
-            <div class="col-sm-12 text-center" >
-                <h3 class="subs">
-                    NÓMINA DE JUGADORES
-                </h3>
-                <h4 class="subs col-md-12">Titulares</h4>
-            </div>              
-            <div  class="col-sm-12 table-responsive">
+            <div class="col-sm-3 form-group text-center">
+                <label for="select_delegado">Delegado</label>                 
+                <input type="text" class="form-control text-center" id="input_delegdo" value="{{$delegado->name}}" readonly>                 
+            </div>
             
-                <table class="table table-striped table-bordered" id="table2">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th class="text-center" scope="col">#</th>
-                            <th class="text-center" scope="col">Edad</th>
-                            <th class="text-center" scope="col">Polera</th>
-                            <th class="text-center" scope="col">Nombres y Apellidos</th>
-                            <th class="text-center" scope="col">Mensualidad</th>
-                        </tr>
-                        
-
-                    </thead>
-                    <tbody>
-                        @foreach ($nomina as $item)
-                            @if ($item->titular==1)
-                                @php
-                                    $index=$index+1;
-                                @endphp
-
-                                <tr>
-                                    <td class="text-center">
-                                        {{$index}}
-                                    </td>
-                                    <td class='text-center'>
-                                        {{$item->jugador->edad}}
-                                    </td>
-                                    <td class='text-center'>
-                                        {{$item->jugador->polera}}
-                                    </td>
-                                    <td class='text-center'>
-                                        {{$item->jugador->name}}
-                                    </td>
-                                    <td class='text-center'>
-                                        {{$item->mensualidad}}
-                                    </td>
-                                </tr>
-
-                            @endif
-                          
-                         
-                        @endforeach
-                        
-      
-                    </tbody>
-                   
-                </table>
-            </div>
-              
-            <div class="col-sm-12 text-center" >
-
-                <h4 class="subs col-md-12">Suplentes</h4>
+            <div class="col-sm-3 form-group text-center">
+                <label for="input_fecha">Gestión</label>
+                <input class="form-control text-center" type="month" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('Y-m') }}" readonly>
             </div>
 
-            <div  class="col-sm-12 table-responsive">
-                <table class="table table-striped table-bordered" id="table3">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th class="text-center" scope="col">#</th>
-                            <th class="text-center" scope="col">Edad</th>
-                            <th class="text-center" scope="col">Polera</th>
-                            <th class="text-center" scope="col">Nombres y Apellidos</th>
-                            <th class="text-center" scope="col">Mensualidad</th>
-                        </tr>
-
-                    </thead>
-                    <tbody>
-                        @foreach ($nomina as $item)
-                            @if ($item->titular==2)
-                                @php
-                                    $index=$index+1;
-                                @endphp
-
-                                <tr>
-                                    <td class="text-center">
-                                        {{$index}}
-                                    </td>
-                                    <td class='text-center'>
-                                        {{$item->jugador->edad}}
-                                    </td>
-                                    <td class='text-center'>
-                                        {{$item->jugador->polera}}
-                                    </td>
-                                    <td class='text-center'>
-                                        {{$item->jugador->name}}
-                                    </td>
-                                    <td class='text-center'>
-                                        {{$item->mensualidad}}
-                                    </td>
-                                </tr>
-
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="col-sm-3 text-center">
+                <label for="">Observaciones</label> 
+                <input type="text" class="form-control text-center" name="text_area_observacion_defecto" id="text_area_observacion_defecto" readonly >
+                {{-- <textarea class="form-control text-center" name="text_area_observacion_defecto" rows="2" id="text_area_observacion_defecto" readonly >{{$dataTypeContent->observacion}}</textarea> --}}
             </div>
         </div>
-                   
+
         <!--Detalles Asientos y Totales-->                                                      
         <div class="row">
             <div class="col-sm-12 text-center" >
-                <h3 class="subs col-md-12">DETALLES</h3>
+                <h2>Pagos de Jugadores y Equipos</h2>
             </div>
             <!-- Parte Izquierda Lienzo , Asientos -->
-            <div class="col-sm-8" id="div_izquierdo_detalles" hidden>
+            <div class="col-sm-9" id="div_izquierdo_detalles" hidden>
                 <div class="col-sm-4 form-group">
                     <label for="select_cat_asientos">Tipo Asientos</label>
                     <div style="border-style: outset;">    
@@ -264,6 +84,7 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="col-sm-4 form-group">
                     <label for="select_tabs">Filtros</label>
                     <div style="border-style: outset;">    
@@ -274,12 +95,14 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="col-sm-4 form-group">
                     <label for="input_buscar_tab">Buscar</label>
-                        <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto">
+                    <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto">
                 </div>
+
                 <div class="col-sm-12 table-responsive" id="tab_todos_jugadores">
-                    <table class="table table-striped table-bordered" id="tabla_tab_todos_jugadores">
+                    <table class="table table-striped mitable" id="tabla_tab_todos_jugadores">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -289,11 +112,7 @@
                                 <th class="text-center" scope="col">Estado</th>
                                 <th class="text-center" scope="col">Observación</th>
                                 <th class="text-center" scope="col">Acción</th>
-
-
-                            </tr>
-                            
-
+                            </tr>                            
                         </thead>
                         <tbody>
                             @foreach ($asientos as $item)
@@ -337,6 +156,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="col-sm-12 table-responsive" id="tab_pendientes_jugadores" hidden>
                     <table class="table table-striped table-bordered" id="tabla_tab_pendientes_jugadores">
                         <thead class="thead-dark">
@@ -348,11 +168,7 @@
                                 <th class="text-center" scope="col">Estado</th>
                                 <th class="text-center" scope="col">Observación</th>
                                 <th class="text-center" scope="col">Acción</th>
-
-
-                            </tr>
-                            
-
+                            </tr>                            
                         </thead>
                         <tbody>
                             @foreach ($asientos as $item)
@@ -387,8 +203,7 @@
                                                 @else
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
-                                            </td>
-                                        
+                                            </td>                                        
                                         </tr>
                                     @endif
                                 @endif
@@ -396,6 +211,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="col-sm-12 table-responsive" id="tab_pagados_jugadores" hidden>
                     <table class="table table-striped table-bordered" id="tabla_tab_pagados_jugadores">
                         <thead class="thead-dark">
@@ -407,11 +223,7 @@
                                 <th class="text-center" scope="col">Estado</th>
                                 <th class="text-center" scope="col">Observación</th>
                                 <th class="text-center" scope="col">Acción</th>
-
-
-                            </tr>
-                            
-
+                            </tr>                            
                         </thead>
                         <tbody>
                             @foreach ($asientos as $item)
@@ -423,7 +235,6 @@
                                         <tr>
                                             <td class="text-center">
                                                 {{$index4}}
-                                                {{-- <input id="check_{{$item->id}}" type="checkbox"> --}}
                                             </td>
                                             <td>
                                                 {{$item->jugadores->name}}
@@ -446,8 +257,7 @@
                                                 @else
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
-                                            </td>
-                                        
+                                            </td>                                        
                                         </tr>
                                     @endif
                                 @endif
@@ -455,6 +265,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="col-sm-12 table-responsive" id="tab_todos_club" hidden>
                     <table class="table table-striped table-bordered" id="tabla_tab_todos_club">
                         <thead class="thead-dark">
@@ -465,11 +276,7 @@
                                 <th class="text-center" scope="col">Estado</th>
                                 <th class="text-center" scope="col">Observación</th>
                                 <th class="text-center" scope="col">Acción</th>
-
-
                             </tr>
-                            
-
                         </thead>
                         <tbody>
                             @foreach ($asientos as $item)
@@ -502,14 +309,14 @@
                                             @else
                                                 <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                             @endif
-                                        </td>
-                                    
+                                        </td>                                    
                                     </tr>
                                 @endif
                             @endforeach
                         </tbody>
                     </table>
                 </div>
+
                 <div class="col-sm-12 table-responsive" id="tab_pendientes_club" hidden>
                     <table class="table table-striped table-bordered" id="tabla_tab_pendientes_club">
                         <thead class="thead-dark">
@@ -520,11 +327,7 @@
                                 <th class="text-center" scope="col">Estado</th>
                                 <th class="text-center" scope="col">Observación</th>
                                 <th class="text-center" scope="col">Acción</th>
-
-
                             </tr>
-                            
-
                         </thead>
                         <tbody>
                             @foreach ($asientos as $item)
@@ -556,8 +359,7 @@
                                                 @else
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
-                                            </td>
-                                        
+                                            </td>                                        
                                         </tr>
                                     @endif
                                 @endif
@@ -565,6 +367,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="col-sm-12 table-responsive" id="tab_pagados_club" hidden>
                     <table class="table table-striped table-bordered" id="tabla_tab_pagados_club">
                         <thead class="thead-dark">
@@ -575,11 +378,7 @@
                                 <th class="text-center" scope="col">Estado</th>
                                 <th class="text-center" scope="col">Observación</th>
                                 <th class="text-center" scope="col">Acción</th>
-
-
                             </tr>
-                            
-
                         </thead>
                         <tbody>
                             @foreach ($asientos as $item)
@@ -591,9 +390,7 @@
                                         <tr>
                                             <td class="text-center">
                                                 {{$index4}}
-                                                {{-- <input id="check_{{$item->id}}" type="checkbox"> --}}
-                                            </td>
-                                          
+                                            </td>                                          
                                             <td class='text-center'>
                                                 {{$item->categorias->title}}
                                             </td>
@@ -612,8 +409,7 @@
                                                 @else
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
-                                            </td>
-                                        
+                                            </td>                                        
                                         </tr>
                                     @endif
                                 @endif
@@ -621,71 +417,132 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="col-sm-12 col-md-12">
                     <a class="btn btn-dark btn-block form-group" onclick="validar_check()">Pagar Seleccionados</a>
                 </div>
             </div>
+
             <!-- Parte Derecha Lienzo , Inputs Totales -->
-            <div class="col-sm-4" id="div_derecho_detalles" hidden>
+            <div class="col-sm-3" id="div_derecho_detalles" hidden>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <label for="input_mens_esperadas">Mensualidades Esperadas</label>
                         <input class="form-control text-center" id="input_mens_esperadas" name="input_mens_esperadas" type="number" readonly >
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <label for="input_mens_pagadas">Mensualidades Pagadas</label>
                         <input class="form-control text-center" id="input_mens_pagadas" name="input_mens_pagadas" type="number" readonly >
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <label for="input_otros_esperados">Otros Ingresos Esperados</label>
                         <input class="form-control text-center" id="input_otros_esperados" name="input_otros_esperados" type="number" readonly >
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <label for="input_otros_pagados">Otros Ingresos Pagados</label>
                         <input class="form-control text-center" id="input_otros_pagados" name="input_otros_pagados" type="number" readonly >
                     </div>
                 </div>
                 
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <label for="input_subtotal">Total Esperado</label>
                         <input class="form-control text-center" id="input_subtotal" name="input_subtotal" type="number" readonly>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <label for="input_deudas">Monto Adeudado</label>
                         <input class="form-control text-center" id="input_deudas" name="input_deudas" type="number" readonly value="{{$dataTypeContent->deuda}}">
                     </div>
-                   
+                    
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <label for="input_total">Total Pagado</label>
                         <input class="form-control text-center" id="input_total" name="input_total" type="number" readonly value="{{$dataTypeContent->total}}">
                     </div>
-                    <div class="col-sm-6">
-                        <label for="input_jugadores_deudores">Cant. Jugadores Deudores</label>
+                    <div class="col-sm-12">
+                        <label for="input_jugadores_deudores">Cant. Deudores</label>
                         <input class="form-control text-center" id="input_jugadores_deudores" name="input_jugadores_deudores" type="number" readonly>
                     </div>
-                </div>
-                
-               
-
-
+                </div>    
+                <div class="form-group">
+                    {{-- <a href="#" class="btn btn-sm btn-block btn-danger">Eliminar Nomina</a> --}}
+                    {{-- @can('delete', $dataTypeContent) --}}
+                        @if($isSoftDeleted)
+                            <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
+                                <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
+                            </a>
+                        @else
+                            <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger btn-block delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
+                                <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
+                            </a>
+                        @endif
+                    {{-- @endcan --}}
+                </div>                           
             </div>
+
             <div class="col-sm-12" id="div_total_detalles">
                 @if ($dataTypeContent->activo=="Entregado")
                     <h4 class="text-center">Esta Planilla aun no ha sido aprobada o rechazada, espere a que se tome una decisión porfavor.</h4>
                 @elseif($dataTypeContent->activo=="Rechazado")
                     <h4 class="text-center">Esta Planilla fue Rechazada, verifique los motivos en la parte superior en Observaciones.</h4>
                 @endif
-
             </div>
-        </div>           
+        </div>   
+
+        <!--Jugadores -->                                                   
+        <div class="row">
+            <div class="col-sm-12 text-center" >
+                <h2>NÓMINA DE JUGADORES</h2>
+            </div>              
+            <div  class="col-sm-12 table-responsive">            
+                <table class="table table-striped mitable" id="table2">
+                    <thead>
+                        <tr class="active">
+                            <th class="text-center" scope="col">#</th>
+                            <th class="text-center" scope="col">Edad</th>
+                            <th class="text-center" scope="col">Polera</th>
+                            <th class="text-center" scope="col">Nombres y Apellidos</th>
+                            <th class="text-center" scope="col">Mensualidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($nomina as $item)
+                            {{-- @if ($item->titular==1) --}}
+                                @php
+                                    $index=$index+1;
+                                @endphp
+                                <tr>
+                                    <td class="text-center">
+                                        {{$index}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->edad}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->polera}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->name}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->mensualidad}}
+                                    </td>
+                                </tr>
+                            {{-- @endif                           --}}
+                        @endforeach                              
+                    </tbody>                   
+                </table>
+            </div>
+              
+        </div>
+                   
+        
     </div>
 
-    {{-- Single delete modal --}}
+
     <div class="modal modal-danger fade" tabindex="-1" id="delete_modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -704,7 +561,7 @@
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    </div>
 
     <!--Modal Pagos -->
     <div class="modal" tabindex="-1" id="modal_pago" role="dialog">
@@ -788,25 +645,20 @@
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    
+                <div class="modal-body">                    
+                    <div class="form-group col-6">
+                        <label for="select_accion">Acción Decisiva</label>
+                        <div style="border-style: outset;">                                
+                            <select class="form-control select2" name="select_accion" id="select_accion">
+                                <option value="Aprobado">Aprobar</option>
+                                <option value="Rechazado">Rechazar</option>
+                            </select>
+                        </div>
+                    </div>
                         <div class="form-group col-6">
-                            <label for="select_accion">Acción Decisiva</label>
-                            <div style="border-style: outset;">                                
-                                <select class="form-control select2" name="select_accion" id="select_accion">
-                                    <option value="Aprobado">Aprobar</option>
-                                    <option value="Rechazado">Rechazar</option>
-                                </select>
-                            </div>
-                        </div>
-
-                         <div class="form-group col-6">
-                            <label for="">Observaciones</label>
-                            <div style="border-style: outset;">                                
-                                <textarea class="form-control" name="text_area_observacion" rows="5" id="text_area_observacion"  ></textarea>
-                            </div>
-                        </div>
-                            
+                        <label for="">Observaciones</label>                             
+                        <textarea class="form-control" name="text_area_observacion" rows="5" id="text_area_observacion"  ></textarea>
+                    </div>                            
                 </div>
                 <div class="modal-footer mt-3">
                     <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a>
@@ -819,27 +671,14 @@
 @stop
 
 @section('javascript')
-    {{-- @if ($isModelTranslatable)
-        <script>
-            $(document).ready(function () {
-                $('.side-body').multilingual();
-            });
-        </script>
-    @endif --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> --}}
-
     <script>
-
         async function validar_check() {
             var validacion=0
             var asientos= await axios("{{setting('admin.url')}}api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
             for (let index = 0; index < asientos.data.length; index++) {
-                // if (asientos.data.estado!="Pagado") {
-                    if (asientos.data.estado!="Pagado" && $("#check_"+asientos.data[index].id+"").prop('checked')) {
-                        validacion+=1
-                    }
-                // }
-               
+                if (asientos.data.estado!="Pagado" && $("#check_"+asientos.data[index].id+"").prop('checked')) {
+                    validacion+=1
+                }
             }
             if (validacion>0) {
                 misave()
@@ -851,12 +690,9 @@
             }
         }
 
-       
-
         function misave(){
             Swal.fire({
                 title: 'Estás Seguro?',
-                // text: "You won't be able to revert this!",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -870,6 +706,7 @@
                 }
             })
         }
+
         function save_decision(){
             $('.mireload').attr("hidden", false)
             $("#modal_acciones_planilla .close").click()
@@ -879,7 +716,6 @@
         function save_asiento_individual(){
             Swal.fire({
                 title: 'Estas Seguro de Pagar el Asiento?',
-                // text: "You won't be able to revert this!",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -888,12 +724,11 @@
                 cancelButtonText: 'NO'
                 }).then((result) => {
                 if (result.isConfirmed) {
-                // location.href = "{{setting('admin.url')}}admin/jugadores-planillas"
                     comprobar_monto_asiento()
-                    // location.href = "/admin/jugadores-planillas"
                 }
             })
         }
+
         async function acciones_planilla(){
             var midata={
                 observacion: $("#text_area_observacion").val(),
@@ -913,15 +748,13 @@
 
             if ($("#select_accion").val()=="Rechazado") {
                 await axios.post("/api/delete/planilla", {planilla_id: parseInt("{{$dataTypeContent->id}}")})
-               //Creación del Mensaje a Enviar por ser Planilla Rechazada
-                
-                    mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Rechazada* ------------------------\n\n"
-                    mitext+="*Club*:\n"
-                    mitext+="- "+planilla.data.clubes.name+"\n"
-                    mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
-                    mitext+="*Observación*:\n"
-                    mitext+="- "+$("#text_area_observacion").val()
-                    mitext+="\n\nNota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"        
+                mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Rechazada* ------------------------\n\n"
+                mitext+="*Club*:\n"
+                mitext+="- "+planilla.data.clubes.name+"\n"
+                mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
+                mitext+="*Observación*:\n"
+                mitext+="- "+$("#text_area_observacion").val()
+                mitext+="\n\nNota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"        
             }
             else{
                 mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Aprobada* ------------------------\n\n"
@@ -931,7 +764,6 @@
                     mitext+="*Observación*:\n"
                     mitext+="- "+$("#text_area_observacion").val()
                     mitext+="\n\nNota.- Pueden proceder a realizar los pagos de las deudas que deben si es que las tienen.\n\n"
-
             }
             await mensaje_decision_planilla(phone_club, phone_delegado, mitext)
 
@@ -942,7 +774,6 @@
         }
 
         async function mensaje_decision_planilla(phone_club, phone_delegado, mitext) {
-
             if (phone_club==phone_delegado) {
                 if (await validacion_wpp(phone_club)) {
                     var newpassword=Math.random().toString().substring(2, 6)
@@ -993,16 +824,14 @@
                 }
             }
         }
+
         async function checkbox() {
-            var asientos= await axios("{{setting('admin.url')}}api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
+            var asientos= await axios("/api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
             for (let index = 0; index < asientos.data.length; index++) {
-                // if (asientos.data.estado!="Pagado") {
                     if (asientos.data[index].estado!="Pagado" && $("#check_"+asientos.data[index].id+"").prop('checked')) {
                         console.log("siuuu")
                         console.log(asientos.data[index].id)
-
                         var observacion="Ya pagó el total de la deuda"
-
                         var midata={
                             asiento_id: asientos.data[index].id,
                             monto_restante: 0,
@@ -1014,12 +843,10 @@
                         console.log(midata)
                         await axios.post("/api/update/asiento", midata)
                     }
-                // }
-               
             }
             location.reload()
-           
         }
+
         async function validacion_wpp(phone){
             var wpp=parseInt(phone)
             if (wpp<=79999999 && wpp>=60000000) {
@@ -1033,18 +860,10 @@
         async function set_input_modal(id) {
             $('#table_modal_pagos tbody').empty();
             $('#table_historial_pagos tbody').empty();
-
-
             $("#input_id_asiento_modal").val(parseInt(id))
-            var asiento= await axios("{{setting('admin.url')}}api/find/asiento/"+(parseInt(id)))
-            
-            console.log()
+            var asiento= await axios("/api/find/asiento/"+(parseInt(id)))
             $("#table_modal_pagos").append("<tr><td class='text-center'>"+asiento.data.categorias.title+"</td> <td class='text-center'>"+asiento.data.monto+"</td> <td class='text-center'>"+asiento.data.monto_pagado+"</td> <td class='text-center'>"+asiento.data.monto_restante+"</td> <td class='text-center'>"+asiento.data.observacion+"</td></tr>")
-            console.log(asiento.data)
-            // $("#table_historial_pagos").append("<tr><td class='text-center'>"+asiento.data.fecha+"<br><small>"+asiento.data.published+"</small></td><td class='text-center'>"+asiento.data.monto_pagado+"</td></tr>")
-            
             if (asiento.data.detalles.length>0) {
-                // $("#visualizar_historial").attr("hidden", false)
                 for (let index = 0; index < asiento.data.detalles.length; index++) {
                     var usuario= await axios("/api/find/user/id/"+asiento.data.detalles[index].user_id)
                     $("#table_historial_pagos").append("<tr><td class='text-center'>"+asiento.data.detalles[index].fecha+"<br><small>"+asiento.data.detalles[index].published+"</small></td><td class='text-center'>"+asiento.data.detalles[index].monto_pagado+"</td><td class='text-center'>"+usuario.data.name+"</td></tr>")
@@ -1061,37 +880,26 @@
         }
 
         async function ingresos() {
-
-            var asientos= await axios("{{setting('admin.url')}}api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
-
-            // localStorage.getItem('micaja')
-            // var misasientos = JSON.parse(localStorage.getItem('misasientos'));
+            var asientos= await axios("/api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
             var newlist=asientos.data
             localStorage.setItem('misasientos', JSON.stringify(newlist));
             var misasientos = JSON.parse(localStorage.getItem('misasientos'));
-            console.log(misasientos)
-
-
             var ingresos_esperados=0
             var ingresos_pagados=0
             var mensualidades_esperadas=parseInt("{{$num_jugadores}}")*parseInt("{{setting('finanzas.mensualidad_jug')}}")
             var mensualidades_pagadas=0
             const unicos = [];
-
             for (let index = 0; index < asientos.data.length; index++) {
                 if (asientos.data[index].categorias.title!="Mensualidades") {
                     if (asientos.data[index].estado=="Pagado") {
                         ingresos_pagados+=parseInt(asientos.data[index].monto)
                     }
-                   
                     ingresos_esperados+=parseInt(asientos.data[index].monto)
-
                 }
                 else{
                     if (asientos.data[index].estado=="Pagado") {
                         mensualidades_pagadas+=parseInt(asientos.data[index].monto_pagado)
                     }
-                    
                 }
                 if (asientos.data[index].estado!="Pagado" && asientos.data[index].categorias.tipo=="jugador") {
                     const valor = asientos.data[index].jugadores.id;
@@ -1102,11 +910,8 @@
             }
             $("#input_otros_esperados").val(ingresos_esperados)
             $("#input_otros_pagados").val(ingresos_pagados)
-
             $("#input_mens_esperadas").val(mensualidades_esperadas)
-            //mensualidades_pagadas+=parseInt("{{$dataTypeContent->men_pagadas}}")
             $("#input_mens_pagadas").val(mensualidades_pagadas)
-
             $("#input_subtotal").val((mensualidades_esperadas+ingresos_esperados))
             $("#input_deudas").val((mensualidades_esperadas+ingresos_esperados-ingresos_pagados-mensualidades_pagadas))
             $("#input_total").val(ingresos_pagados+mensualidades_pagadas)
@@ -1116,8 +921,6 @@
                 planilla_id: parseInt("{{$dataTypeContent->id}}")
             }
             await axios.post("/api/update/cant/jugs/deudores", midata)
-
-            
         }
 
         async function visualizar_tabs(value){
@@ -1137,7 +940,6 @@
                 for (let index = 0; index < array_club.length; index++) {
                     $('#'+array_club[index]).attr("hidden", true)
                 }
-                
             }
             if ($("#select_cat_asientos").val()=="club") {
                 var tabla="tabla_"+seleccionado+"_club"
@@ -1161,10 +963,11 @@
         $("#select_cat_asientos").change(async function(){
             visualizar_tabs( $("#select_tabs").val())
         })
-         ingresos()
-         validacion_estado()
 
-         function historial_pagos(valor) {
+        ingresos()
+        validacion_estado()
+
+        function historial_pagos(valor) {
             if (valor) {
                 $("#visualizar_historial").attr("hidden", true)
                 $("#minimizar_historial").attr("hidden", false)
@@ -1175,9 +978,9 @@
                 $("#minimizar_historial").attr("hidden", true)
                 $("#div_historial").attr("hidden", true)
             }
-         }
+        }
 
-         jQuery("#input_buscar_tab").keyup(function(){
+        jQuery("#input_buscar_tab").keyup(function(){
             var cat_asientos= $("#select_cat_asientos").val()
             var filtro_select= $("#select_tabs").val()
             var tabla= "tabla_"+filtro_select+"_"+cat_asientos
@@ -1230,7 +1033,6 @@
         async function pagar_asiento_individual(asiento) {
             var monto_a_pagar= parseInt($("#input_monto_a_pagar").val())
             var asiento_id=$("#input_id_asiento_modal").val()
-            // var asiento= await axios("/api/find/asiento/"+asiento_id)
             var estado=""
             var observacion=""
             if (monto_a_pagar<asiento.data.monto_restante) {

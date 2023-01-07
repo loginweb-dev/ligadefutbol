@@ -1,7 +1,6 @@
 @php
     $edit = !is_null($dataTypeContent->getKey());
     $add  = is_null($dataTypeContent->getKey());
-    
     $equipos= App\Clube::all();
     $ultimo_equipo= end($equipos);
     $jugadores= App\Jugadore::where('clube_id', $equipos[$ultimo_equipo]->id)->get();
@@ -14,7 +13,6 @@
         $delegados_club=App\Delegado::where('clube_id', $club_unico->id)->get();
     }
     $date= date("Y-m");
-    
 @endphp
 
 @extends('voyager::master')
@@ -26,189 +24,169 @@
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
 @section('content')
-<div id="voyager-loader" class="mireload" hidden>
-    <?php $admin_loader_img = Voyager::setting('admin.loader', ''); ?>
-    @if($admin_loader_img == '')
-        <img src="{{ voyager_asset('images/logo-icon.png') }}" alt="Voyager Loader">
-    @else
-        <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
-    @endif
-</div>
     <div class="container-fluid">
-                <div class="panel panel-bordered">
-                    <a class="btn btn-dark" onclick="probar_mensaje_whatsapp()"> Prueba Formato Wpp</a>
-
-                    <div class="row">        
-                            <div class="col-sm-12 text-center">
-                            	<h2>PASO 1.- DETALLES DEL CLUB</h2>
-                            </div>
-                            <div class="col-sm-4 text-center" id="club_div" hidden>
-                                <label for="select_club">Club</label>
-                                <div style="border-style: outset;">                                
-                                    <select class="form-control select2" name="select_club" id="select_club">
-                                        @if(Auth::user()->role_id==3)
-                                            <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
-                                        @else
-                                            @foreach ($equipos  as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach   
-                                        @endif
-                                        
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <label for="fecha">Gestión</label>
-
-                                <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="input-group">
-                                    <label>Delegado</label>
-                                    <div style="border-style: outset;">  
-                                    <select class="form-control select2" name="select_delegado" id="select_delegado">
-                                        @if(Auth::user()->role_id==3)
-                                            @foreach ($delegados_club  as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach  
-                                        @else
-                                            @foreach ($delegados  as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                            @endforeach  
-                                        @endif
-                                    </select>
-                                    </div>
-                                    <br>
-                                    <span class="input-group-btn">
-                                        <a  class="btn  btn-dark" data-toggle="modal" data-target="#modal_delegado" ><span>Crear </span>  <i class="voyager-plus"></i>  </a>    
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="col-sm-4" hidden>
-                                <br />
-                                    <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
-                            </div>
-       				</div>
-
-                    <div class="row"  >        
-                        <div class="col-sm-12 text-center">
-                            <h2>PASO 2.- JUGADORES</h2>                                
-							<p>Selecina los jugadores exitentes en la lista, tambien puedes agregar uno nuevo.</p>
-                        </div>    
-                        <div class="col-sm-4" hidden>
-                            <label for="select_equipo">Equipo</label>
-                            <div style="border-style: outset;">
-                                <select name="" id="select_equipo" class="form-control select2">
-                                    @if(Auth::user()->role_id==3)
-                                        <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
-                                    @else
-                                        @foreach ($equipos  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach   
-                                    @endif
-                                </select>
-                            </div>
-                        </div>
-                           
-
-                        <div class="col-sm-6">
-                            <label for="select_cat">Categoria</label>
-                            <div style="border-style: outset;">    
-                                <select class="form-control select2" name="select_cat" id="select_cat">
-                                    <option value="Senior">Senior</option>
-                                    <option value="Especial">Especial</option>
-                                </select>
-                            </div>
-                        </div>
-
-           
-                                        
-                        <div class="col-sm-6 text-center">
-                            <div class="input-group">
-                                <label>Lista de jugadores existentes.</label>
-                                <div style="border-style: outset;">  
-
-                                <select name="" id="select_jugador" class="form-control select2">
-                                    @if(Auth::user()->role_id==3)
-                                        @foreach ($club_unico->jugadores  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    @else
-                                        @foreach ($jugadores  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                </div>
-                                <br>
-                                <span class="input-group-btn ">
-
-                                    <button type="button" class="btn btn-dark dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Acciones
-                                        <span class="caret"></span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right">
-                                        <li><a  onclick="add_todos()">Agregar Toda la Lista</a></li>
-                                        <li><a  onclick="add_fila()">Agregar Jugador Individual</a></li>
-                                        <li><a   data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
-                                        <li><a   data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
-                                    </ul>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div  class=" table-responsive">
-                                <table class="table table-striped table-bordered" id="table2">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th class="text-center" scope="col">#</th>
-                                            <th class="text-center" scope="col">Suplentes</th>
-                                            <th class="text-center" scope="col">Polera</th>
-                                            <th class="text-center" scope="col">Nombre</th>
-                                            <th class="text-center" scope="col">Mensualidad</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div> 
-
-					<div class="row"> 
-                        	<div class="col-sm-12 text-center">
-                        		<h2>PASO 3.- TOTALES</h2>
-                        		<p>totales en pagos u deudas para el equipo.</p>
-                        	</div>
-                            <div class="col-sm-3">
-                                <label for="input_total">Monto Esperado</label>
-                                <div style="border-style: outset;">
-                                    <input class="form-control" id="input_sub_total" name="input_sub_total" type="number">
-                                </div>
-                            </div>
-            
-                            <div class="col-sm-3">
-                                <label for="input_deudas">Monto Adeudado</label>
-                                <div style="border-style: outset;">
-                                    <input class="form-control" id="input_deudas" name="input_deudas" type="number">
-                                </div>
-                            </div>
-                           
-                            <div class="col-sm-3">
-                                <label for="input_total">Total Pagado</label>
-                                <div style="border-style: outset;">
-                                    <input class="form-control" id="input_total" name="input_total" type="number">
-                                </div>
-                            </div>     
-                            <div class="col-sm-3">
-                                <br />
-                             	<button class="btn btn-dark btn-block" onclick="misave()">Guardar Formulario</button>
-                            </div>   
-                                
-                    </div>                                                             
+        <div class="row">        
+                <div class="col-sm-12 text-center">
+                    <h2>PASO 1.- FORMULARIO NUEVA NOMIMA</h2>
                 </div>
+                
+                <div class="col-sm-4 text-center" id="club_div" hidden>
+                    <label for="select_club">Club</label>
+                    <div style="border-style: outset;">                                
+                        <select class="form-control select2" name="select_club" id="select_club">
+                            @if(Auth::user()->role_id==3)
+                                <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
+                            @else
+                                @foreach ($equipos  as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach   
+                            @endif
+                            
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <label for="fecha">Gestión</label>
+                    <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <label>Delegado</label>
+                        <div style="border-style: outset;">  
+                            <select class="form-control select2" name="select_delegado" id="select_delegado">
+                                @if(Auth::user()->role_id==3)
+                                    @foreach ($delegados_club  as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach  
+                                @else
+                                    @foreach ($delegados  as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach  
+                                @endif
+                            </select>
+                        </div>
+                        <br>
+                        <span class="input-group-btn">
+                            <a  class="btn btn-dark" data-toggle="modal" data-target="#modal_delegado" ><i class="voyager-plus"></i>  </a>    
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-4" hidden>
+                    <br />
+                    <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
+                </div>
+        </div>
+
+        <div class="row"  >        
+            <div class="col-sm-12 text-center">
+                <h2>PASO 2.- CREAR LISTA DE JUGADORES</h2>                                
+            </div>    
+            <div class="col-sm-4" hidden>
+                <label for="select_equipo">Equipo</label>
+                <div style="border-style: outset;">
+                    <select name="" id="select_equipo" class="form-control select2">
+                        @if(Auth::user()->role_id==3)
+                            <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
+                        @else
+                            @foreach ($equipos  as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach   
+                        @endif
+                    </select>
+                </div>
+            </div>
+                
+
+            <div class="col-sm-6">
+                <label for="select_cat">Categoria</label>
+                <div style="border-style: outset;">    
+                    <select class="form-control select2" name="select_cat" id="select_cat">
+                        <option value="Senior">Senior</option>
+                        <option value="Especial">Especial</option>
+                    </select>
+                </div>
+            </div>
+
+
+                            
+            <div class="col-sm-6 text-center">
+                <div class="input-group">
+                    <label>Lista de jugadores existentes.</label>
+                    <div style="border-style: outset;">  
+                    <select name="" id="select_jugador" class="form-control select2">
+                        @if(Auth::user()->role_id==3)
+                            @foreach ($club_unico->jugadores  as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        @else
+                            @foreach ($jugadores  as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                    </div>
+                    <br>
+                    <span class="input-group-btn ">
+                        <button type="button" class="btn btn-dark dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Acciones
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a  href="#" onclick="add_todos()">Agregar Toda la Lista</a></li>
+                            <li><a  href="#" onclick="add_fila()">Agregar Jugador Individual</a></li>
+                            <li><a  href="#" data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
+                            <li><a  href="#" data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
+                        </ul>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div  class=" table-responsive">
+                    <table class="table table-striped mitable" id="table2">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="" scope="col">#</th>
+                                <th class="" scope="col">S/T</th>
+                                <th class="" scope="col">Polera</th>
+                                <th class="" scope="col">Nombre</th>
+                                <th class="" scope="col">Mensualidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> 
+
+        <div class="row"> 
+                <div class="col-sm-12 text-center">
+                    <h2>PASO 3.- RECAUDACION Y TOTALES </h2>
+                </div>
+                <div class="col-sm-3">
+                    <label for="input_total">Monto Esperado</label>
+                        <input class="form-control" id="input_sub_total" name="input_sub_total" type="number">
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="input_deudas">Monto Adeudado</label>
+                        <input class="form-control" id="input_deudas" name="input_deudas" type="number">
+                </div>
+                
+                <div class="col-sm-3">
+                    <label for="input_total">Total Pagado</label>
+                        <input class="form-control" id="input_total" name="input_total" type="number">
+                </div>     
+                <div class="col-sm-3">
+                    <br />
+                    <button class="btn btn-dark btn-block" onclick="misave()">Guardar Formulario</button>
+                </div>   
+                    
+        </div>                                                             
     </div>
 
     <div class="modal fade modal-danger" id="confirm_delete_modal">
@@ -232,14 +210,13 @@
             </div>
         </div>
     </div>
-    <!-- End Delete File Modal -->
 
     <!-- Modal Transferencia-->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_transferencia">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_transferencia">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Transferencias</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -265,22 +242,21 @@
                         </div>
                         <div class="col-sm-6">
                             <label for="jugador_transferencia">Elija el Jugador</label>
-                            <div style="border-style: outset;">                                
+                            <div style="border-style: outset;">              
                                 <select class="form-control select2" name="jugador_transferencia" id="jugador_transferencia">Jugador</select>
                             </div>
                         </div>
                         <div class="col-sm-12">
                             <label for="observacion_transferencia">Observaciones</label>
-                            <div style="border-style: outset;">                                
+                                                         
                                 <textarea class="form-control" name="observacion_transferencia" id="observacion_transferencia"  rows="3"></textarea>
-                            </div>
+                            
                         </div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a>
-                    <a onclick="save_transferencia()" type="button" class="btn btn-primary">Guardar</a>
+                    <a onclick="save_transferencia()" type="button" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -299,23 +275,17 @@
                 <div class="modal-body">
                     
                         <div class="form-group col-6">
-                            <label for="delegado_creation">Nombre Delegado</label>
-                            <div style="border-style: outset;">                                
-                                <input type="text" class="form-control" id="delegado_creation" name="delegado_creation" placeholder="Introduzca el nombre del Delegado">
-                            </div>
+                            <label for="delegado_creation">Nombre Delegado</label>                                            
+                            <input type="text" class="form-control" id="delegado_creation" name="delegado_creation" placeholder="Introduzca el nombre del Delegado">                         
                         </div>
 
                          <div class="form-group col-6">
-                            <label for=""># Whatsapp</label>
-                            <div style="border-style: outset;">                                
-                                <input type="number" class="form-control" id="wpp_delegado" name="wpp_delegado" placeholder="Ingrese su WhatsApp">
-                            </div>
-                        </div>
-                            
+                            <label for=""># Whatsapp</label>                                                       
+                            <input type="number" class="form-control" id="wpp_delegado" name="wpp_delegado" placeholder="Ingrese su WhatsApp">                           
+                        </div>    
                 </div>
                 <div class="modal-footer mt-3">
-                    <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a>
-                    <a type="button" onclick="save_delegado()" class="btn btn-dark">Guardar</a>
+                    <a type="button" onclick="save_delegado()" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -335,41 +305,40 @@
                     <div class="container ">
                         <div class="col-sm-6">
                             <label for="nombre_jugador_create">Nombre</label>
-                            <div style="border-style: outset;">                                
+                                                           
                                 <input class="form-control" id="nombre_jugador_create" name="nombre_jugador_create" type="text">
-                            </div>
+                         
                         </div>
 
                         <div class="col-sm-6">
                             <label for="polera_jugador_create"># Polera</label>
-                            <div style="border-style: outset;">                                
+                                                           
                                 <input class="form-control" id="polera_jugador_create" name="polera_jugador_create" type="number">
-                            </div>
+                          
                         </div>
                         <div class="col-sm-6">
                             <label for="edad_jugador_create">Edad</label>
-                            <div style="border-style: outset;">                                
+                                                           
                                 <input class="form-control" id="edad_jugador_create" name="edad_jugador_create" type="number">
-                            </div>
+                            
                         </div>
                         <div class="col-sm-6">
                             <label for="nacido_jugador_create">Fecha Nac.</label>
-                            <div style="border-style: outset;">                                
+                                                        
                                 <input class="form-control" id="nacido_jugador_create" name="nacido_jugador_create" type="date">
-                            </div>
+                          
                         </div>
                         <div class="col-sm-6">
                             <label for="wpp_jugador_create">WhatsApp</label>
-                            <div style="border-style: outset;">                                
+                                                     
                                 <input class="form-control" id="wpp_jugador_create" name="wpp_jugador_create" type="number">
-                            </div>
+                       
                         </div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a>
-                    <a type="button" onclick="save_jugador()" class="btn btn-primary">Guardar</a>
+                    <a type="button" onclick="save_jugador()" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -394,6 +363,38 @@
                     guardar_planilla()
                 }
             })
+        }
+        async function guardar_planilla(){
+            var clube_id= $("#select_club").val()
+            var categoria_jugadores= $("#select_cat").val()
+            var fecha_entrega=$("#fecha_mensual").val()+"-01"
+            var delegado_id=$("#select_delegado").val()
+            var deuda=$("#input_deudas").val()
+            var total=$("#input_total").val()
+            var observacion=""
+            var subtotal=$("#input_sub_total").val()
+            var detalles={
+                clube_id: clube_id,
+                categoria_jugadores:categoria_jugadores,
+                fecha_entrega:fecha_entrega,
+                delegado_id:delegado_id,
+                deuda:deuda,
+                total:total,
+                observacion:observacion,
+                subtotal:subtotal,
+                men_pagadas: total,
+                user_id: parseInt("{{Auth::user()->id}}")
+            }
+            var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
+            var phone_club=planilla.data.clubes.wpp
+            var phone_delegado=planilla.data.delegado.phone
+            if (await validacion_wpp(phone_club)) {
+                phone_club=phone_club.toString()
+            }
+            if (await validacion_wpp(phone_delegado)) {
+                phone_delegado= phone_delegado.toString()
+            }           
+            await generar_nomina(planilla.data.id, phone_club, phone_delegado, planilla.data.fecha)
         }
 
         // guardar transferencia-----------------------------------------------------------------
@@ -441,27 +442,27 @@
 
         async function notificacion_planilla_creada() {
              var mitext= ""
-                mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
-                mitext+="Fecha: 10-01-2023\n"
-                mitext+="*Titulares*:\n"
-                mitext+="1.- Juan Carlos Perez Suarez\n"
-                mitext+="2.- Pedro Manuel Hurtado Monasterio\n"
-                mitext+="3.- Ramon de la Fuente Martinez\n"
-                mitext+="4.- Juan Carlos Perez Suarez\n"
-                mitext+="5.- Nanario Gonzales Bere Paco\n"
-                mitext+="6.- Pedro Manuel Hurtado Monasterio\n"
-                mitext+="7.- Ramon de la Fuente Martinez\n"
-                mitext+="8.- Ramon de la Fuente Martinez\n"
-                mitext+="9.- Juan Carlos Perez Suarez\n"
-                mitext+="10.- Ramon de la Fuente Martinez\n"
-                mitext+="11.- Ramon de la Fuente Martinez\n\n"
-                mitext+="*Suplentes*:\n"
-                mitext+="12.- Ramon de la Fuente Martinez\n"
-                mitext+="13.- Pedro Manuel Hurtado Monasterio\n"
-                mitext+="14.- Pedro Manuel Hurtado Monasterio\n"
-                mitext+="15.- Pedro Manuel Hurtado Monasterio\n\n"
-                mitext+="Se enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
-                mitext+="Puede Verificar el Estado de la misma en: "+"https://ligadefutbol.loginweb.dev/admin/jugadores-planillas/1\n"
+            mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
+            mitext+="Fecha: 10-01-2023\n"
+            mitext+="*Titulares*:\n"
+            mitext+="1.- Juan Carlos Perez Suarez\n"
+            mitext+="2.- Pedro Manuel Hurtado Monasterio\n"
+            mitext+="3.- Ramon de la Fuente Martinez\n"
+            mitext+="4.- Juan Carlos Perez Suarez\n"
+            mitext+="5.- Nanario Gonzales Bere Paco\n"
+            mitext+="6.- Pedro Manuel Hurtado Monasterio\n"
+            mitext+="7.- Ramon de la Fuente Martinez\n"
+            mitext+="8.- Ramon de la Fuente Martinez\n"
+            mitext+="9.- Juan Carlos Perez Suarez\n"
+            mitext+="10.- Ramon de la Fuente Martinez\n"
+            mitext+="11.- Ramon de la Fuente Martinez\n\n"
+            mitext+="*Suplentes*:\n"
+            mitext+="12.- Ramon de la Fuente Martinez\n"
+            mitext+="13.- Pedro Manuel Hurtado Monasterio\n"
+            mitext+="14.- Pedro Manuel Hurtado Monasterio\n"
+            mitext+="15.- Pedro Manuel Hurtado Monasterio\n\n"
+            mitext+="Se enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
+            mitext+="Puede Verificar el Estado de la misma en: "+"https://ligadefutbol.loginweb.dev/admin/jugadores-planillas/1\n"
             var midata={
                     phone: '70269362',
                     message: mitext
@@ -490,44 +491,6 @@
                 }
         }
 
-
-        async function guardar_planilla(){
-            var clube_id= $("#select_club").val()
-            var categoria_jugadores= $("#select_cat").val()
-            var fecha_entrega=$("#fecha_mensual").val()+"-01"
-            var delegado_id=$("#select_delegado").val()
-            var deuda=$("#input_deudas").val()
-            var total=$("#input_total").val()
-            var observacion=""
-            var subtotal=$("#input_sub_total").val()
-
-            var detalles={
-                clube_id: clube_id,
-                categoria_jugadores:categoria_jugadores,
-                fecha_entrega:fecha_entrega,
-                delegado_id:delegado_id,
-                deuda:deuda,
-                total:total,
-                observacion:observacion,
-                subtotal:subtotal,
-                men_pagadas: total,
-                user_id: parseInt("{{Auth::user()->id}}")
-            }
-            console.log(fecha_entrega)
-
-            var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
-            var phone_club=planilla.data.clubes.wpp
-            var phone_delegado=planilla.data.delegado.phone
-
-            if (await validacion_wpp(phone_club)) {
-                phone_club=phone_club.toString()
-            }
-            if (await validacion_wpp(phone_delegado)) {
-                phone_delegado= phone_delegado.toString()
-            }           
-            await generar_nomina(planilla.data.id, phone_club, phone_delegado, planilla.data.fecha)
-        }
-
         function comparar_exis_jug(id){
             var validador=false;
             $('.tab_jugs_id').each(function(){
@@ -538,6 +501,7 @@
             return validador;
         }
 
+        //MENSAJE para Whatsapp de la PLANILLA --------------------------------------------------------------
         async function generar_nomina(planilla_id, phone_club, phone_delegado, fecha){
             var jugs=[];
             var jugs_id=[];
@@ -556,8 +520,6 @@
                 jugs_phone[index2]=this.value
                 index2+=1
             })
-
-            //MENSAJE PLANILLA
             //Cabecera
             var mitext= ""
                 mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
@@ -604,7 +566,7 @@
                 }
                 await axios.post("/api/jugadores/rel/planilla/jugs/save", midata)
                 var monto_dinero= parseInt("{{setting('finanzas.mensualidad_jug')}}")
-                if (mensualidad<monto_dinero) {
+                if (mensualidad < monto_dinero) {
                     cant_jugs_deudas+=1
                     var data={
                         tipo: "Ingreso",
@@ -620,7 +582,6 @@
                         monto_restante:(monto_dinero-mensualidad)
                     }
                     var asiento= await axios.post("/api/asiento/save", data)
-
                 }
                 else{
                     var data={
@@ -638,8 +599,6 @@
                     }
                     var asiento= await axios.post("/api/asiento/save", data)
                 }
-               console.log(midata)
-            
             }
             //Armando el cuerpo
             mitext+=wpp_titulares
@@ -697,11 +656,11 @@
                 planilla_id: planilla_id
             }
             await axios.post("/api/update/cant/jugs/deudores", midata)
-            
-            location.href="/admin/jugadores-planillas/"+planilla_id
+            location.href="/admin/jugadores-planillas"
         }
 
 
+        // VALIDACION DE WHATSAPP -------------------------------------------------------------
         async function validacion_wpp(phone){
             var wpp=parseInt(phone)
             if (wpp<=79999999 && wpp>=60000000) {
@@ -1052,8 +1011,4 @@
         }
 
     </script>
-@stop
-
-@section('mijs')
-    
 @stop

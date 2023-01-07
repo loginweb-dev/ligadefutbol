@@ -1,10 +1,10 @@
-table {
+.mitable {
     border: 1px solid;
 }
-table tbody tr {
+.mitable tbody tr {
     border: 1px solid;
 }
-table thead tr {
+.mitable thead tr {
     border: 1px solid;
 }
 

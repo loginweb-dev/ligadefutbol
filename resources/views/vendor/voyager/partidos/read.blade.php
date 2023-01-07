@@ -3,47 +3,30 @@
 @php
     $a = App\RelPlanillaJugadore::where('planilla_id', $dataTypeContent->planilla_a_id)->with('jugador')->get();
     $b =App\RelPlanillaJugadore::where('planilla_id', $dataTypeContent->planilla_b_id)->with('jugador')->get();
+    $ea = App\Clube::find($a[0]->jugador->clube_id);
+    $eb = App\Clube::find($b[0]->jugador->clube_id);
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
-@section('page_header')
-    <h1 class="page-title">
-        <i class="{{ $dataType->icon }}"></i> {{ __('voyager::generic.viewing') }} {{ ucfirst($dataType->getTranslatedAttribute('display_name_singular')) }} &nbsp;
-
-        @can('edit', $dataTypeContent)
-            <a href="{{ route('voyager.'.$dataType->slug.'.edit', $dataTypeContent->getKey()) }}" class="btn btn-info">
-                <i class="glyphicon glyphicon-pencil"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.edit') }}</span>
-            </a>
-        @endcan
-        {{-- @can('delete', $dataTypeContent)
-            @if($isSoftDeleted)
-                <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
-                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
-                </a>
-            @else
-                <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
-                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
-                </a>
-            @endif
-        @endcan --}}
-        @can('browse', $dataTypeContent)
-        <a href="{{ route('voyager.'.$dataType->slug.'.index') }}" class="btn btn-sm btn-dark">
-            <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.return_to_list') }}</span>
-        </a>
-        @endcan
-        <a href="#" class="btn btn-sm btn-success">
-            <i class="glyphicon glyphicon-send"></i> <span class="hidden-xs hidden-sm">Enviar</span>
-        </a>
-    </h1>
-    @include('voyager::multilingual.language-selector')
-@stop
 
 @section('content')
     <div class="page-content read container-fluid">
         <div class="row">
+            <div  class="col-sm-12 text-center">
+                <h2>#{{ $dataTypeContent->id }}</h2>
+                @if($isSoftDeleted)
+                    <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
+                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
+                    </a>
+                @else
+                    <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
+                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
+                    </a>
+                @endif
+            </div>
             <div class="col-sm-6">
-                <h2> Planilla Equipo A</h2>
+                <h2> {{ $ea->name }}</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="cluba">
                         <thead>
@@ -61,7 +44,7 @@
                         <tbody>
                             @foreach ($a as $item)
                                 <tr>
-                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $loop->index + 1 }}</td>
                                     <td>{{ $item->jugador->polera }}</td>
                                     <td>{{ $item->jugador->name }}</td>
                                     <td>{{ $item->jugador->edad }}</td>
@@ -76,9 +59,8 @@
                 </div>
             </div>
             <div class="col-sm-6">
-                <h2> Planilla Equipo B</h2>
-                {{ $b }}
-                {{ $dataTypeContent->planilla_b_id }}
+                <h2> {{ $eb->name }}</h2>
+
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="clubb">
                         <thead>
@@ -96,7 +78,7 @@
                         <tbody>
                             @foreach ($b as $item)
                                 <tr>
-                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $loop->index + 1 }}</td>
                                     <td>{{ $item->jugador->polera }}</td>
                                     <td>{{ $item->jugador->name }}</td>
                                     <td>{{ $item->jugador->edad }}</td>

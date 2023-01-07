@@ -272,6 +272,7 @@
             })
         }
 
+        //Guardar fixture---------------------------------------------------------
         async function save() {
             Swal.fire({
                 title: 'Estas Segur@ de Guardar el FEATURE?',
@@ -287,13 +288,13 @@
                         title: $("#title").val(),
                         user_id: "{{ Auth::user()->id }}",
                         descansa_id: $("#descansa_id").val()
-                    }     
-                    console.log(midata)
+                    } 
                     var newf = await axios.post("/api/features/save", midata)
                     var enc = JSON.parse(localStorage.getItem("encuentros"))
                     for (let index = 0; index < enc.length; index++) {
                         var newecn =enc[index]
                         newecn["fixture_id"] = newf.data.id
+                        console.log(newecn)
                         var newf = await axios.post("/api/encuentros/save/", newecn)
                     }
                     location.href = "/admin/fixtures"

@@ -2,57 +2,15 @@
 
 @section('page_title', __('voyager::generic.viewing').' '.$dataType->getTranslatedAttribute('display_name_plural'))
 
-@section('page_header')
-    <div class="container-fluid">
-        <h1 class="page-title">
-            <i class="{{ $dataType->icon }}"></i> {{ $dataType->getTranslatedAttribute('display_name_plural') }}
-        </h1>
-        @can('add', app($dataType->model_name))
-            <a href="{{ route('voyager.'.$dataType->slug.'.create') }}" class="btn btn-sm btn-dark btn-add-new">
-                <i class="voyager-plus"></i> <span>{{ __('voyager::generic.add_new') }}</span>
-            </a>
-        @endcan
-        @can('delete', app($dataType->model_name))
-            {{-- @include('voyager::partials.bulk-delete') --}}
-        @endcan
-        @can('edit', app($dataType->model_name))
-            @if(!empty($dataType->order_column) && !empty($dataType->order_display_column))
-                <a href="{{ route('voyager.'.$dataType->slug.'.order') }}" class="btn btn-sm btn-primary btn-add-new">
-                    <i class="voyager-list"></i> <span>{{ __('voyager::bread.order') }}</span>
-                </a>
-            @endif
-        @endcan
-        @can('delete', app($dataType->model_name))
-            @if($usesSoftDeletes)
-                {{-- <input type="checkbox" @if ($showSoftDeleted) checked @endif id="show_soft_deletes" data-toggle="toggle" data-on="{{ __('voyager::bread.soft_deletes_off') }}" data-off="{{ __('voyager::bread.soft_deletes_on') }}"> --}}
-            @endif
-        @endcan
-        @foreach($actions as $action)
-            @if (method_exists($action, 'massAction'))
-                @include('voyager::bread.partials.actions', ['action' => $action, 'data' => null])
-            @endif
-        @endforeach
-        @include('voyager::multilingual.language-selector')
-    </div>
-@stop
-
 @section('content')
-<div id="voyager-loader" class="mireload" hidden>
-    <?php $admin_loader_img = Voyager::setting('admin.loader', ''); ?>
-    @if($admin_loader_img == '')
-        <img src="{{ voyager_asset('images/logo-icon.png') }}" alt="Voyager Loader">
-    @else
-        <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
-    @endif
-</div>
-    <div class="page-content browse container-fluid">
+
+    <div class="container-fluid">
         @include('voyager::alerts')
         <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-bordered">
-                    <div class="panel-body">
+            <div class="col-sm-12">
+
                         @if ($isServerSide)
-                            {{-- <form method="get" class="form-search">
+                            <form method="get" class="form-search">
                                 <div id="search-input">
                                     <div class="col-2">
                                         <select id="search_key" name="key">
@@ -80,17 +38,17 @@
                                     <input type="hidden" name="sort_order" value="{{ Request::get('sort_order') }}">
                                     <input type="hidden" name="order_by" value="{{ Request::get('order_by') }}">
                                 @endif
-                            </form> --}}
+                            </form>
                         @endif
                         <div class="table-responsive">
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                     <tr>
-                                        @if($showCheckboxColumn)
+                                        {{-- @if($showCheckboxColumn)
                                             <th class="dt-not-orderable">
                                                 <input type="checkbox" class="select_all">
                                             </th>
-                                        @endif
+                                        @endif --}}
                                         @foreach($dataType->browseRows as $row)
                                         <th>
                                             @if ($isServerSide && in_array($row->field, $sortableColumns))
@@ -115,11 +73,11 @@
                                 <tbody>
                                     @foreach($dataTypeContent as $data)
                                     <tr>
-                                        @if($showCheckboxColumn)
+                                        {{-- @if($showCheckboxColumn)
                                             <td>
                                                 <input type="checkbox" name="row_id" id="checkbox_{{ $data->getKey() }}" value="{{ $data->getKey() }}">
                                             </td>
-                                        @endif
+                                        @endif --}}
                                         @foreach($dataType->browseRows as $row)
                                             @php
                                             if ($data->{$row->field.'_browse'}) {
@@ -292,8 +250,6 @@
                                 ])->links() }}
                             </div>
                         @endif
-                    </div>
-                </div>
             </div>
         </div>
     </div>

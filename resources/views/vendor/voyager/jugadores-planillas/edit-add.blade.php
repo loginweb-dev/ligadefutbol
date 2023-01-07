@@ -487,7 +487,12 @@
                         phone: phone.toString(),
                         message: mitext
                     }
-                    await axios.post("/api/whaticket/send", midata)
+                    try {
+                        await axios.post("/api/whaticket/send", midata)
+                    } catch (error) {
+                        toastr.error("fallo la notificacion con whatsapp.")
+                    }
+                   
                 }
         }
 
@@ -622,7 +627,12 @@
                         phone: phone_club,
                         message: mitext
                     }
-                    await axios.post("/api/whaticket/send", midata)
+                    try {
+                        await axios.post("/api/whaticket/send", midata)
+                    } catch (error) {
+                        toastr.error("fallo en cnotificacion por whatsapp.")
+                    }
+                    
                 }
             }
             else{
@@ -631,7 +641,11 @@
                         phone: phone_delegado,
                         message: mitext
                     }
-                    await axios.post("/api/whaticket/send", midata)
+                    try {
+                        await axios.post("/api/whaticket/send", midata)
+                    } catch (error) {
+                        toastr.error("fallo en cnotificacion por whatsapp.")
+                    }
                 }
                 if (await validacion_wpp(phone_club)) {
                     var newpassword=Math.random().toString().substring(2, 6)
@@ -648,7 +662,12 @@
                         phone: phone_club,
                         message: mitext
                     }
-                    await axios.post("/api/whaticket/send", midata2)
+                    try {
+                        await axios.post("/api/whaticket/send", midata2)
+                    } catch (error) {
+                        toastr.error("Fallo con whatsapp")
+                    }
+                    
                 }
             }
             var midata={

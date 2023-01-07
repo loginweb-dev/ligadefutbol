@@ -26,6 +26,7 @@
         <div class="row">
         
             <div class="col-sm-12 text-center">
+                <br>
                 @if (Auth::user()->role_id==1 || Auth::user()->role_id==5)
                     @if($dataTypeContent->activo=="Entregado")
                         <a  class="btn btn-info" data-toggle="modal" data-target="#modal_acciones_planilla">
@@ -628,7 +629,7 @@
             <div class="modal-footer" >
                 <div id="div_botones_a_pagar" hidden>
                     <button onclick="save_asiento_individual()" type="button" class="btn btn-primary">Guardar</button>
-                    <button  type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>      
+                    {{-- <button  type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>       --}}
                 </div>
             </div>
           </div>
@@ -661,7 +662,7 @@
                     </div>                            
                 </div>
                 <div class="modal-footer mt-3">
-                    <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a>
+                    {{-- <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a> --}}
                     <a type="button" onclick="save_decision()" class="btn btn-dark">Guardar</a>
                 </div>
             </div>
@@ -791,7 +792,12 @@
                         phone: phone_club,
                         message: mitext
                     }
-                    await axios.post("/api/whaticket/send", midata)
+                    try {
+                        await axios.post("/api/whaticket/send", midata)
+                    } catch (error) {
+                        toastr.error("fallo con whatsapp.")
+                    }
+                    
                 }
             }
             else{
@@ -801,7 +807,11 @@
                         phone: phone_delegado,
                         message: mitext
                     }
-                    await axios.post("/api/whaticket/send", midata)
+                    try {
+                        await axios.post("/api/whaticket/send", midata)
+                    } catch (error) {
+                        toastr.error("fallo con whatsapp.")
+                    }
                 }
 
                 if (await validacion_wpp(phone_club)) {
@@ -820,7 +830,11 @@
                         phone: phone_club,
                         message: mitext
                     }
-                    await axios.post("/api/whaticket/send", midata2)
+                    try {
+                        await axios.post("/api/whaticket/send", midata2)
+                    } catch (error) {
+                        toastr.error("fallo con whatsapp.")
+                    }
                 }
             }
         }

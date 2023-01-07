@@ -27,7 +27,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-8">            
-   
+                        <div class="table-responsive">
                             <table class="table">
                                 <tr>
                                     <td>
@@ -61,14 +61,14 @@
                                     </td>
                                 </tr>
                             </table>
+                        </div>
 
-
-                <label for="">Lista o Feature</label>
+                {{-- <label for="">Lista o Feature</label> --}}
                 <div class="form-group table-responsive">
                     
-                    <table class="table" id="example">
+                    <table class="table mitable" id="example">
                         <thead>
-                            <tr>
+                            <tr class="active">
                                 <th scope="col">#</th>
                                 <th scope="col">Hora</th>
                                 <th scope="col">Categoria</th>

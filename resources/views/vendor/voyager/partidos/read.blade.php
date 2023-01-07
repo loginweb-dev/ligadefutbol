@@ -1,8 +1,8 @@
 @extends('voyager::master')
 
 @php
-    $ea = App\JugadoresPlanilla::where('id', $dataTypeContent->planilla_a_id)->with("clubes")->first();
-    $b = App\JugadoresPlanilla::where('id', $dataTypeContent->planilla_b_id)->with("clubes")->first();
+    $a = App\RelPlanillaJugadore::where('planilla_id', $dataTypeContent->planilla_a_id)->with('jugador')->get();
+    $b =App\RelPlanillaJugadore::where('planilla_id', $dataTypeContent->planilla_b_id)->with('jugador')->get();
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -44,15 +44,71 @@
         <div class="row">
             <div class="col-sm-6">
                 <h2> Planilla Equipo A</h2>
-                <table class="table">
-                    <tr>
-                        <td>{{ $ea->clubes->name }}</td>
-                    </tr>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" id="cluba">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Polera</th>
+                                <th scope="col">Nombres y Apellidos</th>
+                                <th scope="col">Edad</th>
+                                <th scope="col">TA</th>
+                                <th scope="col">TR</th>
+                                <th scope="col">G1T</th>
+                                <th scope="col">G2T</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($a as $item)
+                                <tr>
+                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $item->jugador->polera }}</td>
+                                    <td>{{ $item->jugador->name }}</td>
+                                    <td>{{ $item->jugador->edad }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="col-sm-6">
                 <h2> Planilla Equipo B</h2>
-                <td>{{ $b->clubes->name }}</td>
+                {{ $b }}
+                {{ $dataTypeContent->planilla_b_id }}
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" id="clubb">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Polera</th>
+                                <th scope="col">Nombres y Apellidos</th>
+                                <th scope="col">Edad</th>
+                                <th scope="col">TA</th>
+                                <th scope="col">TR</th>
+                                <th scope="col">G1T</th>
+                                <th scope="col">G2T</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($b as $item)
+                                <tr>
+                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $item->jugador->polera }}</td>
+                                    <td>{{ $item->jugador->name }}</td>
+                                    <td>{{ $item->jugador->edad }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -88,6 +144,28 @@
         </script>
     @endif
     <script>
+        var example1 = new BSTable("cluba", {
+			editableColumns:"4,5,6,7",
+			onEdit:function() {
+				console.log("EDITED");
+			},
+			advanced: {
+				columnLabel: ''
+			}
+		});
+        example1.init();
+
+        var example2 = new BSTable("clubb", {
+			editableColumns:"4,5,6,7",
+			onEdit:function() {
+				console.log("EDITED");
+			},
+			advanced: {
+				columnLabel: ''
+			}
+		});
+        example2.init();
+
         var deleteFormAction;
         $('.delete').on('click', function (e) {
             var form = $('#delete_form')[0];

@@ -27,36 +27,41 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-8">            
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <label for="">Veedor & Categoria</label>
-                            <form class="form-inline">                               
-                                <div class="form-group" style="border-style: outset;">
-                                    <select name="" id="delegado_id" class="select2 form-control">
-                                        @foreach ($delegados as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach                                    
-                                    </select>
-                                </div>
-                                <div class="form-group" style="border-style: outset;">
-                                    <select name="" id="categoria" class="select2 form-control">                        
-                                            <option value="Senior">Senior</option>
-                                            <option value="Especial">Especial</option>                                                       
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-sm-6">
-                            <label for="">Fecha</label>
-                            <div class="input-group">
-                                <input type="date" name="" id="mifecha" class="form-control">
-                                <span class="input-group-btn">
-                                  <button class="btn btn-dark btn-md" type="button" onclick="add_date()">Agregar</button>
-                                  <button class="btn btn-secundary btn-md" type="button" onclick="remove_list()">Limpiar</button>
-                                </span>
-                            </div>                           
-                        </div>
-                    </div>
+   
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <label for="">Categoria</label>
+                                        <div class="form-group" style="border-style: outset;">
+                                            <select name="" id="delegado_id" class="select2 form-control">
+                                                @foreach ($delegados as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                @endforeach                                    
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <label for="">Veedor</label>
+                                        <div class="form-group" style="border-style: outset;">
+                                            <select name="" id="categoria" class="select2 form-control">                        
+                                                    <option value="Senior">Senior</option>
+                                                    <option value="Especial">Especial</option>                                                       
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <label for="">Fecha</label>
+                                        <div class="input-group">
+                                            <input type="date" name="" id="mifecha" class="form-control">
+                                            <span class="input-group-btn">
+                                              <button class="btn btn-dark btn-md" type="button" onclick="add_date()">Agregar</button>
+                                              <button class="btn btn-secundary btn-md" type="button" onclick="remove_list()">Limpiar</button>
+                                            </span>
+                                        </div>   
+                                    </td>
+                                </tr>
+                            </table>
+
 
                 <label for="">Lista o Feature</label>
                 <div class="form-group table-responsive">
@@ -269,7 +274,7 @@
 
         async function save() {
             Swal.fire({
-                title: 'Estas Segur@ de Guardar la FEATURE?',
+                title: 'Estas Segur@ de Guardar el FEATURE?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -277,12 +282,14 @@
                 confirmButtonText: 'SI',
                 cancelButtonText: 'NO'
                 }).then(async (result) => {
-                if (result.isConfirmed) {           
-                    var newf = await axios.post("/api/features/save", {
+                if (result.isConfirmed) {      
+                    var midata = {
                         title: $("#title").val(),
                         user_id: "{{ Auth::user()->id }}",
                         descansa_id: $("#descansa_id").val()
-                    })
+                    }     
+                    console.log(midata)
+                    var newf = await axios.post("/api/features/save", midata)
                     var enc = JSON.parse(localStorage.getItem("encuentros"))
                     for (let index = 0; index < enc.length; index++) {
                         var newecn =enc[index]

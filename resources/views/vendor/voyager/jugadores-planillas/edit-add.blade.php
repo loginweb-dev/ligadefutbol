@@ -34,16 +34,13 @@
         <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
     @endif
 </div>
-    <div class="page-content edit-add container-fluid">
-        {{-- <div class="row">
-            <div class="col-sm-12"> --}}
+    <div class="container-fluid">
                 <div class="panel panel-bordered">
                     <a class="btn btn-dark" onclick="probar_mensaje_whatsapp()"> Prueba Formato Wpp</a>
 
                     <div class="row">        
                             <div class="col-sm-12 text-center">
                             	<h2>PASO 1.- DETALLES DEL CLUB</h2>
-                            	{{-- <p>Formulario para el registro de nominas de jugadores del club o equipo: {{ $club_unico->name }}</p> --}}
                             </div>
                             <div class="col-sm-4 text-center" id="club_div" hidden>
                                 <label for="select_club">Club</label>
@@ -66,19 +63,6 @@
 
                                 <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
                             </div>
-
-                            {{-- <div class="col-sm-4">
-                                <label for="select_cat">Categoria</label>
-                                <div style="border-style: outset;">    
-                                    <select class="form-control select2" name="select_cat" id="select_cat">
-                                        <option value="Senior">Senior</option>
-                                        <option value="Especial">Especial</option>
-                                    </select>
-                                </div>
-                            </div> --}}
-
-                           
-
                             <div class="col-sm-4">
                                 <div class="input-group">
                                     <label>Delegado</label>
@@ -100,34 +84,14 @@
                                         <a  class="btn  btn-dark" data-toggle="modal" data-target="#modal_delegado" ><span>Crear </span>  <i class="voyager-plus"></i>  </a>    
                                     </span>
                                 </div>
-                                {{-- <div style="border-style: outset;">    
-                                   
-                                </div> --}}
-                                {{-- <input type="text" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2"> --}}
-                                {{-- <span class="input-group-addon" id="basic-addon2">@example.com</span> --}}
                             </div>
-                         
-
-                            {{-- <div class="col-sm-4" hidden>
-                                <label for="select_delegado">Delegado</label>
-                                <div style="border-style: outset;">    
-                                    <select class="form-control select2" name="select_delegado" id="select_delegado">
-                                        @foreach ($delegados  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach  
-                                    </select>
-                                </div>                   
-                            </div> --}}
                             <div class="col-sm-4" hidden>
                                 <br />
                                     <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
-                                    {{-- <button type="button" class="btn btn-dark dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> --}}
-
                             </div>
-                                
        				</div>
-                    <div class="row"  >        
 
+                    <div class="row"  >        
                         <div class="col-sm-12 text-center">
                             <h2>PASO 2.- JUGADORES</h2>                                
 							<p>Selecina los jugadores exitentes en la lista, tambien puedes agregar uno nuevo.</p>
@@ -147,34 +111,11 @@
                             </div>
                         </div>
                            
-                            {{-- <div class="col-sm-6 text-center">
-                               	<label>Lista de jugadores existentes.</label>
-                                <div style="border-style: outset;">
-                                        
-                                   
-                                </div>                                
-                            </div> --}}
-                        {{-- <div class="col-sm-6 text-center" id="club_div" hidden>
-                            <label for="select_club">Club</label>
-                            <div style="border-style: outset;">                                
-                                <select class="form-control select2" name="select_club" id="select_club">
-                                    @if(Auth::user()->role_id==3)
-                                        <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
-                                    @else
-                                        @foreach ($equipos  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach   
-                                    @endif
-                                    
-                                </select>
-                            </div>
-                        </div> --}}
 
                         <div class="col-sm-6">
                             <label for="select_cat">Categoria</label>
                             <div style="border-style: outset;">    
                                 <select class="form-control select2" name="select_cat" id="select_cat">
-                                    {{-- <option value="">Elegir Categoria</option> --}}
                                     <option value="Senior">Senior</option>
                                     <option value="Especial">Especial</option>
                                 </select>
@@ -186,13 +127,9 @@
                         <div class="col-sm-6 text-center">
                             <div class="input-group">
                                 <label>Lista de jugadores existentes.</label>
-
-                                {{-- <button type="button" class="btn btn-dark">Acciones jugadores</button> --}}
                                 <div style="border-style: outset;">  
 
                                 <select name="" id="select_jugador" class="form-control select2">
-                                    {{-- <option value="null">Jugadores</option> --}}
-
                                     @if(Auth::user()->role_id==3)
                                         @foreach ($club_unico->jugadores  as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -227,7 +164,6 @@
                                     <thead class="thead-dark">
                                         <tr>
                                             <th class="text-center" scope="col">#</th>
-                                            {{-- <th class="text-center" scope="col">Edad</th> --}}
                                             <th class="text-center" scope="col">Suplentes</th>
                                             <th class="text-center" scope="col">Polera</th>
                                             <th class="text-center" scope="col">Nombre</th>
@@ -239,11 +175,9 @@
                                 </table>
                             </div>
                         </div>
-                        
+                    </div> 
 
-                    </div>   {{-- close row 2 --}}
 					<div class="row"> 
-                        
                         	<div class="col-sm-12 text-center">
                         		<h2>PASO 3.- TOTALES</h2>
                         		<p>totales en pagos u deudas para el equipo.</p>
@@ -274,11 +208,7 @@
                             </div>   
                                 
                     </div>                                                             
-
-
                 </div>
-            {{-- </div>
-        </div> --}}
     </div>
 
     <div class="modal fade modal-danger" id="confirm_delete_modal">
@@ -345,9 +275,6 @@
                                 <textarea class="form-control" name="observacion_transferencia" id="observacion_transferencia"  rows="3"></textarea>
                             </div>
                         </div>
-                        {{-- <div hidden>
-                            <input type="number" id="input_transferencia">
-                        </div> --}}
                     </div>
 
                 </div>
@@ -437,17 +364,6 @@
                                 <input class="form-control" id="wpp_jugador_create" name="wpp_jugador_create" type="number">
                             </div>
                         </div>
-                        
-                        {{-- <div class="col-sm-6">
-                            <label for="delegado_creation">Nombre Delegado</label>
-                            <div style="border-style: outset;">                                
-                                <input type="text" class="form-control" id="delegado_creation" name="delegado_creation" placeholder="Introduzca el nombre del Delegado">
-                            </div>
-                        </div> --}}
-                        
-                        {{-- <div hidden>
-                            <input type="number" id="input_transferencia">
-                        </div> --}}
                     </div>
 
                 </div>
@@ -462,10 +378,10 @@
 
 @section('javascript')
     <script>
+        // guardar planilla-----------------------------------------------------------------
         function misave(){
             Swal.fire({
-                title: 'Estas Seguro de Guardar?',
-                // text: "You won't be able to revert this!",
+                title: 'Estas Seguro de Guardar ?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -474,17 +390,16 @@
                 cancelButtonText: 'NO'
                 }).then((result) => {
                 if (result.isConfirmed) {
-                // location.href = "{{setting('admin.url')}}admin/jugadores-planillas"
                     $('.mireload').attr("hidden", false)
                     guardar_planilla()
-                    // location.href = "/admin/jugadores-planillas"
                 }
             })
         }
+
+        // guardar transferencia-----------------------------------------------------------------
         function save_transferencia(){
             Swal.fire({
                 title: 'Estas Seguro de Guardar la Transferencia?',
-                // text: "You won't be able to revert this!",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -493,89 +408,35 @@
                 cancelButtonText: 'NO'
                 }).then((result) => {
                 if (result.isConfirmed) {
-                // location.href = "{{setting('admin.url')}}admin/jugadores-planillas"
                     $('.mireload').attr("hidden", false)
                     $("#modal_transferencia .close").click()
                     transferir_jugador()
-                    // location.href = "/admin/jugadores-planillas"
                 }
             })
         }
+
+        // guardar Delegado-----------------------------------------------------------------
         function save_delegado(){
-            Swal.fire({
-                title: 'Estas Seguro de Guardar el Delegado?',
-                // text: "You won't be able to revert this!",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'SI',
-                cancelButtonText: 'NO'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                // location.href = "{{setting('admin.url')}}admin/jugadores-planillas"
-                    $('.mireload').attr("hidden", false)
-                    $("#modal_delegado .close").click()
-                    crear_delegado()
-                    // location.href = "/admin/jugadores-planillas"
-                }
-            })
+            $('.mireload').attr("hidden", false)
+            $("#modal_delegado .close").click()
+            crear_delegado()
         }
+
+        // guardar Jugador-----------------------------------------------------------------
         function save_jugador(){
-            Swal.fire({
-                title: 'Estas Seguro de Crear el Jugador?',
-                // text: "You won't be able to revert this!",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'SI',
-                cancelButtonText: 'NO'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                // location.href = "{{setting('admin.url')}}admin/jugadores-planillas"
-                    $('.mireload').attr("hidden", false)
-                    $("#modal_jugador .close").click()
-                    crear_jugador()
-                    // location.href = "/admin/jugadores-planillas"
-                }
-            })
+            $('.mireload').attr("hidden", false)
+            $("#modal_jugador .close").click()
+            crear_jugador()
         }
 
         async function probar_mensaje_whatsapp() {
-            //     var planilla= await axios.post("/api/find/planilla", {planilla_id: 22})
-            //     var phone_club=(planilla.data.clubes.wpp).toString()
-            //     var phone_delegado=(planilla.data.delegado.phone).toString()
-            //     var mitext=""
-            //         mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Rechazada* ------------------------\n\n"
-            //         mitext+="*Club*:\n"
-            //         mitext+="- "+planilla.data.clubes.name+"\n"
-            //         mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
-            //         mitext+="*Observación*:\n"
-            //         mitext+="- "+$("#text_area_observacion").val()+"\n\n"
-            //         mitext+="Nota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"
-            //         mitext+="*Credenciales*:\n"
-            //         mitext+="Usuario: \n"
-            //         mitext+="Contraseña: \n\n"
-            //         mitext+="Link del Sistema: {{setting('admin.url')}}"
-
-            // var midata={
-            //         phone: '70269362',
-            //         message: mitext
-            //     }
-            //     // console.log("1 "+midata)
-            //     await axios.post("/api/whaticket/send", midata)
             var telefono= '70269362'
             if (await validacion_wpp(telefono)) {
                 var midata={
                     phone: telefono,
                     message: "hola"
                 }
-                // console.log("1 "+midata)
-                //await axios.post("/api/whaticket/send", midata)
             }
-            // console.log(await validacion_wpp(70269362))
-
         }
 
         async function notificacion_planilla_creada() {
@@ -601,15 +462,10 @@
                 mitext+="15.- Pedro Manuel Hurtado Monasterio\n\n"
                 mitext+="Se enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
                 mitext+="Puede Verificar el Estado de la misma en: "+"https://ligadefutbol.loginweb.dev/admin/jugadores-planillas/1\n"
-
-
-
             var midata={
                     phone: '70269362',
                     message: mitext
                 }
-                // console.log("1 "+midata)
-                //await axios.post("/api/whaticket/send", midata)
         }
 
         async function notificacion_asientos_jugadores(fecha, titularidad, nombre, camiseta, men_pagada, phone) {
@@ -630,7 +486,6 @@
                         phone: phone.toString(),
                         message: mitext
                     }
-                    // console.log("1 "+midata)
                     await axios.post("/api/whaticket/send", midata)
                 }
         }
@@ -640,12 +495,9 @@
             var clube_id= $("#select_club").val()
             var categoria_jugadores= $("#select_cat").val()
             var fecha_entrega=$("#fecha_mensual").val()+"-01"
-            // var hora_entrega=$("#input_hora").val()
-            // var veedor_id= $("#select_veedor").val()
             var delegado_id=$("#select_delegado").val()
             var deuda=$("#input_deudas").val()
             var total=$("#input_total").val()
-            // var observacion=$("#text_area_deudas").val()
             var observacion=""
             var subtotal=$("#input_sub_total").val()
 
@@ -653,8 +505,6 @@
                 clube_id: clube_id,
                 categoria_jugadores:categoria_jugadores,
                 fecha_entrega:fecha_entrega,
-                // hora_entrega:hora_entrega,
-                // veedor_id:veedor_id,
                 delegado_id:delegado_id,
                 deuda:deuda,
                 total:total,
@@ -666,8 +516,6 @@
             console.log(fecha_entrega)
 
             var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
-            console.log(planilla.data)
-            
             var phone_club=planilla.data.clubes.wpp
             var phone_delegado=planilla.data.delegado.phone
 
@@ -676,12 +524,8 @@
             }
             if (await validacion_wpp(phone_delegado)) {
                 phone_delegado= phone_delegado.toString()
-            }
-           
+            }           
             await generar_nomina(planilla.data.id, phone_club, phone_delegado, planilla.data.fecha)
-
-          
-        
         }
 
         function comparar_exis_jug(id){
@@ -691,23 +535,15 @@
                     validador=true
                 }
             })
-            // $('.tab_jugs_sups_id').each(function(){
-            //     if (id==this.value) {
-            //         validador=true
-            //     }
-            // })
             return validador;
         }
 
         async function generar_nomina(planilla_id, phone_club, phone_delegado, fecha){
             var jugs=[];
-            // var jugs_sups=[];
             var jugs_id=[];
             var jugs_phone=[];
-            // var jugs_sups_id=[];
             var titular=0
             var cant_jugs_deudas=0
-
             var table2 = document.getElementById("table2");
 
             var index=0;
@@ -734,8 +570,6 @@
             var wpp_suplentes=""
             var wpp_index_sups=0
             for (var i = 1, row; row = table2.rows[i]; i++) {
-                // console.log("Numero: "+row.cells[0].innerText+" Edad: "+row.cells[1].innerText+" Polera: "+row.cells[2].innerText+" N y A: "+ row.cells[3].innerText+ " Mensualidad: "+row.cells[4].innerText)
-
                 var mensualidad= 0
                 if (row.cells[4].innerText!="") {
                     mensualidad= parseInt(row.cells[4].innerText)
@@ -746,13 +580,8 @@
 
                 if ($("#check_"+parseInt(jugs_id[(i-1)])+"").prop('checked')) {
                     titular=2
-                    //Cuerpo Suplentes
                     wpp_index_sups+=1
                     wpp_suplentes+=wpp_index_sups+".- "+row.cells[3].innerText+"\n"
-
-                    //var jugador= await axios("/api/jugadores/find/"+parseInt(jugs_id[(i-1)]))
-                    //Mensaje Asientos Suplentes
-                    //console.log(jugador.data)
                     if (await validacion_wpp(jugs_phone[(i-1)])) {
                         await notificacion_asientos_jugadores(fecha, "Suplente", "- "+row.cells[3].innerText, "- "+row.cells[2].innerText, row.cells[4].innerText, jugs_phone[(i-1)])
                     }
@@ -762,10 +591,6 @@
                     //Cuerpo Titulares
                     wpp_index_tits+=1
                     wpp_titulares+=wpp_index_tits+".- "+row.cells[3].innerText+"\n"
-
-                    //Mensaje Asientos Titulares
-                    //var jugador= await axios("/api/jugadores/find/"+parseInt(jugs_id[(i-1)]))
-                    //console.log(jugador.data)
                     if (await validacion_wpp(jugs_phone[(i-1)])) {
                         await notificacion_asientos_jugadores(fecha, "Titular", "- "+row.cells[3].innerText, "- "+row.cells[2].innerText, row.cells[4].innerText, jugs_phone[(i-1)])
                     }
@@ -794,7 +619,7 @@
                         monto_pagado: mensualidad,
                         monto_restante:(monto_dinero-mensualidad)
                     }
-                    var asiento= await axios.post("{{setting('admin.url')}}api/asiento/save", data)
+                    var asiento= await axios.post("/api/asiento/save", data)
 
                 }
                 else{
@@ -811,8 +636,7 @@
                         monto_pagado: monto_dinero,
                         monto_restante:0
                     }
-                    var asiento= await axios.post("{{setting('admin.url')}}api/asiento/save", data)
-
+                    var asiento= await axios.post("/api/asiento/save", data)
                 }
                console.log(midata)
             
@@ -835,7 +659,6 @@
                     mitext+="Usuario: "+user.data.email+"\n"
                     mitext+="Contraseña: "+newpassword+"\n\n"
                     mitext+="Link del Sistema: {{setting('admin.url')}}"
-                    // mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
                     var midata={
                         phone: phone_club,
                         message: mitext
@@ -862,7 +685,6 @@
                     mitext+="Usuario: "+user.data.email+"\n"
                     mitext+="Contraseña: "+newpassword+"\n\n"
                     mitext+="Link del Sistema: {{setting('admin.url')}}"
-                    // mitext+="Puede Verificar el Estado de la misma en: "+"{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
                     var midata2={
                         phone: phone_club,
                         message: mitext
@@ -870,16 +692,13 @@
                     await axios.post("/api/whaticket/send", midata2)
                 }
             }
-
-
-
             var midata={
                 cant_jugs_deudores:cant_jugs_deudas,
                 planilla_id: planilla_id
             }
             await axios.post("/api/update/cant/jugs/deudores", midata)
             
-            location.href="{{setting('admin.url')}}admin/jugadores-planillas/"+planilla_id
+            location.href="/admin/jugadores-planillas/"+planilla_id
         }
 
 
@@ -896,8 +715,6 @@
         async function add_todos(){
             var equipo_id=$("#select_club").val()
             var jugadores= await axios("/api/jugadores/planilla/find/jugadores/"+equipo_id)
-            // var cont= count_jugs()+1
-
             for (let index = 0; index < jugadores.data.length; index++) {
                 var jugador= await axios("/api/jugadores/find/"+jugadores.data[index].id)
                 await add_jugador(jugador)
@@ -906,27 +723,12 @@
         }
         async function add_fila(){
             var jugador_id=0
-            // if (tipo==1) {
                 jugador_id= $("#select_jugador").val()
-            // }
-            // else{
-            //     jugador_id= $("#select_jugador_sup").val()
-            //     // console.log("Jugador: "+jugador_id)
-            // }
-
             if (jugador_id !="null") {
-
                 var jugador= await axios("/api/jugadores/find/"+jugador_id )
-                
                 var cont= count_jugs()
-                // if (tipo==2) {
-                //     cont=cont+ count_jugs(2)
-                // }
                 var num=cont+1
                 if (cont==0) {
-                    // console.log("Hola1")
-                    // console.log("Select"+$("#select_club").val())
-                    // console.log(jugador.data.club_id)
                     if (jugador.data.clube_id!= $("#select_club").val()) {
                         if ($("#select_club").val()=="null") {
                             toastr.error("Selecciona el Club en la parte Superior del cual crearás la plantilla.")
@@ -936,35 +738,21 @@
                         }
                     }
                     else{
-                        // await add_jugador(jugador, num)
                         await add_jugador(jugador)
-
                     }
                 }else{
-                    // console.log("Hola2")
-
                     var clube_id=club_jugs()
-
-                    // console.log("Club "+club_id)
-                    // console.log("Jugador Equipo "+jugador.data.club_id)
-
                     if (jugador.data.clube_id!=clube_id ) {
                         toastr.error("El Jugador que intenta ingresar pertenece a otro equipo, realice la transferencia si desea utilizarlo.")
                     }
                     else{
-                        // await add_jugador(jugador, num)
                         await add_jugador(jugador)
-
                     }
                 }
             }
             else{
                 toastr.error("Seleccione Jugador para Agregarlo")
-            }
-          
-            
-           
-            
+            }                                             
         }
 
         async function add_jugador(jugador){
@@ -973,99 +761,43 @@
             }
             else{
                 var cont=count_jugs()+1
-                // if (tipo==1) {
-                    // $('#table2').append("<tr><td><input class='tab_jugs_tits_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden>"+cont+"</td><td class='tab_jugs_tits'>"+jugador.data.edad+"</td><td>  "+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>1400</td></tr>");
                     $('#table2').append("<tr><td><input class='tab_jugs_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden><input class='tab_jugs_phone' type='number' value="+jugador.data.phone+" hidden>"+cont+"</td><td class='tab_jugs'><input id='check_"+jugador.data.id+"' type='checkbox'></td><td>  "+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>"+parseInt("{{setting('finanzas.mensualidad_jug')}}")+"</td></tr>");
 
                     example2.init();
-                // }
-                // else{
-                //     $('#table3').append("<tr><td><input class='tab_jugs_sups_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs_sups' type='number' value="+jugador.data.clube_id+" hidden>"+cont+"</td><td class='tab_jugs_sups'>"+jugador.data.edad+"</td><td>"+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_sup'>1400</td></tr>");
-                //     example3.init();
-                // }
                 total_mensualidades()
-            }
-           
-            
+            }                       
         }
-
-        // function add_deudas() {
-        //     $('#table4').append("<tr><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td></tr>")
-        //     example4.init()
-        // }
 
         function total_mensualidades() {
             var tits= count_jugs()
-            // var sups =count_jugs(2)
-            // var cuotas= parseInt(tits) + parseInt(sups)
             var cuotas= parseInt(tits)
             var sub_total_tits= 0
             var sub_total_sups=0
             var subtotal=0
-            // $('.mensualidad_table_tit').each(function (){
-            //     sub_total_tits+= parseInt(this.value)
-            //     console.log(this.value)
-            // })
-            //$('.mensualidad_table_sup').each(function (){
-            //     sub_total_sups+=parseInt(this.value)
-            // })
-
             for (var i = 1, row; row = table2.rows[i]; i++) {
                 sub_total_tits+= parseInt(row.cells[4].innerText)
             }
-            // for (var i = 1, row; row = table3.rows[i]; i++) {
-            //     sub_total_sups+= parseInt(row.cells[4].innerText)
-            // }
-
-
-
-
             subtotal= (tits)*parseInt("{{setting('finanzas.mensualidad_jug')}}")
 
                 $("#input_sub_total").val(subtotal)
                 $("#input_total").val((sub_total_sups+sub_total_tits))
             var monto_adeudado= subtotal-(sub_total_tits+sub_total_sups)
                 $("#input_deudas").val(monto_adeudado)
-
         }
 
         function count_jugs(){
             var num=0
-            // if (tipo==1) {
                 $('.tab_jugs').each(function(){
                     num+=1
                 })
-            // }
-            // else{
-            //     $('.tab_jugs_sups').each(function(){
-            //         num+=1
-            //     })
-            // }
-           
-            // console.log(num)
             return num;
         }
 
         function club_jugs(){
             var clube_id=0
-
-            // if (tipo==1) {
-            //     $('.tab_club_jugs').each(function(){
-            //         clube_id=this.value
-            //     })
-            // }
-            // else{
                 clube_id=$("#select_club").val()
-            // }
-           
-            // console.log(num)
             return clube_id;
         }
-        //Setear Input de Tipo de Jugador en modal
-        // function set_input_tipo_jugador(tipo) {
-        //     $("#input_transferencia").val(tipo)
-        // }
-
         async function transferir_jugador() {
             var midata={
                 'jugadore_id':$("#jugador_transferencia").val(),
@@ -1077,11 +809,7 @@
             if (transferencia.data!=null) {
                 $('.mireload').attr("hidden", true)
                 var cont= count_jugs()
-                // if ($("#input_transferencia").val()==2) {
-                //     cont=cont+ count_jugs(2)
-                // }
                 var jugador= await axios("/api/jugadores/find/"+$("#jugador_transferencia").val() )
-                // await add_jugador(jugador, (cont+1))
                 await add_jugador(jugador)
                 toastr.success("Jugador Transferido Exitosamente")
 
@@ -1110,19 +838,13 @@
                 'polera':$("#polera_jugador_create").val(),
                 'edad':$("#edad_jugador_create").val(),
                 'nacido':$("#nacido_jugador_create").val(),
-                // 'jug_categoria':$("#").val(),
                 'clube_id':$("#select_club").val(),
-                // 'color_carnet':$("#").val(),
                 'phone':$("#wpp_jugador_create").val()
             }
             var jugador= await axios.post("/api/create/jugador", midata)
             if (jugador.data!=null) {
                 $('.mireload').attr("hidden", true)
                 var cont= count_jugs()
-                // if ($("#input_transferencia").val()==2) {
-                //     cont=cont+ count_jugs(2)
-                // }
-                // await add_jugador(jugador, (cont+1))
                 await add_jugador(jugador)
                 toastr.success("Jugador Creado Exitosamente")
             }
@@ -1130,7 +852,6 @@
 
         var example2 = new BSTable("table2", {
 			editableColumns:"2,4",
-			// $addButton: $('#table2-new-row-button'),
 			onEdit:function() {
 				console.log("EDITED");
                 total_mensualidades()
@@ -1143,28 +864,6 @@
 				columnLabel: ''
 			}
 		});
-        // var example3 = new BSTable("table3", {
-		// 	editableColumns:"2,4",
-		// 	// $addButton: $('#table2-new-row-button'),
-		// 	onEdit:function() {
-        //         total_mensualidades()
-		// 		console.log("EDITED");
-		// 	},
-		// 	advanced: {
-		// 		columnLabel: ''
-		// 	}
-		// });
-
-        // var example4 = new BSTable("table4", {
-		// 	editableColumns:"1,2,3,4,5,6,7,8,9",
-		// 	// $addButton: $('#table2-new-row-button'),
-		// 	onEdit:function() {
-		// 		console.log("EDITED");
-		// 	},
-		// 	advanced: {
-		// 		columnLabel: ''
-		// 	}
-		// });
 
         $("#select_club").change(async function () { 
             $('#select_jugador').find('option').remove().end()
@@ -1185,8 +884,8 @@
                     text: delegados.data[index].name
                 }));
             }
-
         })
+
         $("#select_equipo_sup").change(async function () { 
 
             $('#select_jugador_sup').find('option').remove().end()
@@ -1200,6 +899,7 @@
             }
 
         })
+
         //select jugadores Modal Transferencia
         $("#equipo_transferencia").change(async function () { 
             $('#jugador_transferencia').find('option').remove().end()
@@ -1231,7 +931,6 @@
         async function validad_roles() {
             //Si es Club
             if ("{{Auth::user()->role_id}}"==3) {
-                
             }
             else{//Si es Admin o Manager
                 $("#club_div").attr("hidden", false)
@@ -1241,7 +940,6 @@
 
         var params = {};
         var $file;
-
         function deleteHandler(tag, isMulti) {
           return function() {
             $file = $(this).siblings(tag);

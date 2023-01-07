@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+// rutas PARTIDOS
 Route::group(['prefix' => 'partidos'], function () {
 
     Route::get('/nomina/{planilla_id}', function ($planilla_id) {

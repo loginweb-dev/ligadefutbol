@@ -871,25 +871,11 @@
             })
         }
         function save_decision(){
-            Swal.fire({
-                title: 'Estas Seguro de Guardar el Estado de la Planilla?',
-                // text: "You won't be able to revert this!",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'SI',
-                cancelButtonText: 'NO'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                // location.href = "{{setting('admin.url')}}admin/jugadores-planillas"
-                    $('.mireload').attr("hidden", false)
-                    $("#modal_acciones_planilla .close").click()
-                    acciones_planilla()
-                    // location.href = "/admin/jugadores-planillas"
-                }
-            })
+            $('.mireload').attr("hidden", false)
+            $("#modal_acciones_planilla .close").click()
+            acciones_planilla()
         }
+
         function save_asiento_individual(){
             Swal.fire({
                 title: 'Estas Seguro de Pagar el Asiento?',
@@ -914,7 +900,7 @@
                 planilla_id: "{{$dataTypeContent->id}}",
                 decision: $("#select_accion").val()
             }
-            var planilla= await axios.post("/api/find/planilla", {planilla_id: parseInt("{{$dataTypeContent->id}}")})
+            var planilla= await axios.post("/api/find/planilla", {planilla_id: parseInt("{{ $dataTypeContent->id }}")})
             var phone_club=planilla.data.clubes.wpp
             var phone_delegado=planilla.data.delegado.phone
             if (await validacion_wpp(phone_club)) {
@@ -935,10 +921,7 @@
                     mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
                     mitext+="*Observación*:\n"
                     mitext+="- "+$("#text_area_observacion").val()
-                    mitext+="\n\nNota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"
-
-                
-
+                    mitext+="\n\nNota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"        
             }
             else{
                 mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Aprobada* ------------------------\n\n"

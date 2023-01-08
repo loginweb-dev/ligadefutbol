@@ -11,21 +11,11 @@
 
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
-@section('page_header')
-    <h1 class="page-title">
-        <i class="{{ $dataType->icon }}"></i>
-        {{ __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular') }}
-    </h1>
-    @include('voyager::multilingual.language-selector')
-@stop
-
 @section('content')
-    <div class="page-content edit-add container-fluid">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-
-                <div class="panel panel-bordered">
-                    <!-- form start -->
+            <div class="col-sm-12 form-group">
+                    <hr>
                     <form role="form"
                             class="form-edit-add"
                             action="{{ $edit ? route('voyager.'.$dataType->slug.'.update', $dataTypeContent->getKey()) : route('voyager.'.$dataType->slug.'.store') }}"
@@ -38,7 +28,7 @@
                         <!-- CSRF TOKEN -->
                         {{ csrf_field() }}
 
-                        <div class="panel-body">
+                
 
                             @if (count($errors) > 0)
                                 <div class="alert alert-danger">
@@ -78,9 +68,13 @@
                                     @elseif (isset($row->details->view))
                                         @include($row->details->view, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'action' => ($edit ? 'edit' : 'add'), 'view' => ($edit ? 'edit' : 'add'), 'options' => $row->details])
                                     @elseif ($row->type == 'relationship')
-                                        @include('voyager::formfields.relationship', ['options' => $row->details])
+                                        <div class="miselect">
+                                            @include('voyager::formfields.relationship', ['options' => $row->details])
+                                        </div>                                      
                                     @else
-                                        {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
+                                        <div class="miselect">
+                                            {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
+                                        </div>  
                                     @endif
 
                                     @foreach (app('voyager')->afterFormFields($row, $dataType, $dataTypeContent) as $after)
@@ -94,21 +88,24 @@
                                 </div>
                             @endforeach
 
-                        </div><!-- panel-body -->
+                    
 
-                        <div class="panel-footer">
-                            @section('submit-buttons')
-                                <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
-                            @stop
-                            @yield('submit-buttons')
-                        </div>
+                            <div class="col-sm-6">
+                                <br>
+                                @section('submit-buttons')
+                                    <button type="submit" class="btn btn-primary btn-block save">{{ __('voyager::generic.save') }}</button>
+                                @stop
+                                @yield('submit-buttons')
+                            </div>
+                
+                    
                     </form>
 
                     <div style="display:none">
                         <input type="hidden" id="upload_url" value="{{ route('voyager.upload') }}">
                         <input type="hidden" id="upload_type_slug" value="{{ $dataType->slug }}">
                     </div>
-                </div>
+
             </div>
         </div>
     </div>

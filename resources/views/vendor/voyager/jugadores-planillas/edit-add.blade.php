@@ -25,63 +25,16 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="row">        
-                <div class="col-sm-12 text-center">
-                    <h2>PASO 1.- FORMULARIO NUEVA NOMIMA</h2>
-                </div>
-                
-                <div class="col-sm-4 text-center" id="club_div" hidden>
-                    <label for="select_club">Club</label>
-                    <div style="border-style: outset;">                                
-                        <select class="form-control select2" name="select_club" id="select_club">
-                            @if(Auth::user()->role_id==3)
-                                <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
-                            @else
-                                @foreach ($equipos  as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach   
-                            @endif
-                            
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-sm-4">
-                    <label for="fecha">Gestión</label>
-                    <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
-                </div>
-
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        <label>Delegado</label>
-                        <div style="border-style: outset;">  
-                            <select class="form-control select2" name="select_delegado" id="select_delegado">
-                                @if(Auth::user()->role_id==3)
-                                    @foreach ($delegados_club  as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach  
-                                @else
-                                    @foreach ($delegados  as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach  
-                                @endif
-                            </select>
-                        </div>
-                        <br>
-                        <span class="input-group-btn">
-                            <a  class="btn btn-dark" data-toggle="modal" data-target="#modal_delegado" ><i class="voyager-plus"></i>  </a>    
-                        </span>
-                    </div>
-                </div>
+      
                 <div class="col-sm-4" hidden>
                     <br />
                     <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
                 </div>
-        </div>
+
 
         <div class="row"  >        
-            <div class="col-sm-12 text-center">
-                <h2>PASO 2.- CREAR LISTA DE JUGADORES</h2>                                
+            <div class="text-center">
+                <h2>NUEVA NOMINA & PLANTILLA</h2>                                
             </div>    
             <div class="col-sm-4" hidden>
                 <label for="select_equipo">Equipo</label>
@@ -99,52 +52,8 @@
             </div>
                 
 
-            <div class="col-sm-6">
-                <label for="select_cat">Categoria</label>
-                <div style="border-style: outset;">    
-                    <select class="form-control select2" name="select_cat" id="select_cat">
-                        <option value="Senior">Senior</option>
-                        <option value="Especial">Especial</option>
-                    </select>
-                </div>
-            </div>
-
-
-                            
-            <div class="col-sm-6 text-center">
-                <div class="input-group">
-                    <label>Lista de jugadores existentes.</label>
-                    <div style="border-style: outset;">  
-                    <select name="" id="select_jugador" class="form-control select2">
-                        @if(Auth::user()->role_id==3)
-                            @foreach ($club_unico->jugadores  as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        @else
-                            @foreach ($jugadores  as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                    </div>
-                    <br>
-                    <span class="input-group-btn ">
-                        <button type="button" class="btn btn-dark dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Acciones
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a  href="#" onclick="add_todos()">Agregar Toda la Lista</a></li>
-                            <li><a  href="#" onclick="add_fila()">Agregar Jugador Individual</a></li>
-                            <li><a  href="#" data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
-                            <li><a  href="#" data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
-                        </ul>
-                    </span>
-                </div>
-            </div>
-
-            <div class="col-sm-12">
+            <div class="col-sm-8">
+                <label for="">Lista de Jugadores</label>
                 <div  class=" table-responsive">
                     <table class="table table-striped mitable" id="table2">
                         <thead class="thead-dark">
@@ -161,32 +70,114 @@
                     </table>
                 </div>
             </div>
-        </div> 
 
-        <div class="row"> 
-                <div class="col-sm-12 text-center">
-                    <h2>PASO 3.- RECAUDACION Y TOTALES </h2>
+            <div class="col-sm-4">
+
+
+                <div class="form-group" id="club_div" hidden>
+                    <label for="select_club">Club</label>
+                    <div class="miselect">                                
+                        <select class="form-control select2" name="select_club" id="select_club">
+                            @if(Auth::user()->role_id==3)
+                                <option value="{{$club_unico->id}}">{{$club_unico->name}}</option>
+                            @else
+                                @foreach ($equipos  as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach   
+                            @endif
+                            
+                        </select>
+                    </div>
                 </div>
-                <div class="col-sm-3">
+
+                <label for="select_cat">Categoria</label>
+                <div class="form-group miselect">                    
+                    <select class="form-control select2" name="select_cat" id="select_cat">
+                        <option value="Senior">Senior</option>
+                        <option value="Especial">Especial</option>
+                    </select>
+                </div>
+                
+   
+                <label>Lista de jugadores existentes.</label>
+                <div class="form-group miselect">  
+                    <select name="" id="select_jugador" class="form-control select2">
+                        @if(Auth::user()->role_id==3)
+                            @foreach ($club_unico->jugadores  as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        @else
+                            @foreach ($jugadores  as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+                    
+                <div class="form-group">  
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-dark btn-block dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Acciones
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a  href="#" onclick="add_todos()">Agregar Toda la Lista</a></li>
+                            <li><a  href="#" onclick="add_fila()">Agregar Jugador Individual</a></li>
+                            <li><a  href="#" data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
+                            <li><a  href="#" data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
+                        </ul>
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha">Gestión</label>
+                    <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
+                </div>
+
+                <label>Delegado</label>
+                <div class="input-group">       
+                    <div class="miselect">
+                        <select class="form-control select2" name="select_delegado" id="select_delegado">
+                            @if(Auth::user()->role_id==3)
+                                @foreach ($delegados_club  as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach  
+                            @else
+                                @foreach ($delegados  as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach  
+                            @endif
+                        </select>
+                    </div>
+                    <span class="input-group-btn">
+                        <a  class="btn btn-dark" data-toggle="modal" data-target="#modal_delegado" ><i class="voyager-plus"></i>  </a>    
+                    </span>
+                </div>
+
+                <div class="form-group">
                     <label for="input_total">Monto Esperado</label>
                         <input class="form-control" id="input_sub_total" name="input_sub_total" type="number">
                 </div>
 
-                <div class="col-sm-3">
+                <div class="form-group">
                     <label for="input_deudas">Monto Adeudado</label>
                         <input class="form-control" id="input_deudas" name="input_deudas" type="number">
                 </div>
                 
-                <div class="col-sm-3">
+                <div class="form-group">
                     <label for="input_total">Total Pagado</label>
                         <input class="form-control" id="input_total" name="input_total" type="number">
                 </div>     
-                <div class="col-sm-3">
-                    <br />
-                    <button class="btn btn-dark btn-block" onclick="misave()">Guardar Formulario</button>
+                <div class="form-group">
+                   
+                    <button class="btn btn-primary btn-block" onclick="misave()">Guardar Formulario</button>
                 </div>   
-                    
-        </div>                                                             
+
+            </div>
+
+         
+        </div>                                                            
     </div>
 
     <div class="modal fade modal-danger" id="confirm_delete_modal">

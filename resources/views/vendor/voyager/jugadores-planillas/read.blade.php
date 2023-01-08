@@ -23,62 +23,23 @@
     <div class="container-fluid">
         <!--Información Planilla -->     
                    
+        <!--Detalles Asientos y Totales-->                                                      
         <div class="row">
-        
-            <div class="col-sm-12 text-center">
-                <br>
+            <div class="col-sm-12 text-center" >
+                <h2>Pagos de Jugadores y Equipos</h2>
                 @if (Auth::user()->role_id==1 || Auth::user()->role_id==5)
                     @if($dataTypeContent->activo=="Entregado")
                         <a  class="btn btn-info" data-toggle="modal" data-target="#modal_acciones_planilla">
                             <i class="glyphicon glyphicon-question-sign"></i> <span class="hidden-xs hidden-sm">Aprobar/Rechazar</span>
                         </a>
                     @endif
-                @endif 
-                <h2>#{{$equipo_titulo->id}} - {{$equipo_titulo->name}}</h2>
-                {{-- <label for="">Estado de Planilla</label> --}}
-                @if ($dataTypeContent->activo=="Entregado")
-                    <input style="background-color: #17A2B8" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
-                @elseif ($dataTypeContent->activo=="Aprobado")
-                    <input style="background-color: #28A745" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
-                @elseif ($dataTypeContent->activo=="Rechazado")
-                    <input style="background-color: #DC3545" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
-                @elseif ($dataTypeContent->activo=="Inactivo")
-                    <input style="background-color: #FFC107" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
-                @endif 
-               
-            </div>
-            <div class="col-sm-3 form-group text-center">
-                <label for="select_cat">Categoria</label>  
-                <input type="text" class="form-control text-center" id="input_cat" value="{{$dataTypeContent->categoria_jugadores}}" readonly>
-            </div>
-
-            <div class="col-sm-3 form-group text-center">
-                <label for="select_delegado">Delegado</label>                 
-                <input type="text" class="form-control text-center" id="input_delegdo" value="{{$delegado->name}}" readonly>                 
-            </div>
-            
-            <div class="col-sm-3 form-group text-center">
-                <label for="input_fecha">Gestión</label>
-                <input class="form-control text-center" type="month" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('Y-m') }}" readonly>
-            </div>
-
-            <div class="col-sm-3 text-center">
-                <label for="">Observaciones</label> 
-                <input type="text" class="form-control text-center" name="text_area_observacion_defecto" id="text_area_observacion_defecto" readonly >
-                {{-- <textarea class="form-control text-center" name="text_area_observacion_defecto" rows="2" id="text_area_observacion_defecto" readonly >{{$dataTypeContent->observacion}}</textarea> --}}
-            </div>
-        </div>
-
-        <!--Detalles Asientos y Totales-->                                                      
-        <div class="row">
-            <div class="col-sm-12 text-center" >
-                <h2>Pagos de Jugadores y Equipos</h2>
+                @endif
             </div>
             <!-- Parte Izquierda Lienzo , Asientos -->
             <div class="col-sm-9" id="div_izquierdo_detalles" hidden>
                 <div class="col-sm-4 form-group">
                     <label for="select_cat_asientos">Tipo Asientos</label>
-                    <div style="border-style: outset;">    
+                    <div class="miselect">    
                         <select class="form-control select2" name="select_cat_asientos" id="select_cat_asientos">
                             <option value="jugadores">Jugadores</option>
                             <option value="club">Club</option>
@@ -88,7 +49,7 @@
 
                 <div class="col-sm-4 form-group">
                     <label for="select_tabs">Filtros</label>
-                    <div style="border-style: outset;">    
+                    <div class="miselect">    
                         <select class="form-control select2" name="select_tabs" id="select_tabs">
                             <option value="tab_todos">Todos</option>
                             <option value="tab_pendientes">Pendientes</option>
@@ -426,16 +387,60 @@
 
             <!-- Parte Derecha Lienzo , Inputs Totales -->
             <div class="col-sm-3" id="div_derecho_detalles" hidden>
-                <div class="row">
-                    <div class="col-sm-12">
+           
+
+                <div class="form-group text-center">
+                
+          
+                    <h4>#{{$dataTypeContent->id}} - {{$equipo_titulo->name}}</h4>
+                    {{-- <label for="">Estado de Planilla</label> --}}
+                    @if ($dataTypeContent->activo=="Entregado")
+                        <input style="background-color: #17A2B8" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                    @elseif ($dataTypeContent->activo=="Aprobado")
+                        <input style="background-color: #28A745" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                    @elseif ($dataTypeContent->activo=="Rechazado")
+                        <input style="background-color: #DC3545" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                    @elseif ($dataTypeContent->activo=="Inactivo")
+                        <input style="background-color: #FFC107" class="form-control text-center " type="text" value="{{$dataTypeContent->activo}}" readonly>
+                    @endif 
+                   
+                </div>
+
+                <table class="table">
+                    <tr>
+                        <td><label for="select_cat">Categoria</label></td>
+                       <td>{{$dataTypeContent->categoria_jugadores}}</td>
+                        {{-- <td> <input type="text" class="form-control text-center" id="input_cat" value="{{$dataTypeContent->categoria_jugadores}}" readonly></td> --}}
+                    </tr>
+                </table>
+   
+    
+                <div class="form-group text-center">
+                    <label for="select_delegado">Delegado</label>                 
+                    <input type="text" class="form-control text-center" id="input_delegdo" value="{{$delegado->name}}" readonly>                 
+                </div>
+                
+                <div class="form-group text-center">
+                    <label for="input_fecha">Gestión</label>
+                    <input class="form-control text-center" type="month" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('Y-m') }}" readonly>
+                </div>
+    
+                <div class="text-center">
+                    <label for="">Observaciones</label> 
+                    <input type="text" class="form-control text-center" name="text_area_observacion_defecto" id="text_area_observacion_defecto" readonly >
+                    {{-- <textarea class="form-control text-center" name="text_area_observacion_defecto" rows="2" id="text_area_observacion_defecto" readonly >{{$dataTypeContent->observacion}}</textarea> --}}
+                </div>
+
+                    <div class="form-group">
                         <label for="input_mens_esperadas">Mensualidades Esperadas</label>
                         <input class="form-control text-center" id="input_mens_esperadas" name="input_mens_esperadas" type="number" readonly >
                     </div>
-                    <div class="col-sm-12">
+                    <div class="form-group">
                         <label for="input_mens_pagadas">Mensualidades Pagadas</label>
                         <input class="form-control text-center" id="input_mens_pagadas" name="input_mens_pagadas" type="number" readonly >
                     </div>
-                </div>
+          
+                
                 <div class="row">
                     <div class="col-sm-12">
                         <label for="input_otros_esperados">Otros Ingresos Esperados</label>
@@ -649,7 +654,7 @@
                 <div class="modal-body">                    
                     <div class="form-group col-6">
                         <label for="select_accion">Acción Decisiva</label>
-                        <div style="border-style: outset;">                                
+                        <div class="miselect">                                
                             <select class="form-control select2" name="select_accion" id="select_accion">
                                 <option value="Aprobado">Aprobar</option>
                                 <option value="Rechazado">Rechazar</option>
@@ -663,7 +668,7 @@
                 </div>
                 <div class="modal-footer mt-3">
                     {{-- <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a> --}}
-                    <a type="button" onclick="save_decision()" class="btn btn-dark">Guardar</a>
+                    <a type="button" onclick="save_decision()" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>

@@ -51,26 +51,6 @@
                 </div>
             </div>
                 
-
-            <div class="col-sm-8">
-                <label for="">Lista de Jugadores</label>
-                <div  class=" table-responsive">
-                    <table class="table table-striped mitable" id="table2">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="" scope="col">#</th>
-                                <th class="" scope="col">S/T</th>
-                                <th class="" scope="col">Polera</th>
-                                <th class="" scope="col">Nombre</th>
-                                <th class="" scope="col">Mensualidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
             <div class="col-sm-4">
 
 
@@ -176,7 +156,24 @@
 
             </div>
 
-         
+            <div class="col-sm-8">
+                <label for="">Lista de Jugadores</label>
+                <div  class=" table-responsive">
+                    <table class="table table-striped mitable" id="table2">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="" scope="col">#</th>
+                                <th class="" scope="col">S/T</th>
+                                <th class="" scope="col">Polera</th>
+                                <th class="" scope="col">Nombre</th>
+                                <th class="" scope="col">Mensualidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>                                                            
     </div>
 
@@ -247,7 +244,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <a onclick="save_transferencia()" type="button" class="btn btn-sm btn-dark">Guardar</a>
+                    <a onclick="validacion_realizar_transferencia()" type="button" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -276,7 +273,7 @@
                         </div>    
                 </div>
                 <div class="modal-footer mt-3">
-                    <a type="button" onclick="save_delegado()" class="btn btn-sm btn-dark">Guardar</a>
+                    <a type="button" onclick="validacion_crear_delegado()" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -304,7 +301,7 @@
                         <div class="col-sm-6">
                             <label for="polera_jugador_create"># Polera</label>
                                                            
-                                <input class="form-control" id="polera_jugador_create" name="polera_jugador_create" type="number">
+                                <input class="form-control" id="polera_jugador_create" name="polera_jugador_create" min="1" type="number">
                           
                         </div>
                         {{-- <div class="col-sm-6">
@@ -315,21 +312,16 @@
                         </div> --}}
                         <div class="col-sm-6">
                             <label for="nacido_jugador_create">Fecha Nac.</label>
-                                                        
-                                <input class="form-control" id="nacido_jugador_create" name="nacido_jugador_create" type="date">
-                          
+                            <input class="form-control" id="nacido_jugador_create" name="nacido_jugador_create" type="date">
                         </div>
                         <div class="col-sm-6">
                             <label for="wpp_jugador_create">WhatsApp</label>
-                                                     
-                                <input class="form-control" id="wpp_jugador_create" name="wpp_jugador_create" type="number">
-                       
+                            <input class="form-control" id="wpp_jugador_create" name="wpp_jugador_create" type="number">   
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
-                    <a type="button" onclick="save_jugador()" class="btn btn-sm btn-dark">Guardar</a>
+                    <a type="button" onclick="validacion_crear_jugador()" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -407,6 +399,14 @@
             })
         }
 
+        async function validacion_realizar_transferencia(){
+            if ($("#jugador_transferencia").val()!="" && $("#observacion_transferencia").val()) {
+                save_transferencia()
+            } else {
+                toastr.error("El jugador y la observación son datos obligatorios.")
+            }
+        }
+
         // guardar Delegado-----------------------------------------------------------------
         function save_delegado(){
             $('.mireload').attr("hidden", false)
@@ -414,11 +414,29 @@
             crear_delegado()
         }
 
+        async function validacion_crear_delegado() {
+            if ($("#delegado_creation").val()!="") {
+                save_delegado()
+            }
+            else{
+                toastr.error("El nombre es un dato obligatorio")
+            }
+        }
+
         // guardar Jugador-----------------------------------------------------------------
         function save_jugador(){
             $('.mireload').attr("hidden", false)
             $("#modal_jugador .close").click()
             crear_jugador()
+        }
+
+        async function validacion_crear_jugador() {
+            if ($("#nombre_jugador_create").val() != "" && $("#polera_jugador_create").val()!="" && $("#nacido_jugador_create").val()!="") {
+                save_jugador()
+            }
+            else{
+                toastr.error("EL nombre, el número de polera y la fecha de nacimiento son datos obligatorios")
+            }
         }
 
         async function probar_mensaje_whatsapp() {

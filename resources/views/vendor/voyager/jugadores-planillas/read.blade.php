@@ -8,6 +8,10 @@
     $index2=0;
     $index3=0;
     $index4=0;
+    $asientos_planillas_pendientes=0;
+    $asientos_planillas_pagados=0;
+    $asientos_jugadores_pendientes=0;
+    $asientos_jugadores_pagados=0;
     $asientos= App\Asiento::where('planilla_id', $dataTypeContent->id)->with('jugadores', 'clubes', 'categorias')->get();
     $num_jugadores=count($nomina);
     $equipo_titulo= App\Clube::find($dataTypeContent->clube_id);
@@ -63,115 +67,69 @@
                     <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto">
                 </div>
 
-                <div class="col-sm-12 table-responsive" id="tab_todos_jugadores">
-                    <table class="table table-striped mitable" id="tabla_tab_todos_jugadores">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="text-center" scope="col">#</th>
-                                <th class="text-center" scope="col">Jugador</th>
-                                <th class="text-center" scope="col">Categoria</th>
-                                <th class="text-center" scope="col">Monto</th>
-                                <th class="text-center" scope="col">Estado</th>
-                                <th class="text-center" scope="col">Observación</th>
-                                <th class="text-center" scope="col">Acción</th>
-                            </tr>                            
-                        </thead>
-                        <tbody>
-                            @foreach ($asientos as $item)
-                                @if ($item->categorias->tipo=="jugador")                                    
-                                    @php
-                                        $index2=$index2+1;
-                                    @endphp
-                                    <tr>
-                                        <td class="text-center">
-                                            {{$index2}}
-                                            @if ($item->estado!="Pagado")
-                                                <input id="check_{{$item->id}}" type="checkbox">
-                                            @endif
-                                        </td>
-                                        <td>
-                                            {{$item->jugadores->name}}
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->categorias->title}}
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->monto}}
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->estado}}
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->observacion}}
-                                        </td>
-                                        <td class='text-center'>
-                                            @if ($item->estado!="Pagado")
-                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-                                            @else
-                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
-                                            @endif
-                                        </td>
-                                    
-                                    </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="col-sm-12 table-responsive" id="tab_pendientes_jugadores" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_tab_pendientes_jugadores">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="text-center" scope="col">#</th>
-                                <th class="text-center" scope="col">Jugador</th>
-                                <th class="text-center" scope="col">Categoria</th>
-                                <th class="text-center" scope="col">Monto</th>
-                                <th class="text-center" scope="col">Estado</th>
-                                <th class="text-center" scope="col">Observación</th>
-                                <th class="text-center" scope="col">Acción</th>
-                            </tr>                            
-                        </thead>
-                        <tbody>
-                            @foreach ($asientos as $item)
-                                @if($item->estado!="Pagado")
-                                    @if ($item->categorias->tipo=="jugador")                                    
-                                        @php
-                                            $index3=$index3+1;
-                                        @endphp
-                                        <tr>
-                                            <td class="text-center">
-                                                {{$index3}}
-                                                <input id="check_{{$item->id}}" type="checkbox">
-                                            </td>
-                                            <td>
-                                                {{$item->jugadores->name}}
-                                            </td>
-                                            <td class='text-center'>
-                                                {{$item->categorias->title}}
-                                            </td>
-                                            <td class='text-center'>
-                                                {{$item->monto}}
-                                            </td>
-                                            <td class='text-center'>
-                                                {{$item->estado}}
-                                            </td>
-                                            <td class='text-center'>
-                                                {{$item->observacion}}
-                                            </td>
-                                            <td class='text-center'>
-                                                @if ($item->estado!="Pagado")
-                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-                                                @else
-                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
-                                                @endif
-                                            </td>                                        
-                                        </tr>
+                
+                <div id="tab_pendientes_jugadores" hidden>
+                    <div class="col-sm-12 table-responsive" >
+                        <table class="table table-striped table-bordered" id="tabla_tab_pendientes_jugadores">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-center" scope="col">#</th>
+                                    <th class="text-center" scope="col">Jugador</th>
+                                    <th class="text-center" scope="col">Categoria</th>
+                                    <th class="text-center" scope="col">Monto</th>
+                                    <th class="text-center" scope="col">Estado</th>
+                                    <th class="text-center" scope="col">Observación</th>
+                                    <th class="text-center" scope="col">Acción</th>
+                                </tr>                            
+                            </thead>
+                            <tbody>
+                                @foreach ($asientos as $item)
+                                    @if($item->estado!="Pagado")
+                                        @if ($item->categorias->tipo=="jugador")                                    
+                                            @php
+                                                $index3=$index3+1;
+                                                $asientos_jugadores_pendientes+=$item->monto;
+                                            @endphp
+                                            <tr>
+                                                <td class="text-center">
+                                                    {{$index3}}
+                                                    <input id="check_pendientes_{{$item->id}}" type="checkbox">
+                                                </td>
+                                                <td>
+                                                    {{$item->jugadores->name}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    {{$item->categorias->title}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    {{$item->monto}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    {{$item->estado}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    {{$item->observacion}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    @if ($item->estado!="Pagado")
+                                                        <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+                                                    @else
+                                                        <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
+                                                    @endif
+                                                </td>                                        
+                                            </tr>
+                                        @endif
                                     @endif
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                                @endforeach
+                                <tr>
+                                    <td colspan="3" class="text-center"><h4>TOTAL PENDIENTE</h4></td><td colspan="4" class="text-center"><h4>{{$asientos_jugadores_pendientes}}</h4></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-12" >
+                        <a class="btn btn-dark btn-block form-group" onclick="validar_check('pendientes')">Pagar Seleccionados</a>
+                    </div>
                 </div>
 
                 <div class="col-sm-12 table-responsive" id="tab_pagados_jugadores" hidden>
@@ -193,6 +151,7 @@
                                     @if ($item->categorias->tipo=="jugador")                                    
                                         @php
                                             $index4=$index4+1;
+                                            $asientos_jugadores_pagados+=$item->monto;
                                         @endphp
                                         <tr>
                                             <td class="text-center">
@@ -224,84 +183,41 @@
                                     @endif
                                 @endif
                             @endforeach
+                            <tr>
+                                <td colspan="3" class="text-center"><h4>TOTAL PAGADO</h4></td><td colspan="4" class="text-center"><h4>{{$asientos_jugadores_pagados}}</h4></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-
-                <div class="col-sm-12 table-responsive" id="tab_todos_club" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_tab_todos_club">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="text-center" scope="col">#</th>
-                                <th class="text-center" scope="col">Categoria</th>
-                                <th class="text-center" scope="col">Monto</th>
-                                <th class="text-center" scope="col">Estado</th>
-                                <th class="text-center" scope="col">Observación</th>
-                                <th class="text-center" scope="col">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($asientos as $item)
-                                @if ($item->categorias->tipo=="planilla")                                    
-                                    @php
-                                        $index2=$index2+1;
-                                    @endphp
-                                    <tr>
-                                        <td class="text-center">
-                                            {{$index2}}
-                                            @if ($item->estado!="Pagado")
-                                                <input id="check_{{$item->id}}" type="checkbox">
-                                            @endif
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->categorias->title}}
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->monto}}
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->estado}}
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->observacion}}
-                                        </td>
-                                        <td class='text-center'>
-                                            @if ($item->estado!="Pagado")
-                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
-                                            @else
-                                                <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
-                                            @endif
-                                        </td>                                    
-                                    </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="col-sm-12 table-responsive" id="tab_pendientes_club" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_tab_pendientes_club">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="text-center" scope="col">#</th>
-                                <th class="text-center" scope="col">Categoria</th>
-                                <th class="text-center" scope="col">Monto</th>
-                                <th class="text-center" scope="col">Estado</th>
-                                <th class="text-center" scope="col">Observación</th>
-                                <th class="text-center" scope="col">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($asientos as $item)
-                                @if($item->estado!="Pagado")
-                                    @if ($item->categorias->tipo=="planilla")                                    
+                <div id="tab_todos_jugadores">
+                    <div class="col-sm-12 table-responsive" >
+                        <table class="table table-striped mitable" id="tabla_tab_todos_jugadores">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-center" scope="col">#</th>
+                                    <th class="text-center" scope="col">Jugador</th>
+                                    <th class="text-center" scope="col">Categoria</th>
+                                    <th class="text-center" scope="col">Monto</th>
+                                    <th class="text-center" scope="col">Estado</th>
+                                    <th class="text-center" scope="col">Observación</th>
+                                    <th class="text-center" scope="col">Acción</th>
+                                </tr>                            
+                            </thead>
+                            <tbody>
+                                @foreach ($asientos as $item)
+                                    @if ($item->categorias->tipo=="jugador")                                    
                                         @php
-                                            $index3=$index3+1;
+                                            $index2=$index2+1;
                                         @endphp
                                         <tr>
                                             <td class="text-center">
-                                                {{$index3}}
-                                                <input id="check_{{$item->id}}" type="checkbox">
+                                                {{$index2}}
+                                                @if ($item->estado!="Pagado")
+                                                    <input id="check_todos_{{$item->id}}" type="checkbox">
+                                                @endif
+                                            </td>
+                                            <td>
+                                                {{$item->jugadores->name}}
                                             </td>
                                             <td class='text-center'>
                                                 {{$item->categorias->title}}
@@ -321,13 +237,84 @@
                                                 @else
                                                     <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
                                                 @endif
-                                            </td>                                        
+                                            </td>
+                                        
                                         </tr>
                                     @endif
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                                @endforeach
+                                <tr>
+                                    <td colspan="3" class="text-center"><h4>TOTAL PAGADO</h4></td><td colspan="4" class="text-center"><h4>{{$asientos_jugadores_pagados}}</h4></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-center"><h4>TOTAL PENDIENTE</h4></td><td colspan="4" class="text-center"><h4>{{$asientos_jugadores_pendientes}}</h4></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <a class="btn btn-dark btn-block form-group" onclick="validar_check('todos')">Pagar Seleccionados</a>
+                    </div>
+                </div>
+
+                <div id="tab_pendientes_club" hidden>
+                    <div class="col-sm-12 table-responsive" >
+                        <table class="table table-striped table-bordered" id="tabla_tab_pendientes_club">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-center" scope="col">#</th>
+                                    <th class="text-center" scope="col">Categoria</th>
+                                    <th class="text-center" scope="col">Monto</th>
+                                    <th class="text-center" scope="col">Estado</th>
+                                    <th class="text-center" scope="col">Observación</th>
+                                    <th class="text-center" scope="col">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($asientos as $item)
+                                    @if($item->estado!="Pagado")
+                                        @if ($item->categorias->tipo=="planilla")                                    
+                                            @php
+                                                $index3=$index3+1;
+                                                $asientos_planillas_pendientes+=$item->monto;
+                                            @endphp
+                                            <tr>
+                                                <td class="text-center">
+                                                    {{$index3}}
+                                                    <input id="check_pendientes_{{$item->id}}" type="checkbox">
+                                                </td>
+                                                <td class='text-center'>
+                                                    {{$item->categorias->title}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    {{$item->monto}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    {{$item->estado}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    {{$item->observacion}}
+                                                </td>
+                                                <td class='text-center'>
+                                                    @if ($item->estado!="Pagado")
+                                                        <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+                                                    @else
+                                                        <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
+                                                    @endif
+                                                </td>                                        
+                                            </tr>
+                                        @endif
+                                    @endif
+                                @endforeach
+                                <tr>
+                                    <td colspan="3" class="text-center"><h4>TOTAL PENDIENTE</h4></td><td colspan="3" class="text-center"><h4>{{$asientos_planillas_pendientes}}</h4></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-12" >
+                        <a class="btn btn-dark btn-block form-group" onclick="validar_check('pendientes')">Pagar Seleccionados</a>
+                    </div>
                 </div>
 
                 <div class="col-sm-12 table-responsive" id="tab_pagados_club" hidden>
@@ -348,6 +335,7 @@
                                     @if ($item->categorias->tipo=="planilla")                                    
                                         @php
                                             $index4=$index4+1;
+                                            $asientos_planillas_pagados+=$item->monto;
                                         @endphp
                                         <tr>
                                             <td class="text-center">
@@ -376,12 +364,74 @@
                                     @endif
                                 @endif
                             @endforeach
+                            <tr>
+                                <td colspan="3" class="text-center"><h4>TOTAL PAGADO</h4></td><td colspan="3" class="text-center"><h4>{{$asientos_planillas_pagados}}</h4></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="col-sm-12 col-md-12">
-                    <a class="btn btn-dark btn-block form-group" onclick="validar_check()">Pagar Seleccionados</a>
+                <div id="tab_todos_club" hidden>
+                    <div class="col-sm-12 table-responsive" >
+                        <table class="table table-striped table-bordered" id="tabla_tab_todos_club">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-center" scope="col">#</th>
+                                    <th class="text-center" scope="col">Categoria</th>
+                                    <th class="text-center" scope="col">Monto</th>
+                                    <th class="text-center" scope="col">Estado</th>
+                                    <th class="text-center" scope="col">Observación</th>
+                                    <th class="text-center" scope="col">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($asientos as $item)
+                                    @if ($item->categorias->tipo=="planilla")                                    
+                                        @php
+                                            $index2=$index2+1;
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">
+                                                {{$index2}}
+                                                @if ($item->estado!="Pagado")
+                                                    <input id="check_todos_{{$item->id}}" type="checkbox">
+                                                @endif
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->categorias->title}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->monto}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->estado}}
+                                            </td>
+                                            <td class='text-center'>
+                                                {{$item->observacion}}
+                                            </td>
+                                            <td class='text-center'>
+                                                @if ($item->estado!="Pagado")
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-primary btn-xs " data-toggle="modal" data-target="#modal_pago">Pagar</button>
+                                                @else
+                                                    <button onclick="set_input_modal({{$item->id}})" class="btn  btn-warning btn-xs " data-toggle="modal" data-target="#modal_pago">Ver</button>
+                                                @endif
+                                            </td>                                    
+                                        </tr>
+                                    @endif
+                                @endforeach
+                                <tr>
+                                    <td colspan="3" class="text-center"><h4>TOTAL PAGADO</h4></td><td colspan="3" class="text-center"><h4>{{$asientos_planillas_pagados}}</h4></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-center"><h4>TOTAL PENDIENTE</h4></td><td colspan="3" class="text-center"><h4>{{$asientos_planillas_pendientes}}</h4></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    <div class="col-sm-12">
+                        <a class="btn btn-dark btn-block form-group" onclick="validar_check('todos')">Pagar Seleccionados</a>
+                    </div>
                 </div>
             </div>
 
@@ -427,21 +477,21 @@
     
                 <div class="text-center">
                     <label for="">Observaciones</label> 
-                    <input type="text" class="form-control text-center" name="text_area_observacion_defecto" id="text_area_observacion_defecto" readonly >
-                    {{-- <textarea class="form-control text-center" name="text_area_observacion_defecto" rows="2" id="text_area_observacion_defecto" readonly >{{$dataTypeContent->observacion}}</textarea> --}}
+                    {{-- <input type="text" class="form-control text-center" name="text_area_observacion_defecto" id="text_area_observacion_defecto" readonly > --}}
+                    <textarea class="form-control text-center" name="text_area_observacion_defecto" rows="2" id="text_area_observacion_defecto" readonly >{{$dataTypeContent->observacion}}</textarea>
                 </div>
 
-                    <div class="form-group">
+                    <div class="form-group" hidden>
                         <label for="input_mens_esperadas">Mensualidades Esperadas</label>
                         <input class="form-control text-center" id="input_mens_esperadas" name="input_mens_esperadas" type="number" readonly >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" hidden>
                         <label for="input_mens_pagadas">Mensualidades Pagadas</label>
                         <input class="form-control text-center" id="input_mens_pagadas" name="input_mens_pagadas" type="number" readonly >
                     </div>
           
                 
-                <div class="row">
+                <div class="row" hidden>
                     <div class="col-sm-12">
                         <label for="input_otros_esperados">Otros Ingresos Esperados</label>
                         <input class="form-control text-center" id="input_otros_esperados" name="input_otros_esperados" type="number" readonly >
@@ -452,7 +502,7 @@
                     </div>
                 </div>
                 
-                <div class="row">
+                <div class="row" hidden>
                     <div class="col-sm-12">
                         <label for="input_subtotal">Total Esperado</label>
                         <input class="form-control text-center" id="input_subtotal" name="input_subtotal" type="number" readonly>
@@ -464,7 +514,7 @@
                     
                 </div>
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12" hidden>
                         <label for="input_total">Total Pagado</label>
                         <input class="form-control text-center" id="input_total" name="input_total" type="number" readonly value="{{$dataTypeContent->total}}">
                     </div>
@@ -678,16 +728,16 @@
 
 @section('javascript')
     <script>
-        async function validar_check() {
+        async function validar_check(seleccionada) {
             var validacion=0
-            var asientos= await axios("{{setting('admin.url')}}api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
+            var asientos= await axios("/api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
             for (let index = 0; index < asientos.data.length; index++) {
-                if (asientos.data.estado!="Pagado" && $("#check_"+asientos.data[index].id+"").prop('checked')) {
+                if (asientos.data.estado!="Pagado" && $("#check_"+seleccionada+"_"+asientos.data[index].id+"").prop('checked')) {
                     validacion+=1
                 }
             }
             if (validacion>0) {
-                misave()
+                misave(seleccionada)
             }
             else{
                 toastr.error("Seleccione las casillas correspondientes de los asientos que quiere pagar")
@@ -696,7 +746,7 @@
             }
         }
 
-        function misave(){
+        function misave(seleccionada){
             Swal.fire({
                 title: 'Estás Seguro?',
                 icon: 'question',
@@ -708,7 +758,7 @@
                 }).then((result) => {
                 if (result.isConfirmed) {
                     $('.mireload').attr("hidden", false)
-                    checkbox()
+                    checkbox(seleccionada)
                 }
             })
         }
@@ -844,10 +894,10 @@
             }
         }
 
-        async function checkbox() {
+        async function checkbox(seleccionada) {
             var asientos= await axios("/api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
             for (let index = 0; index < asientos.data.length; index++) {
-                    if (asientos.data[index].estado!="Pagado" && $("#check_"+asientos.data[index].id+"").prop('checked')) {
+                    if (asientos.data[index].estado!="Pagado" && $("#check_"+seleccionada+"_"+asientos.data[index].id+"").prop('checked')) {
                         console.log("siuuu")
                         console.log(asientos.data[index].id)
                         var observacion="Ya pagó el total de la deuda"

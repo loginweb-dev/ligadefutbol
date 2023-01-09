@@ -26,10 +26,10 @@
 @section('content')
     <div class="container-fluid">
       
-        <div class="col-sm-4" hidden>
-            <br />
-            <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
-        </div>
+                <div class="col-sm-4" hidden>
+                    <br />
+                    <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
+                </div>
 
 
         <div class="row"  >        
@@ -51,9 +51,6 @@
                 </div>
             </div>
                 
-
-         
-
             <div class="col-sm-4">
 
 
@@ -140,17 +137,17 @@
 
                 <div class="form-group">
                     <label for="input_total">Monto Esperado</label>
-                        <input class="form-control" id="input_sub_total" name="input_sub_total" type="number">
+                        <input class="form-control" id="input_sub_total" name="input_sub_total" type="number" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="input_deudas">Monto Adeudado</label>
-                        <input class="form-control" id="input_deudas" name="input_deudas" type="number">
+                        <input class="form-control" id="input_deudas" name="input_deudas" type="number" readonly>
                 </div>
                 
                 <div class="form-group">
                     <label for="input_total">Total Pagado</label>
-                        <input class="form-control" id="input_total" name="input_total" type="number">
+                        <input class="form-control" id="input_total" name="input_total" type="number" readonly>
                 </div>     
                 <div class="form-group">
                    
@@ -158,7 +155,7 @@
                 </div>   
 
             </div>
-            
+
             <div class="col-sm-8">
                 <label for="">Lista de Jugadores</label>
                 <div  class=" table-responsive">
@@ -177,7 +174,6 @@
                     </table>
                 </div>
             </div>
-         
         </div>                                                            
     </div>
 
@@ -248,7 +244,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <a onclick="save_transferencia()" type="button" class="btn btn-sm btn-dark">Guardar</a>
+                    <a onclick="validacion_realizar_transferencia()" type="button" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -277,7 +273,7 @@
                         </div>    
                 </div>
                 <div class="modal-footer mt-3">
-                    <a type="button" onclick="save_delegado()" class="btn btn-sm btn-dark">Guardar</a>
+                    <a type="button" onclick="validacion_crear_delegado()" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -305,32 +301,27 @@
                         <div class="col-sm-6">
                             <label for="polera_jugador_create"># Polera</label>
                                                            
-                                <input class="form-control" id="polera_jugador_create" name="polera_jugador_create" type="number">
+                                <input class="form-control" id="polera_jugador_create" name="polera_jugador_create" min="1" type="number">
                           
                         </div>
-                        <div class="col-sm-6">
+                        {{-- <div class="col-sm-6">
                             <label for="edad_jugador_create">Edad</label>
                                                            
                                 <input class="form-control" id="edad_jugador_create" name="edad_jugador_create" type="number">
                             
-                        </div>
+                        </div> --}}
                         <div class="col-sm-6">
                             <label for="nacido_jugador_create">Fecha Nac.</label>
-                                                        
-                                <input class="form-control" id="nacido_jugador_create" name="nacido_jugador_create" type="date">
-                          
+                            <input class="form-control" id="nacido_jugador_create" name="nacido_jugador_create" type="date">
                         </div>
                         <div class="col-sm-6">
                             <label for="wpp_jugador_create">WhatsApp</label>
-                                                     
-                                <input class="form-control" id="wpp_jugador_create" name="wpp_jugador_create" type="number">
-                       
+                            <input class="form-control" id="wpp_jugador_create" name="wpp_jugador_create" type="number">   
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
-                    <a type="button" onclick="save_jugador()" class="btn btn-sm btn-dark">Guardar</a>
+                    <a type="button" onclick="validacion_crear_jugador()" class="btn btn-sm btn-dark">Guardar</a>
                 </div>
             </div>
         </div>
@@ -408,6 +399,14 @@
             })
         }
 
+        async function validacion_realizar_transferencia(){
+            if ($("#jugador_transferencia").val()!="" && $("#observacion_transferencia").val()) {
+                save_transferencia()
+            } else {
+                toastr.error("El jugador y la observación son datos obligatorios.")
+            }
+        }
+
         // guardar Delegado-----------------------------------------------------------------
         function save_delegado(){
             $('.mireload').attr("hidden", false)
@@ -415,11 +414,29 @@
             crear_delegado()
         }
 
+        async function validacion_crear_delegado() {
+            if ($("#delegado_creation").val()!="") {
+                save_delegado()
+            }
+            else{
+                toastr.error("El nombre es un dato obligatorio")
+            }
+        }
+
         // guardar Jugador-----------------------------------------------------------------
         function save_jugador(){
             $('.mireload').attr("hidden", false)
             $("#modal_jugador .close").click()
             crear_jugador()
+        }
+
+        async function validacion_crear_jugador() {
+            if ($("#nombre_jugador_create").val() != "" && $("#polera_jugador_create").val()!="" && $("#nacido_jugador_create").val()!="") {
+                save_jugador()
+            }
+            else{
+                toastr.error("EL nombre, el número de polera y la fecha de nacimiento son datos obligatorios")
+            }
         }
 
         async function probar_mensaje_whatsapp() {
@@ -430,6 +447,19 @@
                     message: "hola"
                 }
             }
+        }
+
+        function calcularEdad(fecha) {
+            var hoy = new Date();
+            var cumpleanos = new Date(fecha);
+            var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+            var m = hoy.getMonth() - cumpleanos.getMonth();
+
+            if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+                edad--;
+            }
+
+            return edad;
         }
 
         async function notificacion_planilla_creada() {
@@ -482,7 +512,7 @@
                     try {
                         await axios.post("/api/whaticket/send", midata)
                     } catch (error) {
-                        toastr.error("fallo la notificacion con whatsapp.")
+                        toastr.error("Falló la notificación con WhatsApp.")
                     }
                    
                 }
@@ -622,7 +652,7 @@
                     try {
                         await axios.post("/api/whaticket/send", midata)
                     } catch (error) {
-                        toastr.error("fallo en cnotificacion por whatsapp.")
+                        toastr.error("Falló la notificación por WhatsApp.")
                     }
                     
                 }
@@ -636,7 +666,7 @@
                     try {
                         await axios.post("/api/whaticket/send", midata)
                     } catch (error) {
-                        toastr.error("fallo en cnotificacion por whatsapp.")
+                        toastr.error("Falló en notificación por WhatsApp.")
                     }
                 }
                 if (await validacion_wpp(phone_club)) {
@@ -657,7 +687,7 @@
                     try {
                         await axios.post("/api/whaticket/send", midata2)
                     } catch (error) {
-                        toastr.error("Fallo con whatsapp")
+                        toastr.error("Falló en notificación por WhatsApp.")
                     }
                     
                 }
@@ -806,7 +836,7 @@
             var midata={
                 'name':$("#nombre_jugador_create").val(),
                 'polera':$("#polera_jugador_create").val(),
-                'edad':$("#edad_jugador_create").val(),
+                'edad': calcularEdad($("#nacido_jugador_create").val()),
                 'nacido':$("#nacido_jugador_create").val(),
                 'clube_id':$("#select_club").val(),
                 'phone':$("#wpp_jugador_create").val()
@@ -931,6 +961,8 @@
         $('document').ready(async function () { 
             //Inicializar Select Jugadores Transferencia
             validad_roles()
+
+            // console.log(calcularEdad("1999-01-01"))
             $('#jugador_transferencia').find('option').remove().end()
             var equipo_id=$("#equipo_transferencia").val()
             var jugadores= await axios("/api/jugadores/planilla/find/jugadores/"+equipo_id)

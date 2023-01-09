@@ -476,7 +476,7 @@
                 <div class="form-group">
                     {{-- <a href="#" class="btn btn-sm btn-block btn-danger">Eliminar Nomina</a> --}}
                     {{-- @can('delete', $dataTypeContent) --}}
-                        @if($isSoftDeleted)
+                        {{-- @if($isSoftDeleted)
                             <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
                             </a>
@@ -484,7 +484,7 @@
                             <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger btn-block delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
                             </a>
-                        @endif
+                        @endif --}}
                     {{-- @endcan --}}
                 </div>                           
             </div>

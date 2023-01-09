@@ -25,14 +25,11 @@
 
 @section('content')
     <div class="container-fluid">
-      
                 <div class="col-sm-4" hidden>
                     <br />
                     <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
                 </div>
-
-
-        <div class="row"  >        
+        <div class="row">      
             <div class="text-center">
                 <h2>NUEVA NOMINA & PLANTILLA</h2>                                
             </div>    
@@ -51,26 +48,6 @@
                 </div>
             </div>
                 
-
-            <div class="col-sm-8">
-                <label for="">Lista de Jugadores</label>
-                <div  class=" table-responsive">
-                    <table class="table table-striped mitable" id="table2">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="" scope="col">#</th>
-                                <th class="" scope="col">S/T</th>
-                                <th class="" scope="col">Polera</th>
-                                <th class="" scope="col">Nombre</th>
-                                <th class="" scope="col">Mensualidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
             <div class="col-sm-4">
 
 
@@ -157,17 +134,17 @@
 
                 <div class="form-group">
                     <label for="input_total">Monto Esperado</label>
-                        <input class="form-control" id="input_sub_total" name="input_sub_total" type="number">
+                        <input class="form-control" id="input_sub_total" name="input_sub_total" type="number" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="input_deudas">Monto Adeudado</label>
-                        <input class="form-control" id="input_deudas" name="input_deudas" type="number">
+                        <input class="form-control" id="input_deudas" name="input_deudas" type="number" readonly>
                 </div>
                 
                 <div class="form-group">
                     <label for="input_total">Total Pagado</label>
-                        <input class="form-control" id="input_total" name="input_total" type="number">
+                        <input class="form-control" id="input_total" name="input_total" type="number" readonly>
                 </div>     
                 <div class="form-group">
                    
@@ -176,8 +153,25 @@
 
             </div>
 
-         
-        </div>                                                            
+            <div class="col-sm-8">
+                <label for="">Lista de Jugadores</label>
+                <div  class=" table-responsive">
+                    <table class="table table-striped mitable" id="table2">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="" scope="col">#</th>
+                                <th class="" scope="col">S/T</th>
+                                <th class="" scope="col">Polera</th>
+                                <th class="" scope="col">Nombre</th>
+                                <th class="" scope="col">Mensualidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>                                                         
     </div>
 
     <div class="modal fade modal-danger" id="confirm_delete_modal">
@@ -307,12 +301,12 @@
                                 <input class="form-control" id="polera_jugador_create" name="polera_jugador_create" type="number">
                           
                         </div>
-                        <div class="col-sm-6">
+                        {{-- <div class="col-sm-6">
                             <label for="edad_jugador_create">Edad</label>
                                                            
                                 <input class="form-control" id="edad_jugador_create" name="edad_jugador_create" type="number">
                             
-                        </div>
+                        </div> --}}
                         <div class="col-sm-6">
                             <label for="nacido_jugador_create">Fecha Nac.</label>
                                                         
@@ -431,6 +425,19 @@
             }
         }
 
+        function calcularEdad(fecha) {
+            var hoy = new Date();
+            var cumpleanos = new Date(fecha);
+            var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+            var m = hoy.getMonth() - cumpleanos.getMonth();
+
+            if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+                edad--;
+            }
+
+            return edad;
+        }
+
         async function notificacion_planilla_creada() {
              var mitext= ""
             mitext+="--------------- *Planilla de Jugadores* ---------------\n--------------- *Creada Exitosamente* ---------------\n\n"
@@ -481,7 +488,7 @@
                     try {
                         await axios.post("/api/whaticket/send", midata)
                     } catch (error) {
-                        toastr.error("fallo la notificacion con whatsapp.")
+                        toastr.error("Falló la notificación con WhatsApp.")
                     }
                    
                 }
@@ -621,7 +628,7 @@
                     try {
                         await axios.post("/api/whaticket/send", midata)
                     } catch (error) {
-                        toastr.error("fallo en cnotificacion por whatsapp.")
+                        toastr.error("Falló la notificación por WhatsApp.")
                     }
                     
                 }
@@ -635,7 +642,7 @@
                     try {
                         await axios.post("/api/whaticket/send", midata)
                     } catch (error) {
-                        toastr.error("fallo en cnotificacion por whatsapp.")
+                        toastr.error("Falló en notificación por WhatsApp.")
                     }
                 }
                 if (await validacion_wpp(phone_club)) {
@@ -656,7 +663,7 @@
                     try {
                         await axios.post("/api/whaticket/send", midata2)
                     } catch (error) {
-                        toastr.error("Fallo con whatsapp")
+                        toastr.error("Falló en notificación por WhatsApp.")
                     }
                     
                 }
@@ -805,7 +812,7 @@
             var midata={
                 'name':$("#nombre_jugador_create").val(),
                 'polera':$("#polera_jugador_create").val(),
-                'edad':$("#edad_jugador_create").val(),
+                'edad': calcularEdad($("#nacido_jugador_create").val()),
                 'nacido':$("#nacido_jugador_create").val(),
                 'clube_id':$("#select_club").val(),
                 'phone':$("#wpp_jugador_create").val()
@@ -930,6 +937,8 @@
         $('document').ready(async function () { 
             //Inicializar Select Jugadores Transferencia
             validad_roles()
+
+            // console.log(calcularEdad("1999-01-01"))
             $('#jugador_transferencia').find('option').remove().end()
             var equipo_id=$("#equipo_transferencia").val()
             var jugadores= await axios("/api/jugadores/planilla/find/jugadores/"+equipo_id)

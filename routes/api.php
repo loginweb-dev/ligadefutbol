@@ -37,6 +37,7 @@ Route::group(['prefix' => 'partidos'], function () {
         $newpartido->juez_2 = $request->juez_2;
         $newpartido->juez_3 = $request->juez_3;
         $newpartido->juez_4 = $request->juez_4;
+        $newpartido->status = 2;
         $newpartido->save();
         $newpartido = App\Partido::find($request->miid);
         return $newpartido;

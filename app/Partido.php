@@ -19,11 +19,12 @@ class Partido extends Model
         // 'hora_comienzo_pt',
         // 'hora_comienzo_st',
         'categoria',
-        'fixture_id'
+        'fixture_id',
         // 'juez_1',
         // 'juez_2',
         // 'juez_3',
         // 'juez_4'
+        'status'
     ];
 
     public function fixture()

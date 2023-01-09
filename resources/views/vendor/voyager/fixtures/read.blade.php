@@ -12,7 +12,7 @@
     <div class="container-fluid">
         <div class="row">
             <br>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <table class="table mitable">
                         <tr class="active">
                             <td colspan="2"> <strong>Datos del Fixture </strong> #{{ $fixture->id }}</td>
@@ -45,7 +45,7 @@
                 @endif         
             </div>
 
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <div class="table-responsive">
                     <table class="table mitable">
                         <thead>
@@ -73,11 +73,11 @@
                                     <td>{{ $item->fecha }}</td>
                                     <td>{{ $item->hora }}</td>
                                     <td>{{ $club_a->name  }}</td>
-                                    <td>vs</td>
+                                    <td><span class="label label-primary">vs</span></td>
                                     <td>{{ $club_b->name }}</td>
                                     <td>{{ $item->categoria }}</td>
                                     <td>{{ $veedor->name }}</td>
-                                    <td><a href="/admin/partidos/{{ $item->id }}" class="btn btn-sm btn-block btn-dark">Ver</a></td>
+                                    <td><a href="/admin/partidos/{{ $item->id }}" class="btn btn-sm btn-block btn-warning">Ver</a></td>
                                 </tr>
                             @endforeach                     
                         </tbody>

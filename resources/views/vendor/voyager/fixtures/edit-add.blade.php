@@ -14,54 +14,46 @@
 
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
-@section('page_header')
-    <div class="col-sm-offset-2  col-sm-8">
-        <div class="text-center">
-            <h2>NUEVO FIXTURE</h2>
-            <p>formulario para la creacion de fitures</p>
-        </div>
-    </div>
-@stop
-
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-8">            
-                        <div class="table-responsive">
-                            <table class="table">
-                                <tr>
-                                    <td>
-                                        <label for="">Categoria</label>
-                                        <div class="form-group" style="border-style: outset;">
-                                            <select name="" id="delegado_id" class="select2 form-control">
-                                                @foreach ($delegados as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                @endforeach                                    
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <label for="">Veedor</label>
-                                        <div class="form-group" style="border-style: outset;">
-                                            <select name="" id="categoria" class="select2 form-control">                        
-                                                    <option value="Senior">Senior</option>
-                                                    <option value="Especial">Especial</option>                                                       
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <label for="">Fecha</label>
-                                        <div class="input-group">
-                                            <input type="date" name="" id="mifecha" class="form-control">
-                                            <span class="input-group-btn">
-                                              <button class="btn btn-dark btn-md" type="button" onclick="add_date()">Agregar</button>
-                                              <button class="btn btn-secundary btn-md" type="button" onclick="remove_list()">Limpiar</button>
-                                            </span>
-                                        </div>   
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+            <hr>
+            <div class="col-sm-9">            
+                <div class="table-responsive">
+                    <table class="table mitable">
+                        <tr>
+                            <td>
+                                <label for="">Categoria</label>
+                                <div class="form-group" style="border-style: outset;">
+                                    <select name="" id="delegado_id" class="select2 form-control">
+                                        @foreach ($delegados as $item)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endforeach                                    
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <label for="">Veedor</label>
+                                <div class="form-group" style="border-style: outset;">
+                                    <select name="" id="categoria" class="select2 form-control">                        
+                                            <option value="Senior">Senior</option>
+                                            <option value="Especial">Especial</option>                                                       
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <label for="">Fecha</label>
+                                <div class="input-group">
+                                    <input type="date" name="" id="mifecha" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-dark btn-md" type="button" onclick="add_date()">Agregar</button>
+                                        <button class="btn btn-secundary btn-md" type="button" onclick="remove_list()">Limpiar</button>
+                                    </span>
+                                </div>   
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
                 {{-- <label for="">Lista o Feature</label> --}}
                 <div class="form-group table-responsive">
@@ -80,10 +72,10 @@
                         <tbody></tbody>
                     </table>
                 </div>
-
        
             </div>
-            <div class="col-sm-4">                              
+
+            <div class="col-sm-3">                              
                 <label for="">Equipo "A"</label>   
                 <div class="form-group" style="border-style: outset;">                                    
                     <select name="" id="equipo_a" class="select2 form-control">
@@ -115,21 +107,20 @@
                     <label for="">Titulo</label>
                     <textarea name="" id="title" cols="0" rows="3" class="form-control">{{ setting('features.title') }}</textarea>
                 </div>
+              
+                <label for="">Equipo que descansa</label>             
+                <div class="miselect">
+                    <select name="" id="descansa_id" class="select2 form-control">
+                        @foreach ($planillas as $item)
+                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
+                        @endforeach                                    
+                    </select>
+                </div> 
+                                
                 <div class="form-group">
-                    <label for="">Equipo que descansa</label>
-                    <div class="input-group">
-                        <div style="border-style: outset;">
-                            <select name="" id="descansa_id" class="select2 form-control">
-                                @foreach ($planillas as $item)
-                                    <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
-                                @endforeach                                    
-                            </select>
-                        </div> 
-                        <span class="input-group-btn">
-                          <button class="btn btn-primary btn-lg" type="button" onclick="save()">Guardar</button>
-                        </span>
-                    </div>
+                    <button class="btn btn-primary btn-sm btn-block" type="button" onclick="save()">Guardar</button>
                 </div>
+                
             </div>
         </div>
     </div>

@@ -2,6 +2,7 @@
 
 @section('page_title', __('voyager::generic.viewing').' '.$dataType->getTranslatedAttribute('display_name_plural'))
 
+
 @section('content')
     <div class="container-fluid">
         @include('voyager::alerts')
@@ -41,11 +42,11 @@
                             <table id="dataTable" class="table table-hover mitable">
                                 <thead>
                                     <tr>
-                                        @if($showCheckboxColumn)
-                                            {{-- <th class="dt-not-orderable">
+                                        {{-- @if($showCheckboxColumn)
+                                            <th class="dt-not-orderable">
                                                 <input type="checkbox" class="select_all">
-                                            </th> --}}
-                                        @endif
+                                            </th>
+                                        @endif --}}
                                         @foreach($dataType->browseRows as $row)
                                         <th>
                                             @if ($isServerSide && in_array($row->field, $sortableColumns))
@@ -70,11 +71,11 @@
                                 <tbody>
                                     @foreach($dataTypeContent as $data)
                                     <tr>
-                                        @if($showCheckboxColumn)
-                                            {{-- <td>
+                                        {{-- @if($showCheckboxColumn)
+                                            <td>
                                                 <input type="checkbox" name="row_id" id="checkbox_{{ $data->getKey() }}" value="{{ $data->getKey() }}">
-                                            </td> --}}
-                                        @endif
+                                            </td>
+                                        @endif --}}
                                         @foreach($dataType->browseRows as $row)
                                             @php
                                             if ($data->{$row->field.'_browse'}) {
@@ -247,7 +248,7 @@
                                 ])->links() }}
                             </div>
                         @endif
-          
+                
             </div>
         </div>
     </div>

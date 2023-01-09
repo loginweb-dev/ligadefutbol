@@ -30,21 +30,15 @@ Route::group(['prefix' => 'partidos'], function () {
     });
 
     Route::post('/save', function (Request $request) {
-        $newpartido = App\Partido::create([
-            'description' => $request->description,
-            'fecha' => $request->fecha,
-            'hora' => $request->hora,
-            'veedor_id' => $request->veedor_id,
-            'planilla_a_id' => $request->planilla_a_id,
-            'planilla_b_id' => $request->planilla_b_id,
-            'hora_comienzo_pt' => $request->hora_comienzo_pt,
-            'hora_comienzo_st' => $request->hora_comienzo_st,
-            'categoria' => $request->categoria,
-            'juez_1' => $request->juez_1,
-            'juez_2' => $request->juez_2,
-            'juez_3' => $request->juez_3,
-            'juez_4' => $request->juez_4
-        ]);
+        $newpartido = App\Partido::find($request->miid);
+        $newpartido->hora_comienzo_pt = $request->hora_comienzo_pt;
+        $newpartido->hora_comienzo_st = $request->hora_comienzo_st;
+        $newpartido->juez_1 = $request->juez_1;
+        $newpartido->juez_2 = $request->juez_2;
+        $newpartido->juez_3 = $request->juez_3;
+        $newpartido->juez_4 = $request->juez_4;
+        $newpartido->save();
+        $newpartido = App\Partido::find($request->miid);
         return $newpartido;
     });
 

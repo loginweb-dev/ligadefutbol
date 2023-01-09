@@ -11,57 +11,9 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-12 text-center">
-                <h2>Nomina #{{ $dataTypeContent->id }}</h2>
-                @if($isSoftDeleted)
-                    <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
-                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
-                    </a>
-                @else
-                    <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
-                        <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
-                    </a>
-                @endif
-            </div>
-            <div class="col-sm-8">
-                {{-- <code>{{ count($partidos) }}</code>       --}}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr class="active">
-                            <th>#</th>
-                            <th>Fecha</th>
-                            <th>Hora</th>
-                            <th>Equipo A</th>
-                            <th>-</th>
-                            <th>Equipo B</th>
-                            <th>Categoria</th>
-                            <th>Veedor</th>
-                        </tr>
-                    </tbody>
-                    <tbody>
-                        @foreach ($partidos as $item)
-                            @php
-                                $club_a = App\Clube::find($item->planilla_a->clube_id);
-                                $club_b = App\Clube::find($item->planilla_b->clube_id);
-                                $veedor = App\Delegado::find($item->veedor_id);
-                            @endphp
-                            <tr>
-                                <td>{{ $item->id }}</td>
-                                <td>{{ $item->fecha }}</td>
-                                <td>{{ $item->hora }}</td>
-                                <td>{{ $club_a->name  }}</td>
-                                <td>vs</td>
-                                <td>{{ $club_b->name }}</td>
-                                <td>{{ $item->categoria }}</td>
-                                <td>{{ $veedor->name }}</td>
-                            </tr>
-                        @endforeach                     
-                    </tbody>
-                </table>          
-            </div>
-
+            <br>
             <div class="col-sm-4">
-                <table class="table table-bordered">
+                <table class="table mitable">
                         <tr class="active">
                             <td colspan="2"> <strong>Datos del Fixture </strong> #{{ $fixture->id }}</td>
                         </tr>
@@ -80,9 +32,59 @@
                         <tr>
                             <td><strong>Creado: </strong></td>
                             <td>{{ $fixture->created_at }}</td>
-                        </tr>
-                </table>              
+                        </tr>          
+                </table>     
+                @if($isSoftDeleted)
+                    <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
+                        <i class="voyager-trash"></i> <span class="hidden-xs btn-sm btn-block">{{ __('voyager::generic.restore') }}</span>
+                    </a>
+                @else
+                    <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger btn-block delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
+                        <i class="voyager-trash"></i> <span class="">{{ __('voyager::generic.delete') }}</span>
+                    </a>
+                @endif         
             </div>
+
+            <div class="col-sm-8">
+                <div class="table-responsive">
+                    <table class="table mitable">
+                        <thead>
+                            <tr class="active">
+                                <th>#</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Equipo A</th>
+                                <th>-</th>
+                                <th>Equipo B</th>
+                                <th>Categoria</th>
+                                <th>Veedor</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($partidos as $item)
+                                @php
+                                    $club_a = App\Clube::find($item->planilla_a->clube_id);
+                                    $club_b = App\Clube::find($item->planilla_b->clube_id);
+                                    $veedor = App\Delegado::find($item->veedor_id);
+                                @endphp
+                                <tr>
+                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $item->fecha }}</td>
+                                    <td>{{ $item->hora }}</td>
+                                    <td>{{ $club_a->name  }}</td>
+                                    <td>vs</td>
+                                    <td>{{ $club_b->name }}</td>
+                                    <td>{{ $item->categoria }}</td>
+                                    <td>{{ $veedor->name }}</td>
+                                    <td><a href="/admin/partidos/{{ $item->id }}" class="btn btn-sm btn-block btn-dark">Ver</a></td>
+                                </tr>
+                            @endforeach                     
+                        </tbody>
+                    </table>  
+                </div>
+                      
+            </div>          
         </div>
     </div>
 

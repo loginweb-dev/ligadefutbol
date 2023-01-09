@@ -25,11 +25,14 @@
 
 @section('content')
     <div class="container-fluid">
+      
                 <div class="col-sm-4" hidden>
                     <br />
                     <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
                 </div>
-        <div class="row">      
+
+
+        <div class="row"  >        
             <div class="text-center">
                 <h2>NUEVA NOMINA & PLANTILLA</h2>                                
             </div>    
@@ -48,6 +51,26 @@
                 </div>
             </div>
                 
+
+            <div class="col-sm-8">
+                <label for="">Lista de Jugadores</label>
+                <div  class=" table-responsive">
+                    <table class="table table-striped mitable" id="table2">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="" scope="col">#</th>
+                                <th class="" scope="col">S/T</th>
+                                <th class="" scope="col">Polera</th>
+                                <th class="" scope="col">Nombre</th>
+                                <th class="" scope="col">Mensualidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="col-sm-4">
 
 
@@ -153,25 +176,8 @@
 
             </div>
 
-            <div class="col-sm-8">
-                <label for="">Lista de Jugadores</label>
-                <div  class=" table-responsive">
-                    <table class="table table-striped mitable" id="table2">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="" scope="col">#</th>
-                                <th class="" scope="col">S/T</th>
-                                <th class="" scope="col">Polera</th>
-                                <th class="" scope="col">Nombre</th>
-                                <th class="" scope="col">Mensualidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>                                                         
+         
+        </div>                                                            
     </div>
 
     <div class="modal fade modal-danger" id="confirm_delete_modal">

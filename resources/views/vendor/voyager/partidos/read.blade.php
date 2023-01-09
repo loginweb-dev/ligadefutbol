@@ -13,7 +13,6 @@
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
-
 @section('content')
     <div class="page-content read container-fluid">
         <div class="row">
@@ -23,9 +22,9 @@
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="cluba">
                         <thead>
-                            <tr>
+                            <tr class="active">
                                 <th scope="col">#</th>
-                                <th scope="col">Polera</th>
+                                <th scope="col">P</th>
                                 <th scope="col">Nombres y Apellidos</th>
                                 <th scope="col">Edad</th>
                                 <th scope="col">TA</th>
@@ -41,10 +40,10 @@
                                     <td>{{ $item->jugador->polera }}</td>
                                     <td>{{ $item->jugador->name }}</td>
                                     <td>{{ $item->jugador->edad }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -56,9 +55,9 @@
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="clubb">
                         <thead>
-                            <tr>
+                            <tr class="active">
                                 <th scope="col">#</th>
-                                <th scope="col">Polera</th>
+                                <th scope="col">P</th>
                                 <th scope="col">Nombres y Apellidos</th>
                                 <th scope="col">Edad</th>
                                 <th scope="col">TA</th>
@@ -74,10 +73,10 @@
                                     <td>{{ $item->jugador->polera }}</td>
                                     <td>{{ $item->jugador->name }}</td>
                                     <td>{{ $item->jugador->edad }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -85,93 +84,90 @@
                 </div>
 
             </div>
+
             <div class="col-sm-3">
-                <div  class="group text-center">
-                    <h2>Juego #{{ $dataTypeContent->id }}</h2>
+                <br>
+                <div class="form-group">
+                    <a href="#" onclick="misave()" class="btn btn-sm btn-dark btn-block">Enviar y Guardar</a>
+                </div>
+                <table class="table mitable">
+                    <thead>
+                        <tr class="active">
+                            <td>Juego #{{ $dataTypeContent->id }}</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fecha & Hora: </td>
+                            <td>{{ $dataTypeContent->created_at }}</td>
+                        </tr>
+                        <tr>
+                            <td>Categoria: </td>
+                            <td>{{ $dataTypeContent->categoria }}</td>
+                        </tr>
+                        <tr>
+                            <td>Veedor: </td>
+                            <td>{{ $dataTypeContent->veedor_id }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <label for="">Arbitro del Partido</label>  
+                <div class="form-group miselect">                              
+                    <select name="" id="juez_1" class="form-control select2">
+                        @foreach ($arbitro as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach    
+                    </select>
+                </div>
+
+                <label for="">Primer juez del Partido</label>
+                <div class="form-group miselect">                                       
+                    <select name="" id="juez_2" class="form-control select2">
+                        @foreach ($arbitro as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach    
+                    </select>                   
+                </div>
+
+                <label for="">Segundo Juez del Partido</label>
+                <div class="form-group miselect">                                     
+                    <select name="" id="juez_3" class="form-control select2">
+                        @foreach ($arbitro as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach    
+                    </select>                  
+                </div>
+
+                <label for="">Cuarto juez del Partido</label>
+                <div class="form-group miselect">
+                    <select name="" id="juez_4" class="form-control select2">
+                        @foreach ($arbitro as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach    
+                    </select>                  
+                </div>
+
+                <label for="">Inicio 1er Tiempo</label>   
+                <input type="time" id="hora_comienzo_pt" class="form-control">
+                <label for="">Hora 2do Tiempo</label>
+                <input type="time" id="hora_comienzo_st" class="form-control">
+
+                <div class="form-group">
                     @if($isSoftDeleted)
                         <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-sm btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
                             <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
                         </a>
                     @else
-                        <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger btn-sm delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
-                            <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
+                        <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger btn-sm btn-block delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
+                            <i class="voyager-trash"></i> <span class="">{{ __('voyager::generic.delete') }}</span>
                         </a>
                     @endif
+                </div> 
+                <div hidden>
+                    <input type="text" id="miid" class="form-control" value="{{ $dataTypeContent->id }}" hidden />
                 </div>
-
-                <div class="form-group">
-
-                                <label for="">Fecha del Partido</label>
-                                <input type="date" name="" id="fecha" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="">Hora Comienzo 1er Tiempo</label>
-                    <input type="time" id="hora_comienzo_pt" class="form-control">
-  
-                    <label for="">Hora Comienzo 2do Tiempo</label>
-                    <input type="time" id="hora_comienzo_st" class="form-control">
-                </div>
-                <div class="form-group">
-                          
-                    <label for="">Hora del Partido</label>
-                    <input type="time" name="" id="hora" class="form-control">
-                
-                    <label for="">Categoria del Partido</label>
-                    <div style="border-style: outset;">
-                        <select name="" id="categoria" class="miselect form-control select2">
-                            <option value="Senior">Senior</option>
-                            <option value="Especial">Especial</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                                           
-                    <label for="">Veedor del Partido</label>
-                  
-                        <select name="" id="veedor_id" class="select2 form-control">
-                            @foreach ($delegados as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach                                    
-                        </select>
-                </div>
-                <div class="form-group">
-                    <label for="">Arbitro del Partido</label>
-                  
-                        <select name="" id="juez_1" class="form-control select2">
-                            @foreach ($arbitro as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach    
-                        </select>
-                
-
-                    <label for="">Primer juez del Partido</label>
-                   
-                        <select name="" id="juez_2" class="form-control select2">
-                            @foreach ($arbitro as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach    
-                        </select>
-                   
-
-                    <label for="">Segundo Juez del Partido</label>
-                 
-                        <select name="" id="juez_3" class="form-control select2">
-                            @foreach ($arbitro as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach    
-                        </select>
-                  
-
-                    <label for="">Cuarto juez del Partido</label>
-                    
-                        <select name="" id="juez_4" class="form-control select2">
-                            @foreach ($arbitro as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach    
-                        </select>
-                  
-                </div>
-
             </div>
         </div>
     </div>
@@ -207,6 +203,12 @@
         </script>
     @endif
     <script>
+        var now = new Date(Date.now());
+        var mitime = now.getHours() + ":" + now.getMinutes();
+        $('#hora_comienzo_pt').val(mitime);
+        $('#hora_comienzo_st').val(mitime);
+
+
         var example1 = new BSTable("cluba", {
 			editableColumns:"4,5,6,7",
 			onEdit:function() {
@@ -244,6 +246,34 @@
 
             $('#delete_modal').modal('show');
         });
+
+        async function misave() {
+            Swal.fire({
+                title: 'Estás Seguro?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'SI',
+                cancelButtonText: 'NO'
+                }).then(async (result) => {
+                if (result.isConfirmed) {
+                    var midata = {
+                        'miid': $("#miid").val(),
+                        'juez_1': $("#juez_1").val(),
+                        'juez_2': $("#juez_2").val(),
+                        'juez_3': $("#juez_3").val(),
+                        'juez_4': $("#juez_4").val(),
+                        'hora_comienzo_pt': $("#hora_comienzo_pt").val(),
+                        'hora_comienzo_st': $("#hora_comienzo_st").val()
+                    }
+                    console.log(midata)     
+                    var partido = await axios.post("/api/partidos/save", midata)
+                    location.href = "/admin/partidos"              
+                }
+            })
+        }
+
 
     </script>
 @stop

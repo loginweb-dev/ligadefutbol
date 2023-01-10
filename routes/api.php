@@ -401,8 +401,11 @@ Route::post('delete/planilla', function(Request $request){
         }
         $item->delete();
     }
-    $asientos= App\Asiento::where('planilla_id', $request->planilla_id)->with('detalles')->get();
-    return $asientos;
+    // $asientos= App\Asiento::where('planilla_id', $request->planilla_id)->with('detalles')->get();
+    $planilla= App\JugadoresPlanilla::find($request->planilla_id);
+    $planilla->activo= $request->decision;
+    $planilla->save();
+    return true;
 });
 
 Route::post('prueba/planilla', function(Request $request){

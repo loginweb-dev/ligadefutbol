@@ -24,6 +24,14 @@
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
 @section('content')
+    <div id="voyager-loader" class="mireload" hidden>
+        <?php $admin_loader_img = Voyager::setting('admin.loader', ''); ?>
+        @if($admin_loader_img == '')
+            <img src="{{ voyager_asset('images/logo-icon.png') }}" alt="Voyager Loader">
+        @else
+            <img src="{{ Voyager::image($admin_loader_img) }}" alt="Voyager Loader">
+        @endif
+    </div>
     <div class="container-fluid">
       
                 <div class="col-sm-4" hidden>
@@ -959,6 +967,7 @@
         }
 
         $('document').ready(async function () { 
+            
             //Inicializar Select Jugadores Transferencia
             validad_roles()
 

@@ -15,6 +15,7 @@
     $asientos= App\Asiento::where('planilla_id', $dataTypeContent->id)->with('jugadores', 'clubes', 'categorias')->get();
     $num_jugadores=count($nomina);
     $equipo_titulo= App\Clube::find($dataTypeContent->clube_id);
+    $planilla_jugs= App\JugadoresPlanilla::where('id', $dataTypeContent->id)->with('user')->first();
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -120,6 +121,14 @@
                             </td>
                             <td>
                                 {{$dataTypeContent->observacion}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Editor:
+                            </td>
+                            <td>
+                                {{$planilla_jugs->user->name}}
                             </td>
                         </tr>
                         <tr>

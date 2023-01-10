@@ -15,121 +15,65 @@
 
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
-@section('page_header')
-    <h1 class="page-title">
-        <i class="{{ $dataType->icon }}"></i>
-        {{ __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular') }}
-    </h1>
-    @include('voyager::multilingual.language-selector')
-@stop
 
 @section('content')
-    <div class="page-content edit-add container-fluid">
-        <div class="row">
-            <div class="col-md-12">
+    <div class="container-fluid">
+        <br>
+        <div class="row">                        
+            <div class="col-sm-6">
+                <label for="select_tipo">Tipo</label>
+                <div class="form-group miselect">                                        
+                    <select class="form-control select2" name="select_tipo" id="select_tipo">
+                        <option value="Ingreso">Ingreso</option>
+                        <option value="Egreso">Egreso</option> 
+                    </select>            
+                </div>
 
-                <div class="panel panel-bordered">
-                    
-                    
-                    <div class="row">
-                 
-                        <div class="col-md-12">
-                           
+                <label for="select_categoria">Categoria</label>
+                <div class="form-group miselect">                                
+                    <select class="form-control select2" name="select_categoria" id="select_categoria">                        
+                    </select>
+                </div>
 
-                            
-                            <div class="col-sm-6 form-group">
-                                <label for="select_tipo">Tipo</label>
-                                <div style="border-style: outset;">                                
-                                    <select class="form-control select2" name="select_tipo" id="select_tipo">
-                                        <option value="Ingreso">Ingreso</option>
-                                        <option value="Egreso">Egreso</option> 
- 
-                                    </select>
-                                </div>
-                            </div>
+                <label for="select_planilla">Planilla</label>
+                <div class="form-group miselect">                                
 
-                            <div class="col-sm-6 form-group">
-                                <label for="select_categoria">Categoria</label>
-                                <div style="border-style: outset;">                                
+                    <select class="form-control select2" name="select_planilla" id="select_planilla">
+                        @foreach ($nomina  as $item)
+                            <option value="{{ $item->id }}">{{ $item->clubes->name }} - {{$item->categoria_jugadores}}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-                                    <select class="form-control select2" name="select_categoria" id="select_categoria">
-                                        
- 
-                                    </select>
-                                </div>
-                            </div>
-                            <br>
+                <label for="select_jugador">Jugador</label>
+                <div class="form-group miselect">                                
+                    <select class="form-control select2" name="select_jugador" id="select_jugador">                        
+                    </select>
+                </div>
 
-                           
+                <div class="form-group">
+                    <label for="input_monto">Monto</label>
+                    <input  id="input_monto" type="number" min="1" class="form-control">
+                </div>
 
+                <div class="form-group">
+                    <label for="text_descripcion">Descripción</label>
+                    <textarea class="form-control" name="text_descripcion" id="text_descripcion" rows="5"></textarea>
+                </div>
 
-                            <div class="col-sm-4 form-group" >
-                                <label for="select_planilla">Planilla</label>
-                                <div style="border-style: outset;">                                
+                <div class="form-group">
+                    <button class="btn btn-dark btn-block" onclick="misave()">Guardar Asiento</button>
+                </div>
 
-                                    <select class="form-control select2" name="select_planilla" id="select_planilla">
-                                        @foreach ($nomina  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->clubes->name }} - {{$item->categoria_jugadores}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+            </div>
 
-                            <div class="col-sm-4 form-group" id="div_jugador">
-                                <label for="select_jugador">Jugador</label>
-                                <div style="border-style: outset;">                                
-                                    <select class="form-control select2" name="select_jugador" id="select_jugador">
-                                        
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-4 form-group">
-                                <label for="input_monto">Monto</label>
-                                <div style="border-style: outset;">                               
-                                    <input  id="input_monto" type="number" min="1" class="form-control">
-                                </div>
-                            </div>
-
-                            {{-- <div class="col-md-4 form-group">
-                                <label for="select_club">Club</label>
-                                <div style="border-style: outset;">                                
-                                    <select class="form-control select2" name="select_club" id="select_club">
-                                        @foreach ($clubes  as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div> --}}
-                            <div class="col-md-6 form-group">
-                                <label for="text_descripcion">Descripción</label>
-                                <textarea class="form-control" name="text_descripcion" id="text_descripcion" rows="5"></textarea>
-                            </div>
-
-                            
-
-                            <div class="col-md-6 form-group">
-                                <br>
-                                <div>
-                                    <button class="btn btn-dark btn-block" onclick="misave()">Guardar Asiento</button>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 form-group" hidden>
-                                <label for="input_editor">Editor</label>
-                                <div style="border-style: outset;">
-                                    <input class="form-control" id="input_editor" type="number">
-                                </div>
-                            </div>
-
-                          
-
-
-                        </div>
-                    </div>
-
-
+            <div class="col-md-6 form-group" hidden>
+                <label for="input_editor">Editor</label>
+                <div style="border-style: outset;">
+                    <input class="form-control" id="input_editor" type="number">
                 </div>
             </div>
+
         </div>
     </div>
 

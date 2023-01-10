@@ -15,26 +15,29 @@ use RicardoPaes\Whaticket\Api;
 
 Route::get('/', function () {
     return redirect("/admin/profile");
-    //return view('welcome');
 });
 
+Route::get('/reset-db', function () {
+
+    App\Asiento::truncate();
+    App\AsientoDetalle::truncate();
+    App\Fixture::truncate();
+    App\JugadoresPlanilla::truncate();
+    App\Partido::truncate();
+    App\RelPartidoNomina::truncate();
+
+    App\Clube::where('id', '>', 0)->update([
+        'puntos' => 0,
+        'ta' => 0,
+        'tr' => 0
+    ]);
+
+    return "Bade de datos reseteda correctamente..";
+});
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
-
 Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

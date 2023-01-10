@@ -10,7 +10,10 @@
     $arbitro = App\Arbitro::all();
     $delegados = App\Delegado::all();
     $veedor = App\Delegado::find($dataTypeContent->veedor_id);
-    $relparnom = App\RelPartidoNomina::where('partido_id', $dataTypeContent->id)->get();
+
+    $relparnom_a = App\RelPartidoNomina::where('partido_id', $dataTypeContent->id)->where('nomina_id', $dataTypeContent->planilla_a_id)->get();
+    $relparnom_b = App\RelPartidoNomina::where('partido_id', $dataTypeContent->id)->where('nomina_id', $dataTypeContent->planilla_b_id)->get();
+
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -39,7 +42,7 @@
                                         <span class="label  label-primary">Finalizo</span></h2>  
                                         @break
                                     @case(3)
-                                        <span class="badge badge-dark">Se Cancelo</span>
+                                        <span class="badge badge-danger">Se Cancelo</span>
                                         @break
                                     @case(4)
                                         <span class="badge badge-warning">Empate</span>
@@ -194,7 +197,8 @@
                                 <td colspan="2" class="text-center"><span class="label label-success">{{ $ea->name }} - {{ $dataTypeContent->ganador }} </span></td>
                             </tr>
                             <tr>
-                                <td colspan="2" class="text-center"><span class="label label-success">{{ $dataTypeContent->description }} </span></td>
+      
+                                <td colspan="2" class="text-center"><span class="label label-info">{{ $dataTypeContent->description }} </span></td>
                             </tr>
                             
                             <tr>
@@ -231,7 +235,7 @@
             </div>
 
             <div class="col-sm-9">
-                {{-- {{ $relparnom }} --}}
+
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="cluba">
               
@@ -253,13 +257,57 @@
                             @foreach ($a as $item)
                                 <tr>
                                     <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
-                                    <td>{{ $loop->index + 1 }}.- {{ $item->jugador->name }} </td>
-                                    <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>                                                                        
-                                    <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
+                                    <td>
+                                        <a href="/admin/jugadores/{{  $item->jugador->id }}">
+                                            {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
+                                        </a>
+                                    </td>
+                                    <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>           
+                                    <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>                                        
+                                    <td>
+                                        @if($dataTypeContent->status == 1)
+                                            0 
+                                        @else 
+                                            @if ($relparnom_a[$loop->index]->ta == 0)
+                                                0
+                                            @else
+                                                <span class="label label-primary">{{ $relparnom_a[$loop->index]->ta }}</span>
+                                            @endif                                            
+                                        @endif
+                                    </td>  
+                                    <td>
+                                        @if($dataTypeContent->status == 1)
+                                            0 
+                                        @else 
+                                            @if ($relparnom_a[$loop->index]->tr == 0)
+                                                0
+                                            @else
+                                                <span class="label label-primary">{{ $relparnom_a[$loop->index]->tr }}</span>
+                                            @endif                                            
+                                        @endif
+                                    </td>                                                      
+                                    <td>
+                                        @if($dataTypeContent->status == 1)
+                                            0 
+                                        @else 
+                                            @if ($relparnom_a[$loop->index]->g1t == 0)
+                                                0
+                                            @else
+                                                <span class="label label-primary">{{ $relparnom_a[$loop->index]->g1t }}</span>
+                                            @endif                                            
+                                        @endif
+                                    </td>                            
+                                    <td>               
+                                        @if($dataTypeContent->status == 1)
+                                            0 
+                                        @else 
+                                            @if ($relparnom_a[$loop->index]->g2t == 0)
+                                                0
+                                            @else
+                                                <span class="label label-primary">{{ $relparnom_a[$loop->index]->g2t }}</span>
+                                            @endif                                            
+                                        @endif
+                                    </td>  
                                 </tr>
                             @endforeach
                             {{-- <tr>
@@ -273,13 +321,14 @@
                     </table>
                 </div>
 
-                <div class="form-group">
-                    @if($dataTypeContent->status == 1)                    
-                        <textarea name="" id="description" rows="4" class="form-control" placeholder="Detalles u Observaciones del partido"></textarea>                    
+                
+                    @if($dataTypeContent->status == 1)     
+                        <div class="form-group">               
+                            <textarea name="" id="description" rows="4" class="form-control" placeholder="Detalles u Observaciones del partido"></textarea>                    
+                        </div>
                     @else
-                        {{-- <p>{{ $dataTypeContent->description }}</p> --}}
                     @endif
-                </div>
+          
           
 
                 <div class="table-responsive">
@@ -301,13 +350,37 @@
                             @foreach ($b as $item)
                                 <tr>
                                     <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
-                                    <td>{{ $loop->index + 1 }}.- {{ $item->jugador->name }} </td>
+                                    <td>
+                                        <a href="#">
+                                            {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
+                                        </a>
+                                    </td>
                                     <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>                                                                        
                                     <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>
                                     <td>0</td>
                                     <td>0</td>
-                                    <td>0</td>
-                                    <td>0</td>
+                                    <td>
+                                        @if($dataTypeContent->status == 1)
+                                            0 
+                                        @else 
+                                            @if ($relparnom_b[$loop->index]->g1t == 0)
+                                                0
+                                            @else
+                                                <span class="label label-primary">{{ $relparnom_b[$loop->index]->g1t }}</span>
+                                            @endif                                            
+                                        @endif
+                                    </td>                            
+                                    <td>               
+                                        @if($dataTypeContent->status == 1)
+                                            0 
+                                        @else 
+                                            @if ($relparnom_b[$loop->index]->g2t == 0)
+                                                0
+                                            @else
+                                                <span class="label label-primary">{{ $relparnom_b[$loop->index]->g2t }}</span>
+                                            @endif                                            
+                                        @endif
+                                    </td>  
                                 </tr>
                             @endforeach
                         </tbody>
@@ -497,6 +570,10 @@
 
                     // actualiar puntos------------------------------------     
                     await axios.post("/api/partidos/update/clube", {'partido_id': partido_id})
+
+                      // crear asientos------------------------------------     
+                      await axios.post("/api/partidos/update/clube", {'partido_id': partido_id})
+
                     location.reload()             
                 }
             })

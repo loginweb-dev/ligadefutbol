@@ -11,7 +11,11 @@ class Clube extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'puntos'
+        'puntos',
+        'golesa',
+        'golesc',
+        'ta',
+        'tr'
     ];
 
     public function user(){

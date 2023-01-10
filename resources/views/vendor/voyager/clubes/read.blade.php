@@ -14,7 +14,7 @@
                 <table class="table mitable">
                     <thead>
                         <tr class="active">                       
-                            <th>#</th>
+                            <th>ID</th>
                             <th>Jugador</th>
                             <th>Edad</th>
                             <th>Polera</th>
@@ -24,10 +24,14 @@
                     <tbody>
                         @foreach ($jugadores as $item)
                             <tr>
-                                <td>{{ $item->id }}</td>
-                                <td>{{ $item->name }}</td>
-                                <td>{{ $item->edad }}</td>
-                                <td>{{ $item->polera }}</td>
+                                <td><span class="label label-primary">{{ $item->id }}</span></td>
+                                <td>
+                                    <a href="/admin/jugadores/{{ $item->id }}">
+                                        {{ $loop->index + 1 }}.- {{ $item->name }} 
+                                    </a>
+                                </td>
+                                <td><span class="label label-success">{{ $item->edad }}</span></td>
+                                <td><span class="label label-warning">{{ $item->polera }}</span></td>
                                 <td>{{ $item->phone }}</td>
                             </tr>
                         @endforeach
@@ -40,6 +44,26 @@
                         <td>Nombre: </td>
                         <td>{{ $dataTypeContent->name }}</td>    
                     </tr>    
+                    <tr>
+                        <td>whatsaoo: </td>
+                        <td>{{ $dataTypeContent->wpp }}</td>    
+                    </tr> 
+                    <tr>
+                        <td>Presidente: </td>
+                        <td>{{ $dataTypeContent->presidente }}</td>    
+                    </tr> 
+                    <tr>
+                        <td>Total TA: </td>
+                        <td>{{ $dataTypeContent->ta }}</td>    
+                    </tr> 
+                    <tr>
+                        <td>Total TR: </td>
+                        <td>{{ $dataTypeContent->tr }}</td>    
+                    </tr> 
+                    <tr>
+                        <td>Total Puntos: </td>
+                        <td>{{ $dataTypeContent->puntos }}</td>    
+                    </tr> 
                 </table>       
             </div>
         </div>

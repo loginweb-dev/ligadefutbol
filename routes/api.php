@@ -55,14 +55,43 @@ Route::group(['prefix' => 'partidos'], function () {
         $newpartido = App\Partido::find($request->partido_id);
         $loop_a = App\RelPartidoNomina::where("partido_id", $request->partido_id)->where("nomina_id", $newpartido->planilla_a_id)->get();
         $gol_a = 0;
+        $ta_a = 0;
+        $tr_a = 0;
         foreach ($loop_a as $item) {
             $gol_a += ($item->g1t + $item->g2t);
+            if ($item->ta > 0) {
+                $ta_a += $item->ta;
+                App\Asiento::create([
+                    'tipo'=> 'Ingreso',
+                    'cat_asiento_id'=> 3,
+                    'monto'=> setting('partidos.ta'),
+                    'jugador_id'=> $item->jugador_id,
+                    'observacion'=> 'Cobro de Tarjeta Amarilla',
+                    'estado'=> 'Pendiente'
+                ]);
+            }
+
+            if ($item->tr > 0) {
+                $tr_a += $item->tr;
+                App\Asiento::create([
+                    'tipo'=> 'Ingreso',
+                    'cat_asiento_id'=> 4,
+                    'monto'=> setting('partidos.ta'),
+                    'jugador_id'=> $item->jugador_id,
+                    'observacion'=> 'Cobro de Tarjeta Amarilla',
+                    'estado'=> 'Pendiente'
+                ]);
+            }
         }
 
         $loop_b = App\RelPartidoNomina::where("partido_id", $request->partido_id)->where("nomina_id", $newpartido->planilla_b_id)->get();
         $gol_b = 0;
+        $ta_b = 0;
+        $tr_b = 0;
         foreach ($loop_b as $item) {
             $gol_b += ($item->g1t + $item->g2t);
+            $ta_b += $item->ta;
+            $tr_b += $item->tr;
         }
         
         $nomina_a = App\JugadoresPlanilla::find($newpartido->planilla_a_id);
@@ -87,12 +116,26 @@ Route::group(['prefix' => 'partidos'], function () {
             $club_a->puntos = $club_a->puntos + setting('partidos.empate');
             $club_b->puntos = $club_b->puntos + setting('partidos.empate');
         }
-        
+
+        //actualizar TARJERAS
+        $club_a->ta += $ta_a;
+        $club_a->tr += $tr_a;
+        $club_b->ta += $ta_b;
+        $club_b->tr += $tr_b;
+
+        //guardar 
         $newpartido->save();
         $club_a->save();
         $club_b->save();
         return true;
     });
+
+    Route::post('/save/asientos', function (Request $request) {
+        // $partido = App\Partido::find($request->partido_id);
+        $newasi = App\Asiento::create($request-all());
+        return $newasi;
+    });
+
 });
 
 Route::group(['prefix' => 'jugadores'], function () {

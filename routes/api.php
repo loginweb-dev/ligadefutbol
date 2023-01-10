@@ -382,3 +382,8 @@ Route::post('prueba/planilla', function(Request $request){
 Route::post('find/planilla', function(Request $request){
     return App\JugadoresPlanilla::where('id', $request->planilla_id)->with('clubes', 'delegado', 'user')->first();
 });
+
+Route::get('find/ultima/planilla/{clube_id}', function($clube_id){
+    $planilla= App\JugadoresPlanilla::where('clube_id', $clube_id)->orderby('created_at', 'desc')->first();
+    return $planilla;
+});

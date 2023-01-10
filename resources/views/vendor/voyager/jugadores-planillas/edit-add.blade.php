@@ -159,7 +159,7 @@
                 </div>     
                 <div class="form-group">
                    
-                    <button class="btn btn-primary btn-block" onclick="misave()">Guardar Formulario</button>
+                    <button class="btn btn-primary btn-block" onclick="validacion_gestion()">Guardar Formulario</button>
                 </div>   
 
             </div>
@@ -444,6 +444,33 @@
             }
             else{
                 toastr.error("EL nombre, el número de polera y la fecha de nacimiento son datos obligatorios")
+            }
+        }
+
+        async function validacion_gestion() {
+            var ultima_planilla= await axios("/api/find/ultima/planilla/"+$("#select_club").val())
+            var gestion_actual=$("#fecha_mensual").val()+"-01"
+            if (ultima_planilla.data.fecha_entrega==gestion_actual && ultima_planilla.data.activo=="Aprobado") {
+                toastr.error("Ya existe una planilla de ese Mes.")
+            }
+            else{
+                if(Date.parse(ultima_planilla.data.fecha_entrega) <= Date.parse(gestion_actual)){
+                    // toastr.success("correcto")
+                    if (Date.parse(ultima_planilla.data.fecha_entrega)== Date.parse(gestion_actual)&& ultima_planilla.data.activo!="Entregado" && ultima_planilla.data.activo!="Aprobado" ) {
+                        misave()
+                    }
+                    else if(Date.parse(ultima_planilla.data.fecha_entrega)== Date.parse(gestion_actual)&& ultima_planilla.data.activo=="Entregado"){
+                        toastr.error("Hay una planilla de dicha gestión en proceso de verificación.")
+                    }
+                    else if(Date.parse(ultima_planilla.data.fecha_entrega)< Date.parse(gestion_actual)){
+                        misave()
+                    }
+
+
+                }
+                else{
+                    toastr.error("Está intentando crear una planilla de una gestión ya pasada")
+                }
             }
         }
 

@@ -8,6 +8,7 @@
     $index2=0;
     $index3=0;
     $index4=0;
+    $index5=0;
     $asientos_planillas_pendientes=0;
     $asientos_planillas_pagados=0;
     $asientos_jugadores_pendientes=0;
@@ -273,7 +274,7 @@
                                         @if ($item->categorias->tipo=="jugador")                                    
                                             @php
                                                 $index3=$index3+1;
-                                                $asientos_jugadores_pendientes+=$item->monto;
+                                                $asientos_jugadores_pendientes+=$item->monto_restante;
                                             @endphp
                                             <tr>
                                                 <td class="text-center">
@@ -336,7 +337,7 @@
                                     @if ($item->categorias->tipo=="jugador")                                    
                                         @php
                                             $index4=$index4+1;
-                                            $asientos_jugadores_pagados+=$item->monto;
+                                            $asientos_jugadores_pagados+=$item->monto_pagado;
                                         @endphp
                                         <tr>
                                             <td class="text-center">
@@ -461,7 +462,7 @@
                                         @if ($item->categorias->tipo=="planilla")                                    
                                             @php
                                                 $index3=$index3+1;
-                                                $asientos_planillas_pendientes+=$item->monto;
+                                                $asientos_planillas_pendientes+=$item->monto_restante;
                                             @endphp
                                             <tr>
                                                 <td class="text-center">
@@ -520,7 +521,7 @@
                                     @if ($item->categorias->tipo=="planilla")                                    
                                         @php
                                             $index4=$index4+1;
-                                            $asientos_planillas_pagados+=$item->monto;
+                                            $asientos_planillas_pagados+=$item->monto_pagado;
                                         @endphp
                                         <tr>
                                             <td class="text-center">
@@ -635,8 +636,11 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center"><h4>Titulares</h4></td>
+                            </tr>
                             @foreach ($nomina as $item)
-                                {{-- @if ($item->titular==1) --}}
+                                @if ($item->titular==1)
                                     @php
                                         $index=$index+1;
                                     @endphp
@@ -657,7 +661,34 @@
                                             {{$item->mensualidad}}
                                         </td>
                                     </tr>
-                                {{-- @endif                           --}}
+                                @endif                          
+                            @endforeach
+                            <tr>
+                                <td colspan="5" class="text-center"><h4>Suplentes</h4></td>
+                            </tr>
+                            @foreach ($nomina as $item)
+                                @if ($item->titular==2)
+                                    @php
+                                        $index=$index+1;
+                                    @endphp
+                                    <tr>
+                                        <td class="text-center">
+                                            {{$index}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->jugador->edad}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->jugador->polera}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->jugador->name}}
+                                        </td>
+                                        <td class='text-center'>
+                                            {{$item->mensualidad}}
+                                        </td>
+                                    </tr>
+                                @endif                          
                             @endforeach                              
                         </tbody>                   
                     </table>
@@ -669,7 +700,8 @@
                 @if ($dataTypeContent->activo=="Entregado")
                     <h4 class="text-center">Esta Planilla aun no ha sido aprobada o rechazada, espere a que se tome una decisión porfavor.</h4>
                 @elseif($dataTypeContent->activo=="Rechazado")
-                    <h4 class="text-center">Esta Planilla fue Rechazada, verifique los motivos en la parte superior en Observaciones.</h4>
+                    <h4 class="text-center">Esta Planilla fue Rechazada, los motivos u observaciones son las siguientes:</h4>
+                    <p class="text-center">{{$dataTypeContent->observacion}}</p>
                 @endif
             </div>
         </div>   
@@ -692,14 +724,17 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td colspan="5" class="text-center"><h4>Titulares</h4></td>
+                        </tr>
                         @foreach ($nomina as $item)
-                            {{-- @if ($item->titular==1) --}}
+                            @if ($item->titular==1)
                                 @php
-                                    $index=$index+1;
+                                    $index5=$index5+1;
                                 @endphp
                                 <tr>
                                     <td class="text-center">
-                                        {{$index}}
+                                        {{$index5}}
                                     </td>
                                     <td class='text-center'>
                                         {{$item->jugador->edad}}
@@ -714,9 +749,36 @@
                                         {{$item->mensualidad}}
                                     </td>
                                 </tr>
-                            {{-- @endif                           --}}
+                            @endif                          
+                        @endforeach
+                        <tr>
+                            <td colspan="5" class="text-center"><h4>Suplentes</h4></td>
+                        </tr>
+                        @foreach ($nomina as $item)
+                            @if ($item->titular==2)
+                                @php
+                                    $index5=$index5+1;
+                                @endphp
+                                <tr>
+                                    <td class="text-center">
+                                        {{$index5}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->edad}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->polera}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->jugador->name}}
+                                    </td>
+                                    <td class='text-center'>
+                                        {{$item->mensualidad}}
+                                    </td>
+                                </tr>
+                            @endif                          
                         @endforeach                              
-                    </tbody>                   
+                    </tbody>                  
                 </table>
             </div> 
         </div>

@@ -10,21 +10,23 @@ class Partido extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        // 'description',
+        'description',
         'fecha',
         'hora',
         'planilla_a_id',
         'planilla_b_id',
         'veedor_id',
-        // 'hora_comienzo_pt',
-        // 'hora_comienzo_st',
+        'hora_comienzo_pt',
+        'hora_comienzo_st',
         'categoria',
         'fixture_id',
-        // 'juez_1',
-        // 'juez_2',
-        // 'juez_3',
-        // 'juez_4'
-        'status'
+        'juez_1',
+        'juez_2',
+        'juez_3',
+        'juez_4',
+        'status',
+        'ganador',
+        'perdedor',
     ];
 
     public function fixture()

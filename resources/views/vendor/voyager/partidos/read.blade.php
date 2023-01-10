@@ -10,6 +10,7 @@
     $arbitro = App\Arbitro::all();
     $delegados = App\Delegado::all();
     $veedor = App\Delegado::find($dataTypeContent->veedor_id);
+    $relparnom = App\RelPartidoNomina::where('partido_id', $dataTypeContent->id)->get();
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -40,7 +41,11 @@
                                     @case(3)
                                         <span class="badge badge-dark">Se Cancelo</span>
                                         @break
-                                    @default                                        
+                                    @case(4)
+                                        <span class="badge badge-warning">Empate</span>
+                                        @break
+                                    @default         
+                                                                   
                                 @endswitch                                                                 
                                                               
                             </td>
@@ -168,13 +173,13 @@
            
                 @else  
 
-                @php
-                                    
-                    $arb1 =  App\Arbitro::find($dataTypeContent->juez_1);
-                    $arb2 =  App\Arbitro::find($dataTypeContent->juez_2);
-                    $arb3 =  App\Arbitro::find($dataTypeContent->juez_3);
-                    $arb4 =  App\Arbitro::find($dataTypeContent->juez_4);
-                @endphp
+                    @php
+                                        
+                        $arb1 =  App\Arbitro::find($dataTypeContent->juez_1);
+                        $arb2 =  App\Arbitro::find($dataTypeContent->juez_2);
+                        $arb3 =  App\Arbitro::find($dataTypeContent->juez_3);
+                        $arb4 =  App\Arbitro::find($dataTypeContent->juez_4);
+                    @endphp
                     <table class="table mitable">
                         <thead>
                             <tr class="active">
@@ -182,14 +187,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Scort</td>
-                                <td>
-                                    <span class="label label-success">{{ $ea->name }} - 1</span>
-                                    <br>
-                                    <span class="label label-success">{{ $eb->name }} - 1</span>
-                                </td>
+                            <tr>                      
+                                <td colspan="2" class="text-center"><span class="label label-success">{{ $eb->name }} - {{ $dataTypeContent->ganador }}</span></td>
                             </tr>
+                            <tr>
+                                <td colspan="2" class="text-center"><span class="label label-success">{{ $ea->name }} - {{ $dataTypeContent->ganador }} </span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-center"><span class="label label-success">{{ $dataTypeContent->description }} </span></td>
+                            </tr>
+                            
                             <tr>
                                 <td>Arbitro del Partido</td>
                                 <td>{{ $arb1->name }}</td>
@@ -224,15 +231,16 @@
             </div>
 
             <div class="col-sm-9">
+                {{-- {{ $relparnom }} --}}
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="cluba">
               
                         <thead>
-                            <tr class="active"><th class="text-center" colspan="8"><span class="label label-primary">Equipo: {{ $ea->name }}</span></th></tr>
+                            <tr class="active"><th class="text-center" colspan="8"><span class="label label-primary">Equipo A: {{ $ea->name }}</span></th></tr>
                             <tr class="active">
-                                <th scope="col">#</th>
-                                <th scope="col">P</th>
+                                <th scope="col">ID</th>                                                                
                                 <th scope="col">Nombres y Apellidos</th>
+                                <th scope="col">#</th>
                                 <th scope="col">Edad</th>
                                 <th scope="col">TA</th>
                                 <th scope="col">TR</th>
@@ -244,28 +252,44 @@
                         <tbody>
                             @foreach ($a as $item)
                                 <tr>
-                                    <td>{{ $loop->index + 1 }}</td>
-                                    <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>
-                                    <td>{{ $item->jugador->name }}</td>
-                                    <td>{{ $item->jugador->edad }}</td>
+                                    <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
+                                    <td>{{ $loop->index + 1 }}.- {{ $item->jugador->name }} </td>
+                                    <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>                                                                        
+                                    <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>
                                     <td>0</td>
                                     <td>0</td>
                                     <td>0</td>
                                     <td>0</td>
                                 </tr>
                             @endforeach
+                            {{-- <tr>
+                                <td colspan="4" style="text-align:right"><span class="label label-danger">Totales: </span></td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr> --}}
                         </tbody>
                     </table>
                 </div>
 
+                <div class="form-group">
+                    @if($dataTypeContent->status == 1)                    
+                        <textarea name="" id="description" rows="4" class="form-control" placeholder="Detalles u Observaciones del partido"></textarea>                    
+                    @else
+                        {{-- <p>{{ $dataTypeContent->description }}</p> --}}
+                    @endif
+                </div>
+          
+
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="clubb">
                         <thead>
-                            <tr class="active"><th class="text-center" colspan="8"><span class="label label-primary">Equipo: {{ $eb->name }}</span></th></tr>
+                            <tr class="active"><th class="text-center" colspan="8"><span class="label label-primary">Equipo B: {{ $eb->name }}</span></th></tr>
                             <tr class="active">
-                                <th scope="col">#</th>
-                                <th scope="col">P</th>
+                                <th scope="col">ID</th>                                                                
                                 <th scope="col">Nombres y Apellidos</th>
+                                <th scope="col">#</th>
                                 <th scope="col">Edad</th>
                                 <th scope="col">TA</th>
                                 <th scope="col">TR</th>
@@ -276,10 +300,10 @@
                         <tbody>
                             @foreach ($b as $item)
                                 <tr>
-                                    <td>{{ $loop->index + 1 }}</td>
-                                    <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>
-                                    <td>{{ $item->jugador->name }}</td>
-                                    <td>{{ $item->jugador->edad }}</td>
+                                    <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
+                                    <td>{{ $loop->index + 1 }}.- {{ $item->jugador->name }} </td>
+                                    <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>                                                                        
+                                    <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>
                                     <td>0</td>
                                     <td>0</td>
                                     <td>0</td>
@@ -327,40 +351,74 @@
         </script>
     @endif
     <script>
-        var now = new Date(Date.now());
-        var mitime = now.getHours() + ":" + now.getMinutes();
-        $('#hora_comienzo_pt').val(mitime);
-        $('#hora_comienzo_st').val(mitime);
+        $(document).ready(function () {
+
+            var now = new Date(Date.now());
+            var mitime = now.getHours() + ":" + now.getMinutes();
+            $('#hora_comienzo_pt').val(mitime);
+            $('#hora_comienzo_st').val(mitime);
+
+        });
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
 
 
         @if($dataTypeContent->status == 1)     
 
-        var example1 = new BSTable("cluba", {
-			editableColumns:"4,5,6,7",
-			onEdit:function() {
-				console.log("EDITED");
-			},
-			advanced: {
-				columnLabel: ''
-			}
-		});
-        example1.init();
+            var example1 = new BSTable("cluba", {
+                editableColumns:"4,5,6,7",
+                onEdit:function() {
+                    console.log("EDITED")
+                    totales()
+                },
+                advanced: {
+                    columnLabel: ''
+                }
+            });
+            example1.init();
 
-        var example2 = new BSTable("clubb", {
-			editableColumns:"4,5,6,7",
-			onEdit:function() {
-				console.log("EDITED");
-			},
-			advanced: {
-				columnLabel: ''
-			}
-		});
-        example2.init();
+            var example2 = new BSTable("clubb", {
+                editableColumns:"4,5,6,7",
+                onEdit:function() {
+                    console.log("EDITED");
+                },
+                advanced: {
+                    columnLabel: ''
+                }
+            });
+            example2.init();
 
         @else  
 
         @endif
 
+        function totales(){
+            
+            //recorrer equipoa--------------------------------------
+            var equipoa = document.getElementById("cluba")
+            var ta = 0
+            var tr = 0
+            var g1t = 0
+            var g2t = 0
+            for (var i = 2, row; row = equipoa.rows[i]; i++) {
+                ta += parseInt(row.cells[4].innerText)
+                tr += parseInt(row.cells[5].innerText)
+                g1t += parseInt(row.cells[6].innerText)
+                g2t += parseInt(row.cells[7].innerText)
+                console.log(parseInt(row.cells[4].innerText))
+            }
+            console.log(ta)
+        }
         var deleteFormAction;
         $('.delete').on('click', function (e) {
             var form = $('#delete_form')[0];
@@ -378,6 +436,7 @@
         });
 
         async function misave() {
+            // totales()
             Swal.fire({
                 title: 'Estás Seguro?',
                 icon: 'question',
@@ -395,11 +454,50 @@
                         'juez_3': $("#juez_3").val(),
                         'juez_4': $("#juez_4").val(),
                         'hora_comienzo_pt': $("#hora_comienzo_pt").val(),
-                        'hora_comienzo_st': $("#hora_comienzo_st").val()
+                        'hora_comienzo_st': $("#hora_comienzo_st").val(),
+                        'description': $("#description").val(),
                     }
-                    console.log(midata)     
+                    // console.log(midata)      
                     var partido = await axios.post("/api/partidos/save", midata)
-                    location.href = "/admin/partidos"              
+
+                    //recorrer equipoa--------------------------------------
+                    var equipoa = document.getElementById("cluba")
+                    var partido_id = "{{ $dataTypeContent->id }}"
+                    var nomina_a_id = "{{ $dataTypeContent->planilla_a_id }}"
+                    for (var i = 2, row; row = equipoa.rows[i]; i++) {
+                        var midataa = {
+                            'partido_id': partido_id,
+                            'nomina_id': nomina_a_id,
+                            'ta': row.cells[4].innerText,
+                            'tr': row.cells[5].innerText,
+                            'g1t': row.cells[6].innerText,
+                            'g2t': row.cells[7].innerText,
+                            'jugador_id': row.cells[0].innerText                
+                        }
+                        // console.log(midataa)
+                        await axios.post("/api/partidos/rel/save", midataa)
+                    }
+
+                    //recorrer equipob-------------------------------------
+                    var equipob = document.getElementById("clubb");
+                    var nomina_b_id = "{{ $dataTypeContent->planilla_b_id }}"
+                    for (var i = 2, row; row = equipob.rows[i]; i++) {
+                        var midatab = {
+                            'partido_id': partido_id,
+                            'nomina_id': nomina_b_id,
+                            'ta': row.cells[4].innerText,
+                            'tr': row.cells[5].innerText,
+                            'g1t': row.cells[6].innerText,
+                            'g2t': row.cells[7].innerText,
+                            'jugador_id': row.cells[0].innerText                
+                        }
+                        // console.log(midataa)
+                        await axios.post("/api/partidos/rel/save", midatab)
+                    }
+
+                    // actualiar puntos------------------------------------     
+                    await axios.post("/api/partidos/update/clube", {'partido_id': partido_id})
+                    location.reload()             
                 }
             })
         }

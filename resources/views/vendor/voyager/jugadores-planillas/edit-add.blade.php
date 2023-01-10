@@ -451,7 +451,7 @@
             var ultima_planilla= await axios("/api/find/ultima/planilla/"+$("#select_club").val())
             var gestion_actual=$("#fecha_mensual").val()+"-01"
             if (ultima_planilla.data.fecha_entrega==gestion_actual && ultima_planilla.data.activo=="Aprobado") {
-                toastr.error("Ya existe una planilla de ese Mes.")
+                toastr.error("Ya existe una planilla de ese Mes que está Aprobada.")
             }
             else{
                 if(Date.parse(ultima_planilla.data.fecha_entrega) <= Date.parse(gestion_actual)){

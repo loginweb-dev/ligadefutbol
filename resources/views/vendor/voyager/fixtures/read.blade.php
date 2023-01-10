@@ -15,7 +15,7 @@
             <div class="col-sm-3">
                 <table class="table mitable">
                         <tr class="active">
-                            <td colspan="2"> <strong>Datos del Fixture </strong> #{{ $fixture->id }}</td>
+                            <td colspan="2" class="text-center"><strong>Datos del Fixture</strong> <span class="label label-primary"> #{{ $fixture->id }}</span></td>
                         </tr>
                         <tr>
                             <td class="text-center"><strong class="text-center">Titulo: </strong></td>

@@ -10,6 +10,9 @@ use TCG\Voyager\Models\User;
 class Clube extends Model
 {
     use SoftDeletes;
+    protected $fillable = [
+        'puntos'
+    ];
 
     public function user(){
         return $this->belongsTo(User::class, 'user_id');

@@ -16,8 +16,57 @@
 
 @section('content')
     <div class="container-fluid">
+        <hr>
         <div class="row">
-            <hr>
+                                  
+            <div class="col-sm-3">                              
+                <label for="">Equipo "A"</label>   
+                <div class="form-group miselect">                                    
+                    <select name="" id="equipo_a" class="select2 form-control">
+                        @foreach ($planillas as $item)
+                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
+                        @endforeach                                    
+                    </select>
+                </div>
+                <label for="">Equipo "B"</label>     
+                <div class="form-group miselect">
+                                
+                    <select name="" id="equipo_b" class="select2 form-control">
+                        @foreach ($planillas as $item)
+                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
+                        @endforeach                                    
+                    </select>                    
+                </div>
+                <div class="form-group">
+                    <label for="">Hora</label>
+                    
+                    <div class="input-group">
+                        <input type="time" name="" id="mihora" class="form-control">
+                        <span class="input-group-btn">
+                          <button class="btn btn-dark btn-lg" type="button" onclick="add()">Agregar</button>
+                        </span>
+                      </div>
+                </div>
+                <div class="form-group">
+                    <label for="">Titulo</label>
+                    <textarea name="" id="title" cols="0" rows="3" class="form-control">{{ setting('features.title') }}</textarea>
+                </div>
+              
+                <label for="">Equipo que descansa</label>             
+                <div class="miselect">
+                    <select name="" id="descansa_id" class="select2 form-control">
+                        @foreach ($planillas as $item)
+                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
+                        @endforeach                                    
+                    </select>
+                </div> 
+                                
+                <div class="form-group">
+                    <button class="btn btn-primary btn-sm btn-block" type="button" onclick="save()">Guardar</button>
+                </div>
+                
+            </div>
+
             <div class="col-sm-9">            
                 <div class="table-responsive">
                     <table class="table mitable">
@@ -75,53 +124,6 @@
        
             </div>
 
-            <div class="col-sm-3">                              
-                <label for="">Equipo "A"</label>   
-                <div class="form-group" style="border-style: outset;">                                    
-                    <select name="" id="equipo_a" class="select2 form-control">
-                        @foreach ($planillas as $item)
-                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
-                        @endforeach                                    
-                    </select>
-                </div>
-                <label for="">Equipo "B"</label>     
-                <div class="form-group" style="border-style: outset;">
-                                
-                    <select name="" id="equipo_b" class="select2 form-control">
-                        @foreach ($planillas as $item)
-                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
-                        @endforeach                                    
-                    </select>                    
-                </div>
-                <div class="form-group">
-                    <label for="">Hora</label>
-                    
-                    <div class="input-group">
-                        <input type="time" name="" id="mihora" class="form-control">
-                        <span class="input-group-btn">
-                          <button class="btn btn-dark btn-lg" type="button" onclick="add()">Agregar</button>
-                        </span>
-                      </div>
-                </div>
-                <div class="form-group">
-                    <label for="">Titulo</label>
-                    <textarea name="" id="title" cols="0" rows="3" class="form-control">{{ setting('features.title') }}</textarea>
-                </div>
-              
-                <label for="">Equipo que descansa</label>             
-                <div class="miselect">
-                    <select name="" id="descansa_id" class="select2 form-control">
-                        @foreach ($planillas as $item)
-                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
-                        @endforeach                                    
-                    </select>
-                </div> 
-                                
-                <div class="form-group">
-                    <button class="btn btn-primary btn-sm btn-block" type="button" onclick="save()">Guardar</button>
-                </div>
-                
-            </div>
         </div>
     </div>
 

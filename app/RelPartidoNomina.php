@@ -17,11 +17,6 @@ class RelPartidoNomina extends Model
         'tr',
         'g1t',
         'g2t',
-        'delegado_id',
-        'result1t',
-        'result2t',
-        'evaluacion',
-        'delegado_id',
         'jugador_id'
     ];
 

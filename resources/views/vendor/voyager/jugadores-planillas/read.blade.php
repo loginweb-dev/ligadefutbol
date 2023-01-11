@@ -35,13 +35,9 @@
     @endif
 </div>
     <div class="container-fluid">
-        <!--Información Planilla -->     
-                   
-        <!--Detalles Asientos y Totales-->                                                      
+        <br>                                                    
         <div class="row">
             <div class="col-sm-12 text-center" >
-                {{-- <h2>Pagos de Jugadores y Equipos</h2> --}}
-                <h2>Planilla del Club: {{$equipo_titulo->name}}</h2>
                 @if (Auth::user()->role_id==1 || Auth::user()->role_id==5)
                     @if($dataTypeContent->activo=="Entregado")
                         <a  class="btn btn-info" data-toggle="modal" data-target="#modal_acciones_planilla">
@@ -58,6 +54,12 @@
              <!-- Parte Izquierda Lienzo , Inputs Totales -->
              <div class="col-sm-3" id="div_izquierdo_detalles" hidden>
 
+
+                <div class="form-group">
+                    <label for="input_buscar_tab">Buscar</label>
+                    <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto a Buscar">
+                </div>
+                
                 <table class="table mitable">
                     <thead>
                         <tr class="active">
@@ -65,21 +67,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- <tr>
-                            <td>
-                                Club: 
-                            </td>
-                            <td>
-                                <b>{{$equipo_titulo->name}}</b>
-                            </td>
-                        </tr> --}}
+                        <tr>
+                            <td class="text-center" colspan="2">{{$equipo_titulo->name}}</td>
+                        </tr>
                         <tr>
                             <td>
                                 Gestión:
                             </td>
                             <td id="fecha_entrega_td">
                                 {{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('m-Y') }}
-                                {{-- {{$dataTypeContent->fecha_entrega}} --}}
                             </td>
                         </tr>
                         <tr>
@@ -108,19 +104,14 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                Delegado:
-                            </td>
-                            <td>
+          
+                            <td class="text-center" colspan="2">
                                 {{$delegado->name}}
                             </td>
                         </tr>
                      
                         <tr>
-                            <td>
-                                Observaciones:
-                            </td>
-                            <td>
+                            <td class="text-center" colspan="2">
                                 {{$dataTypeContent->observacion}}
                             </td>
                         </tr>
@@ -134,37 +125,16 @@
                         </tr>
                         <tr>
                             <td>
-                                Cantidad Deudores:
+                                Deudores:
                             </td>
-                            <td id="input_jugadores_deudores">
-                                
-                            </td>
+                            <td id="input_jugadores_deudores"></td>
                         </tr>
                     </tbody>
 
                 </table>
 
-                <div id="btn_nomina" class="text-center">
-                    <a  class="btn btn-primary" onclick="change_derecha_lienzo(2)">
-                        <i class="glyphicon glyphicon-th-list"></i> <span class="">Visualizar Nómina</span>
-                    </a>                
-                </div>
 
-                <div id="btn_pagos" class="text-center" hidden>
-                    <a  class="btn btn-success" onclick="change_derecha_lienzo(1)">
-                        <i class="glyphicon glyphicon-euro"></i> <span class="">Visualizar Pagos</span>
-                    </a>  
-                </div>
-   
-    
-             
-                
-                {{-- <div class="form-group text-center">
-                    <label for="input_fecha">Gestión</label>
-                    <input class="form-control text-center" type="month" name="input_fecha" id="input_fecha" value="{{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('Y-m') }}" readonly>
-                </div> --}}
-    
-              
+
 
                     <div class="form-group" hidden>
                         <label for="input_mens_esperadas">Mensualidades Esperadas</label>
@@ -203,30 +173,13 @@
                         <label for="input_total">Total Pagado</label>
                         <input class="form-control text-center" id="input_total" name="input_total" type="number" readonly value="{{$dataTypeContent->total}}">
                     </div>
-                    {{-- <div class="col-sm-12">
-                        <label for="input_jugadores_deudores">Cant. Deudores</label>
-                        <input class="form-control text-center" id="input_jugadores_deudores" name="input_jugadores_deudores" type="number" readonly>
-                    </div> --}}
                 </div>    
-                <div class="form-group">
-                    {{-- <a href="#" class="btn btn-sm btn-block btn-danger">Eliminar Nomina</a> --}}
-                    {{-- @can('delete', $dataTypeContent) --}}
-                        {{-- @if($isSoftDeleted)
-                            <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
-                                <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
-                            </a>
-                        @else
-                            <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger btn-block delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
-                                <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
-                            </a>
-                        @endif --}}
-                    {{-- @endcan --}}
-                </div>                           
+                        
             </div>
             
             <!-- Parte Derecha Lienzo , Asientos -->
             <div class="col-sm-9" id="div_derecho_detalles" hidden>
-                <h3 class="text-center">Pagos de Jugadores y Equipo</h3>
+                {{-- <h3 class="text-center">Pagos de Jugadores y Equipo</h3> --}}
                 <div class="col-sm-4 form-group">
                     <label for="select_cat_asientos">Tipo Asientos</label>
                     <div class="miselect">    
@@ -248,17 +201,25 @@
                     </div>
                 </div>
 
+ 
+
                 <div class="col-sm-4 form-group">
-                    <label for="input_buscar_tab">Buscar</label>
-                    <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto">
+                    <br>
+
+    
+                    <div id="btn_nomina" class="text-center">
+                        <a  class="btn btn-primary btn-sm" onclick="change_derecha_lienzo(2)">
+                            <i class="glyphicon glyphicon-th-list"></i> <span class="">Visualizar Nómina</span>
+                        </a>                
+                    </div>
                 </div>
 
-                
+
                 <div id="tab_pendientes_jugadores" hidden>
-                    <div class="col-sm-12 table-responsive" >
-                        <table class="table table-striped mitable" id="tabla_tab_pendientes_jugadores">
-                            <thead class="thead-dark">
-                                <tr>
+                    <div class="table-responsive" >
+                        <table class="table mitable" id="tabla_tab_pendientes_jugadores">
+                            <thead>
+                                <tr class="active">
                                     <th class="text-center" scope="col">#</th>
                                     <th class="text-center" scope="col">Jugador</th>
                                     <th class="text-center" scope="col">Categoria</th>
@@ -319,9 +280,9 @@
                 </div>
 
                 <div class="col-sm-12 table-responsive" id="tab_pagados_jugadores" hidden>
-                    <table class="table table-striped mitable" id="tabla_tab_pagados_jugadores">
+                    <table class="table mitable" id="tabla_tab_pagados_jugadores">
                         <thead class="thead-dark">
-                            <tr>
+                            <tr class="active">
                                 <th class="text-center" scope="col">#</th>
                                 <th class="text-center" scope="col">Jugador</th>
                                 <th class="text-center" scope="col">Categoria</th>
@@ -375,11 +336,12 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div id="tab_todos_jugadores">
                     <div class="col-sm-12 table-responsive" >
-                        <table class="table table-striped mitable" id="tabla_tab_todos_jugadores">
-                            <thead class="thead-dark">
-                                <tr>
+                        <table class="table mitable" id="tabla_tab_todos_jugadores">
+                            <thead>
+                                <tr class="active">
                                     <th class="text-center" scope="col">#</th>
                                     <th class="text-center" scope="col">Jugador</th>
                                     <th class="text-center" scope="col">Categoria</th>
@@ -446,8 +408,8 @@
                 <div id="tab_pendientes_club" hidden>
                     <div class="col-sm-12 table-responsive" >
                         <table class="table table-striped mitable" id="tabla_tab_pendientes_club">
-                            <thead class="thead-dark">
-                                <tr>
+                            <thead>
+                                <tr class="active">
                                     <th class="text-center" scope="col">#</th>
                                     <th class="text-center" scope="col">Categoria</th>
                                     <th class="text-center" scope="col">Monto</th>
@@ -505,8 +467,8 @@
 
                 <div class="col-sm-12 table-responsive" id="tab_pagados_club" hidden>
                     <table class="table table-striped mitable" id="tabla_tab_pagados_club">
-                        <thead class="thead-dark">
-                            <tr>
+                        <thead>
+                            <tr class="active">
                                 <th class="text-center" scope="col">#</th>
                                 <th class="text-center" scope="col">Categoria</th>
                                 <th class="text-center" scope="col">Monto</th>
@@ -623,9 +585,8 @@
 
             <!-- Parte Derecha Lienzo, Nomina (Acción con botón)-->
             <div class="col-sm-9" id="div_derecho_nomina" hidden>
-                <h3 class="text-center">Nómina de Jugadores</h3>
                 <div  class="col-sm-12 table-responsive">            
-                    <table class="table table-striped mitable" id="table2">
+                    <table class="table mitable" id="table2">
                         <thead>
                             <tr class="active">
                                 <th class="text-center" scope="col">#</th>
@@ -637,7 +598,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="5" class="text-center"><h4>Titulares</h4></td>
+                                <td colspan="5" class="text-center"><span class="label label-primary">Titulares</span></td>
                             </tr>
                             @foreach ($nomina as $item)
                                 @if ($item->titular==1)
@@ -652,19 +613,25 @@
                                             {{$item->jugador->edad}}
                                         </td>
                                         <td class='text-center'>
+                                            <span class="label label-primary">
                                             {{$item->jugador->polera}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                           
+                                                {{$item->jugador->name}}
+                                           
                                         </td>
                                         <td class='text-center'>
-                                            {{$item->jugador->name}}
-                                        </td>
-                                        <td class='text-center'>
-                                            {{$item->mensualidad}}
+                                            <span class="label label-success">
+                                                {{$item->mensualidad}}
+                                            </span>
                                         </td>
                                     </tr>
                                 @endif                          
                             @endforeach
                             <tr>
-                                <td colspan="5" class="text-center"><h4>Suplentes</h4></td>
+                                <td colspan="5" class="text-center"><span class="label label-primary">Suplentes</span></td>
                             </tr>
                             @foreach ($nomina as $item)
                                 @if ($item->titular==2)
@@ -692,6 +659,11 @@
                             @endforeach                              
                         </tbody>                   
                     </table>
+                    <div id="btn_pagos" class="text-center" hidden>
+                        <a  class="btn btn-success btn-sm" onclick="change_derecha_lienzo(1)">
+                            <i class="glyphicon glyphicon-euro"></i> <span class="">Visualizar Pagos</span>
+                        </a>  
+                    </div>
                 </div>
             </div>
 
@@ -713,7 +685,7 @@
                 <h2>NÓMINA DE JUGADORES</h2>
             </div>              
             <div  class="col-sm-12 table-responsive">            
-                <table class="table table-striped mitable" id="table2">
+                <table class="table mitable" id="table2">
                     <thead>
                         <tr class="active">
                             <th class="text-center" scope="col">#</th>
@@ -742,11 +714,13 @@
                                     <td class='text-center'>
                                         {{$item->jugador->polera}}
                                     </td>
-                                    <td class='text-center'>
+                                    <td>
                                         {{$item->jugador->name}}
                                     </td>
                                     <td class='text-center'>
-                                        {{$item->mensualidad}}
+                                        <span class="label label-success">
+                                            {{$item->mensualidad}}
+                                        </span>
                                     </td>
                                 </tr>
                             @endif                          

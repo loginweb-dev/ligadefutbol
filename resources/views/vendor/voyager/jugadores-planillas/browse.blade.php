@@ -6,6 +6,7 @@
 
     <div class="container-fluid">
         @include('voyager::alerts')
+        <br>
         <div class="row">
             <div class="col-sm-12">              
                     @if ($isServerSide)

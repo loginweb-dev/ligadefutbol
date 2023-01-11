@@ -15,15 +15,23 @@
             <div class="col-sm-3">
                 <table class="table mitable">
                         <tr class="active">
-                            <td colspan="2" class="text-center"><strong>Datos del Fixture</strong> <span class="label label-primary"> #{{ $fixture->id }}</span></td>
+                            <td colspan="2" class="text-center"><strong>Datos del Fixture - </strong> <span class="label label-primary"> #{{ $fixture->id }}</span></td>
                         </tr>
                         <tr>
-                            <td class="text-center"><strong class="text-center">Titulo: </strong></td>
-                            <td>{{ $fixture->title }}</td>
+                            {{-- <td class="text-center"><strong class="text-center">Titulo: </strong></td> --}}
+                            <td class="text-center" colspan="2">
+                                {{ $fixture->title }}
+                                <br>
+                                <span class="label label-primary">Titulo</span>
+                            </td>
                         </tr>
                         <tr>
-                            <td><strong>Descansa: </strong></td>
-                            <td>{{ $descansa->clubes->name }}</td>
+                            {{-- <td><strong>Descansa: </strong></td> --}}
+                            <td class="text-center" colspan="2">
+                                {{ $descansa->clubes->name }}
+                                <br>
+                                <span class="label label-primary">Descansa</span>
+                            </td>
                         </tr>
                         <tr>
                             <td><strong>Editor: </strong></td>
@@ -34,7 +42,7 @@
                             <td>{{ $fixture->created_at }}</td>
                         </tr>          
                 </table>     
-                @if($isSoftDeleted)
+                {{-- @if($isSoftDeleted)
                     <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
                         <i class="voyager-trash"></i> <span class="hidden-xs btn-sm btn-block">{{ __('voyager::generic.restore') }}</span>
                     </a>
@@ -42,7 +50,7 @@
                     <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger btn-block delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
                         <i class="voyager-trash"></i> <span class="">{{ __('voyager::generic.delete') }}</span>
                     </a>
-                @endif         
+                @endif          --}}
             </div>
 
             <div class="col-sm-9">
@@ -56,8 +64,8 @@
                                 <th>Equipo A</th>
                                 <th>-</th>
                                 <th>Equipo B</th>
-                                <th>Categoria</th>
-                                <th>Veedor</th>
+                                {{-- <th>Categoria</th> --}}
+                                {{-- <th>Veedor</th> --}}
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -71,13 +79,21 @@
                                 <tr>
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->fecha }}</td>
-                                    <td>{{ $item->hora }}</td>
-                                    <td>{{ $club_a->name  }}</td>
+                                    <td><span class="label label-warning">{{ $item->hora }}</span></td>
+                                    <td>
+                                        <a href="/admin/clubes/{{ $club_a->id }}">
+                                            {{ $club_a->name  }}
+                                        </a>                                       
+                                    </td>
                                     <td><span class="label label-primary">vs</span></td>
-                                    <td>{{ $club_b->name }}</td>
-                                    <td>{{ $item->categoria }}</td>
-                                    <td>{{ $veedor->name }}</td>
-                                    <td><a href="/admin/partidos/{{ $item->id }}" class="btn btn-sm btn-block btn-warning">Ver</a></td>
+                                    <td>
+                                        <a href="/admin/clubes/{{ $club_b->id }}">
+                                            {{ $club_b->name  }}
+                                        </a>    
+                                    </td>
+                                    {{-- <td>{{ $item->categoria }}</td> --}}
+                                    {{-- <td>{{ $veedor->name }}</td> --}}
+                                    <td><a href="/admin/partidos/{{ $item->id }}" class="btn btn-sm btn-block btn-dark">Ver</a></td>
                                 </tr>
                             @endforeach                     
                         </tbody>

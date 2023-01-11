@@ -18,7 +18,10 @@ class Jugadore extends Model
     'clube_id',
     'foto',
     'color_carnet',
-    'phone'
+    'phone',
+    'ta',
+    'tr',
+    'goles'
     ];
 
     public function clubes()

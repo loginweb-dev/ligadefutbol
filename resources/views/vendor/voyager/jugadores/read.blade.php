@@ -8,7 +8,57 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered" style="padding-bottom:5px;">
-                    <h1>CARNET DEl JUGADOR</h1>
+                    <h1 class="text-center">Datos del Jugador: {{$dataTypeContent->name}}</h1>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {{-- <div  class=" table-responsive"> --}}
+                                <table class="table mitable">
+                                    <thead>
+                                        <tr class="active">
+                                            <th colspan="2">Datos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Nombre</td>
+                                            <td>{{$dataTypeContent->name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td># Polera</td>
+                                            <td>{{$dataTypeContent->polera}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Edad</td>
+                                            <td>{{$dataTypeContent->edad}}</td>
+                                        </tr>
+                                            
+                                        <tr>
+                                            <td>Fecha Nacimiento</td>
+                                            <td>{{$dataTypeContent->nacido}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Categoria</td>
+                                            <td>{{$dataTypeContent->jug_categoria}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Club Actual</td>
+                                            <td>{{$dataTypeContent->clube_id}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Foto</td>
+                                            <td>{{$dataTypeContent->foto}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>WhatsApp</td>
+                                            <td>{{$dataTypeContent->phone}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            {{-- </div> --}}
+                        </div>
+                        
+                    </div>
+                    
                 </div>
             </div>
         </div>

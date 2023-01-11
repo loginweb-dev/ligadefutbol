@@ -502,6 +502,6 @@ Route::post('find/planilla', function(Request $request){
 });
 
 Route::get('find/ultima/planilla/{clube_id}', function($clube_id){
-    $planilla= App\JugadoresPlanilla::where('clube_id', $clube_id)->orderby('created_at', 'desc')->first();
+    $planilla= App\JugadoresPlanilla::where('clube_id', $clube_id)->orderby('created_at', 'desc')->get();
     return $planilla;
 });

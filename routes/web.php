@@ -25,11 +25,20 @@ Route::get('/reset-db', function () {
     App\JugadoresPlanilla::truncate();
     App\Partido::truncate();
     App\RelPartidoNomina::truncate();
+    App\RelPlanillaJugadore::truncate();
 
     App\Clube::where('id', '>', 0)->update([
         'puntos' => 0,
         'ta' => 0,
-        'tr' => 0
+        'tr' => 0,
+        'golesa' => 0,
+        'golesc' => 0
+    ]);
+    
+    App\Jugadore::where('id', '>', 0)->update([
+        'ta' => 0,
+        'tr' => 0,
+        'goles' => 0
     ]);
 
     return "Bade de datos reseteda correctamente..";

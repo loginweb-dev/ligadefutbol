@@ -71,13 +71,13 @@
                                 <tr>
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->fecha }}</td>
-                                    <td>{{ $item->hora }}</td>
+                                    <td><span class="label label-warning">{{ $item->hora }}</span></td>
                                     <td>{{ $club_a->name  }}</td>
                                     <td><span class="label label-primary">vs</span></td>
                                     <td>{{ $club_b->name }}</td>
                                     <td>{{ $item->categoria }}</td>
                                     <td>{{ $veedor->name }}</td>
-                                    <td><a href="/admin/partidos/{{ $item->id }}" class="btn btn-sm btn-block btn-warning">Ver</a></td>
+                                    <td><a href="/admin/partidos/{{ $item->id }}" class="btn btn-sm btn-block btn-dark">Ver</a></td>
                                 </tr>
                             @endforeach                     
                         </tbody>

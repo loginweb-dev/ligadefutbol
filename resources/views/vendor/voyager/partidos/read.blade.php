@@ -531,7 +531,7 @@
                         'description': $("#description").val(),
                     }
                     // console.log(midata)      
-                    var partido = await axios.post("/api/partidos/save", midata)
+                    var partido = await axios.post("/api/partidos/update", midata)
 
                     //recorrer equipoa--------------------------------------
                     var equipoa = document.getElementById("cluba")

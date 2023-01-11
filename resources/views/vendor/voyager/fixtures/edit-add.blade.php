@@ -69,7 +69,7 @@
 
             <div class="col-sm-9">            
                 <div class="table-responsive">
-                    <table class="table mitable">
+                    <table class="table">
                         <tr>
                             <td>
                                 <label for="">Categoria</label>
@@ -229,7 +229,7 @@
         var count = 1 
         var encuentros = []
         function add() {                                       
-            $('#example').append("<tr><td>"+(count++)+"</td><td>"+$("#mihora").val()+"</td><td>"+$("#categoria option:selected").text()+"</td><td>"+$("#equipo_a option:selected").text()+"</td><td>vs</td><td>"+$("#equipo_b option:selected").text()+"</td></tr>");
+            $('#example').append("<tr><td>"+(count++)+"</td><td><span class='label label-warning'>"+$("#mihora").val()+"</span></td><td>"+$("#categoria option:selected").text()+"</td><td>"+$("#equipo_a option:selected").text()+"</td><td><span class='label label-primary'>vs</span></td><td>"+$("#equipo_b option:selected").text()+"</td></tr>");
             encuentros.push({
                 fecha: $("#mifecha").val(),
                 hora: $("#mihora").val(),
@@ -243,6 +243,7 @@
                 icon: 'success',
                 title: 'successfully'
             })
+            $("#title").focus()
         }
 
         const Toast = Swal.mixin({
@@ -258,7 +259,7 @@
         })
         function add_date() {       
             var midel = $('#delegado_id :selected').text()                               
-            $('#example').append("<tr><td colspan='6' class='text-center'>"+$("#mifecha").val()+"<br>"+midel+"</td></tr>");
+            $('#example').append("<tr><td colspan='6' class='text-center'><span class='label label-success'>"+$("#mifecha").val()+"</span><br>"+midel+"</td></tr>");
             Toast.fire({
                 icon: 'success',
                 title: 'successfully'
@@ -287,8 +288,8 @@
                     for (let index = 0; index < enc.length; index++) {
                         var newecn =enc[index]
                         newecn["fixture_id"] = newf.data.id
-                        console.log(newecn)
-                        var newf = await axios.post("/api/encuentros/save/", newecn)
+                        newecn["editor_id"] = "{{ Auth::user()->id }}"
+                        var newf = await axios.post("/api/partidos/save/", newecn)
                     }
                     location.href = "/admin/fixtures"
                 }

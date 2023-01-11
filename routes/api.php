@@ -24,12 +24,53 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // rutas PARTIDOS -----------------------------------------------------------------------
 Route::group(['prefix' => 'partidos'], function () {
 
+    Route::post('save', function(Request $request){
+        $misave =  App\Partido::create($request->all());
+
+        //planilla a 
+        $asiento = App\Asiento::create([
+            'tipo'=> 'Ingreso',
+            'cat_asiento_id'=> 2,
+            'monto'=> setting('partidos.arbitraje'),
+            'observacion'=> 'Cobro de Arbitraje',
+            'estado'=> 'Pendiente',
+            'editor_id' => $misave->editor_id,
+            'planilla_id' => $misave->planilla_a_id,
+            'monto_pagado' => 0,
+            'monto_restante' => setting('partidos.arbitraje')
+        ]);
+        App\AsientoDetalle::create([
+            'asiento_id'=> $asiento->id,
+            'monto_pagado'=> 0,
+            'user_id'=> $misave->editor_id
+        ]);
+
+        //planilla b
+        $asiento = App\Asiento::create([
+            'tipo'=> 'Ingreso',
+            'cat_asiento_id'=> 2,
+            'monto'=> setting('partidos.arbitraje'),
+            'observacion'=> 'Cobro de Arbitraje',
+            'estado'=> 'Pendiente',
+            'editor_id' => $misave->editor_id,
+            'planilla_id' => $misave->planilla_b_id,
+            'monto_pagado' => 0,
+            'monto_restante' => setting('partidos.arbitraje')
+        ]);
+        App\AsientoDetalle::create([
+            'asiento_id'=> $asiento->id,
+            'monto_pagado'=> 0,
+            'user_id'=> $misave->editor_id
+        ]);
+        return $misave;
+    });
+
     Route::get('/nomina/{planilla_id}', function ($planilla_id) {
         $nomina = App\RelPlanillaJugadore::where('planilla_id', $planilla_id)->with('jugador')->get();
         return $nomina;
     });
 
-    Route::post('/save', function (Request $request) {
+    Route::post('/update', function (Request $request) {
         $newpartido = App\Partido::find($request->miid);
         $newpartido->hora_comienzo_pt = $request->hora_comienzo_pt;
         $newpartido->hora_comienzo_st = $request->hora_comienzo_st;
@@ -61,13 +102,20 @@ Route::group(['prefix' => 'partidos'], function () {
             $gol_a += ($item->g1t + $item->g2t);
             if ($item->ta > 0) {
                 $ta_a += $item->ta;
-                App\Asiento::create([
+                $asiento = App\Asiento::create([
                     'tipo'=> 'Ingreso',
                     'cat_asiento_id'=> 3,
                     'monto'=> setting('partidos.ta'),
                     'jugador_id'=> $item->jugador_id,
                     'observacion'=> 'Cobro de Tarjeta Amarilla',
-                    'estado'=> 'Pendiente'
+                    'estado'=> 'Pendiente',
+                    'editor_id' => $newpartido->editor,
+                    'planilla_id' => $newpartido->planilla_a_id
+                ]);
+                App\AsientoDetalle::create([
+                    'asiento_id'=> $asiento->id,
+                    'monto_pagado'=> 0,
+                    'user_id'=> $newpartido->editor
                 ]);
             }
 
@@ -426,12 +474,6 @@ Route::group(['prefix' => 'features'], function () {
     });
 });
 
-Route::group(['prefix' => 'encuentros'], function () {
-    Route::post('save', function(Request $request){
-        $misave =  App\Partido::create($request->all());
-        return $misave;
-    });
-});
 
 
 

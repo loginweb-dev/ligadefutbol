@@ -26,7 +26,7 @@
                             <tr>
                                 <td><span class="label label-primary">{{ $item->id }}</span></td>
                                 <td>
-                                    <a href="/admin/jugadores/{{ $item->id }}">
+                                    <a href="/admin/jugadores/{{ $item->id }}/edit">
                                         {{ $loop->index + 1 }}.- {{ $item->name }} 
                                     </a>
                                 </td>
@@ -43,26 +43,36 @@
                     <tr class="active">
                         <td>Nombre: </td>
                         <td>{{ $dataTypeContent->name }}</td>    
-                    </tr>    
-                    <tr>
-                        <td>whatsaoo: </td>
-                        <td>{{ $dataTypeContent->wpp }}</td>    
-                    </tr> 
+                    </tr>  
                     <tr>
                         <td>Presidente: </td>
                         <td>{{ $dataTypeContent->presidente }}</td>    
-                    </tr> 
+                    </tr>   
                     <tr>
-                        <td>Total TA: </td>
-                        <td>{{ $dataTypeContent->ta }}</td>    
-                    </tr> 
-                    <tr>
-                        <td>Total TR: </td>
-                        <td>{{ $dataTypeContent->tr }}</td>    
+                        <td>Whatsapp: </td>
+                        <td>{{ $dataTypeContent->wpp }}</td>    
                     </tr> 
                     <tr>
                         <td>Total Puntos: </td>
-                        <td>{{ $dataTypeContent->puntos }}</td>    
+                        <td><span class="label label-primary">{{ $dataTypeContent->puntos }}</span></td>    
+                    </tr> 
+
+                    <tr>
+                        <td>Total TA: </td>
+                        <td><span class="label label-primary">{{ $dataTypeContent->ta }}</span></td>    
+                    </tr> 
+                    <tr>
+                        <td>Total TR: </td>
+                        <td><span class="label label-primary">{{ $dataTypeContent->tr }}</span></td>    
+                    </tr> 
+
+                    <tr>
+                        <td>Goles ++: </td>
+                        <td><span class="label label-primary">{{ $dataTypeContent->golesa }}</span></td>    
+                    </tr> 
+                    <tr>
+                        <td>Goles --: </td>
+                        <td><span class="label label-primary">{{ $dataTypeContent->golesc }}</span></td>    
                     </tr> 
                 </table>       
             </div>

@@ -934,7 +934,7 @@
         }
 
         var example2 = new BSTable("table2", {
-			editableColumns:"2,4",
+			editableColumns:"4",
 			onEdit:function() {
 				console.log("EDITED");
                 total_mensualidades()

@@ -289,7 +289,7 @@ Route::post('asiento/save', function(Request $request){
 });
 
 Route::get('asientos/get/planilla/{planilla_id}', function($planilla_id){
-    $asientos=App\Asiento::where('planilla_id', $planilla_id)->with('categorias', 'jugadores')->get();
+    $asientos=App\Asiento::where('planilla_id', $planilla_id)->with('categorias', 'jugadores', 'clubes')->get();
     return $asientos;
 });
 

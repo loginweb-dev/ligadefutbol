@@ -35,7 +35,7 @@
     @endif
 </div>
     <div class="container-fluid">
-        <br>                                                    
+        <br>
         <div class="row">
             <div class="col-sm-12 text-center" >
                 @if (Auth::user()->role_id==1 || Auth::user()->role_id==5)
@@ -55,10 +55,7 @@
              <div class="col-sm-3" id="div_izquierdo_detalles" hidden>
 
 
-                <div class="form-group">
-                    <label for="input_buscar_tab">Buscar</label>
-                    <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto a Buscar">
-                </div>
+               
                 
                 <table class="table mitable">
                     <thead>
@@ -68,7 +65,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center" colspan="2">{{$equipo_titulo->name}}</td>
+                            <td class="text-center" colspan="2"><b>Club: {{$equipo_titulo->name}}</b></td>
                         </tr>
                         <tr>
                             <td>
@@ -104,14 +101,18 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>Delegado:</td>
           
-                            <td class="text-center" colspan="2">
+                            <td>
                                 {{$delegado->name}}
                             </td>
                         </tr>
                      
                         <tr>
-                            <td class="text-center" colspan="2">
+                            <td>
+                                Observación:
+                            </td>
+                            <td>
                                 {{$dataTypeContent->observacion}}
                             </td>
                         </tr>
@@ -132,6 +133,18 @@
                     </tbody>
 
                 </table>
+
+                    <div id="btn_nomina" class="text-center">
+                        <a  class="btn btn-primary btn-sm" onclick="change_derecha_lienzo(2)">
+                            <i class="glyphicon glyphicon-th-list"></i> <span class="">Visualizar Nómina</span>
+                        </a>                
+                    </div>
+
+                    <div id="btn_pagos" class="text-center" hidden>
+                        <a  class="btn btn-success btn-sm" onclick="change_derecha_lienzo(1)">
+                            <i class="glyphicon glyphicon-euro"></i> <span class="">Visualizar Pagos</span>
+                        </a>  
+                    </div>
 
 
 
@@ -201,22 +214,15 @@
                     </div>
                 </div>
 
- 
-
                 <div class="col-sm-4 form-group">
-                    <br>
-
-    
-                    <div id="btn_nomina" class="text-center">
-                        <a  class="btn btn-primary btn-sm" onclick="change_derecha_lienzo(2)">
-                            <i class="glyphicon glyphicon-th-list"></i> <span class="">Visualizar Nómina</span>
-                        </a>                
-                    </div>
+                    <label for="input_buscar_tab">Buscar</label>
+                    <input id="input_buscar_tab" type="text" class="form-control" placeholder="Introducir Texto a Buscar">
                 </div>
 
+              
 
                 <div id="tab_pendientes_jugadores" hidden>
-                    <div class="table-responsive" >
+                    <div class="col-sm-12 table-responsive" >
                         <table class="table mitable" id="tabla_tab_pendientes_jugadores">
                             <thead>
                                 <tr class="active">
@@ -659,11 +665,7 @@
                             @endforeach                              
                         </tbody>                   
                     </table>
-                    <div id="btn_pagos" class="text-center" hidden>
-                        <a  class="btn btn-success btn-sm" onclick="change_derecha_lienzo(1)">
-                            <i class="glyphicon glyphicon-euro"></i> <span class="">Visualizar Pagos</span>
-                        </a>  
-                    </div>
+                    
                 </div>
             </div>
 

@@ -448,66 +448,78 @@
         }
 
         async function validacion_gestion() {
-            var ultima_planilla= await axios("/api/find/ultima/planilla/"+$("#select_club").val())
-            var gestion_actual=$("#fecha_mensual").val()+"-01"
-            if (ultima_planilla.data.length>0) {
-                if (ultima_planilla.data[0].fecha_entrega==gestion_actual && ultima_planilla.data[0].activo=="Aprobado") {
-                    toastr.error("Ya existe una planilla de ese Mes que está Aprobada.")
-                }
-                else{
-                    if(Date.parse(ultima_planilla.data[0].fecha_entrega) <= Date.parse(gestion_actual)){
-                        // toastr.success("correcto")
-                        if (Date.parse(ultima_planilla.data[0].fecha_entrega)== Date.parse(gestion_actual)&& ultima_planilla.data[0].activo!="Entregado" && ultima_planilla.data.activo!="Aprobado" ) {
-                            misave()
-                        }
-                        else if(Date.parse(ultima_planilla.data[0].fecha_entrega)== Date.parse(gestion_actual)&& ultima_planilla.data[0].activo=="Entregado"){
-                            toastr.error("Hay una planilla de dicha gestión en proceso de verificación.")
-                        }
-                        else if(Date.parse(ultima_planilla.data[0].fecha_entrega)< Date.parse(gestion_actual)){
-                            if (ultima_planilla.data[0].activo!="Entregado") {
-                                misave()
-                            } else {
-                                toastr.error("Hay una planilla de una gestión pasada que está en proceso de verificación.")
-                            }
-                        }
+            if ("{{setting('nominas.validacion_gestion')}}") {
+                var ultima_planilla= await axios("/api/find/ultima/planilla/"+$("#select_club").val())
+                var gestion_actual=$("#fecha_mensual").val()+"-01"
+                if (ultima_planilla.data.length>0) {
+                    if (ultima_planilla.data[0].fecha_entrega==gestion_actual && ultima_planilla.data[0].activo=="Aprobado") {
+                        toastr.error("Ya existe una planilla de ese Mes que está Aprobada.")
                     }
                     else{
-                        toastr.error("Está intentando crear una planilla de una gestión ya pasada")
+                        if(Date.parse(ultima_planilla.data[0].fecha_entrega) <= Date.parse(gestion_actual)){
+                            // toastr.success("correcto")
+                            if (Date.parse(ultima_planilla.data[0].fecha_entrega)== Date.parse(gestion_actual)&& ultima_planilla.data[0].activo!="Entregado" && ultima_planilla.data.activo!="Aprobado" ) {
+                                misave()
+                            }
+                            else if(Date.parse(ultima_planilla.data[0].fecha_entrega)== Date.parse(gestion_actual)&& ultima_planilla.data[0].activo=="Entregado"){
+                                toastr.error("Hay una planilla de dicha gestión en proceso de verificación.")
+                            }
+                            else if(Date.parse(ultima_planilla.data[0].fecha_entrega)< Date.parse(gestion_actual)){
+                                if (ultima_planilla.data[0].activo!="Entregado") {
+                                    misave()
+                                } else {
+                                    toastr.error("Hay una planilla de una gestión pasada que está en proceso de verificación.")
+                                }
+                            }
+                        }
+                        else{
+                            toastr.error("Está intentando crear una planilla de una gestión ya pasada")
+                        }
                     }
                 }
-            }
-            else{
+                else{
+                    misave()
+                }
+            } 
+            else {
                 misave()
             }
+            
         }
         async function validacion_cantidad_jugs() {
-            var table2 = document.getElementById("table2");
-            var cant_tits=0
-            var cant_sups=0
-            var jugs_id=[]
-            var index=0;
-            $('.tab_jugs_id').each(function(){
-                jugs_id[index]=this.value
-                index+=1
-            })
-            for (var i = 1, row; row = table2.rows[i]; i++) {
-                if ($("#check_"+parseInt(jugs_id[(i-1)])+"").prop('checked')) {
-                    cant_sups+=1
+            if ("{{setting('nominas.validacion_jugs')}}") {
+                var table2 = document.getElementById("table2");
+                var cant_tits=0
+                var cant_sups=0
+                var jugs_id=[]
+                var index=0;
+                $('.tab_jugs_id').each(function(){
+                    jugs_id[index]=this.value
+                    index+=1
+                })
+                for (var i = 1, row; row = table2.rows[i]; i++) {
+                    if ($("#check_"+parseInt(jugs_id[(i-1)])+"").prop('checked')) {
+                        cant_sups+=1
+                    }
+                    else{
+                        cant_tits+=1
+                    }
+                }
+                if (cant_tits=="{{setting('nominas.titulares')}}"&& cant_sups>= "{{setting('nominas.suplentes_minimo')}}" && cant_sups<= "{{setting('nominas.suplentes_maximo')}}") {
+                    // toastr.success("ok")
+                    await validacion_gestion()
                 }
                 else{
-                    cant_tits+=1
+                    toastr.error("La cantidad maxima de suplentes debe ser: {{setting('nominas.suplentes_maximo')}}")
+                    toastr.error("La cantidad mínima de suplentes debe ser: {{setting('nominas.suplentes_minimo')}}")
+                    toastr.error("La cantidad de titulares debe ser: {{setting('nominas.titulares')}}")
+
                 }
             }
-            if (cant_tits=="{{setting('nominas.titulares')}}"&& cant_sups>= "{{setting('nominas.suplentes_minimo')}}" && cant_sups<= "{{setting('nominas.suplentes_maximo')}}") {
-                toastr.success("ok")
-                //await validacion_gestion()
-            }
             else{
-                toastr.error("La cantidad maxima de suplentes debe ser: {{setting('nominas.suplentes_maximo')}}")
-                toastr.error("La cantidad mínima de suplentes debe ser: {{setting('nominas.suplentes_minimo')}}")
-                toastr.error("La cantidad de titulares debe ser: {{setting('nominas.titulares')}}")
-
+                await validacion_gestion()
             }
+          
         }
 
         async function probar_mensaje_whatsapp() {

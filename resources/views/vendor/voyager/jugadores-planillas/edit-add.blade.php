@@ -34,16 +34,14 @@
     </div>
     <div class="container-fluid">
       
-                <div class="col-sm-4" hidden>
-                    <br />
-                    <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
-                </div>
+        <div class="col-sm-4" hidden>
+            <br />
+            <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</button>
+        </div>
 
-
+        <br>
         <div class="row"  >        
-            <div class="text-center">
-                <h2>NUEVA NOMINA & PLANTILLA</h2>                                
-            </div>    
+  
             <div class="col-sm-4" hidden>
                 <label for="select_equipo">Equipo</label>
                 <div style="border-style: outset;">
@@ -102,6 +100,27 @@
                     </select>
                 </div>
                     
+                <div class="form-group">
+                    <label for="fecha">Gestión</label>
+                    <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
+                </div>
+
+                <label>Delegado</label>                  
+                <div class="miselect">
+                    <select class="form-control select2" name="select_delegado" id="select_delegado">
+                        @if(Auth::user()->role_id==3)
+                            @foreach ($delegados_club  as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach  
+                        @else
+                            @foreach ($delegados  as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach  
+                        @endif
+                    </select>
+                </div>
+
+                <br>
                 <div class="form-group">  
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-dark btn-block dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -114,32 +133,9 @@
                             <li><a  href="#" onclick="add_fila()">Agregar Jugador Individual</a></li>
                             <li><a  href="#" data-toggle="modal" data-target="#modal_jugador"> Crear Jugador</a></li>
                             <li><a  href="#" data-toggle="modal" data-target="#modal_transferencia"> Transferencia</a></li>	
+                            <li><a  href="#" data-toggle="modal" data-target="#modal_delegado">Crear Delegado</a></li>	
+                            <li><a  href="#" onclick="return location.reload()">Limpiar Lista</a></li>	
                         </ul>
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label for="fecha">Gestión</label>
-                    <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
-                </div>
-
-                <label>Delegado</label>
-                <div class="input-group">       
-                    <div class="miselect">
-                        <select class="form-control select2" name="select_delegado" id="select_delegado">
-                            @if(Auth::user()->role_id==3)
-                                @foreach ($delegados_club  as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach  
-                            @else
-                                @foreach ($delegados  as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach  
-                            @endif
-                        </select>
-                    </div>
-                    <span class="input-group-btn">
-                        <a  class="btn btn-dark" data-toggle="modal" data-target="#modal_delegado" ><i class="voyager-plus"></i>  </a>    
                     </span>
                 </div>
 
@@ -166,11 +162,11 @@
 
             <div class="col-sm-8">
                 <label for="">Lista de Jugadores</label>
-                <div  class=" table-responsive">
-                    <table class="table table-striped mitable" id="table2">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="" scope="col">#</th>
+                <div  class="table-responsive">
+                    <table class="table mitable" id="table2">
+                        <thead>
+                            <tr class="active">
+                                <th class="" scope="col">ID</th>
                                 <th class="" scope="col">S/T</th>
                                 <th class="" scope="col">Polera</th>
                                 <th class="" scope="col">Nombre</th>
@@ -180,6 +176,10 @@
                         <tbody>
                         </tbody>
                     </table>
+                    <div class="text-center">
+                        <p>Titular (T)= <input type="checkbox" name="" id="" disabled> / Suplentes (S)= <input type="checkbox" name="" id="" checked disabled></p>
+                    </div>
+
                 </div>
             </div>
         </div>                                                            
@@ -844,7 +844,7 @@
             }
             else{
                 var cont=count_jugs()+1
-                    $('#table2').append("<tr><td><input class='tab_jugs_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden><input class='tab_jugs_phone' type='number' value="+jugador.data.phone+" hidden>"+cont+"</td><td class='tab_jugs'><input id='check_"+jugador.data.id+"' type='checkbox'></td><td>  "+jugador.data.polera+"</td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>"+parseInt("{{setting('finanzas.mensualidad_jug')}}")+"</td></tr>");
+                    $('#table2').append("<tr><td><input class='tab_jugs_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden><input class='tab_jugs_phone' type='number' value="+jugador.data.phone+" hidden>"+cont+"</td><td class='tab_jugs'><input id='check_"+jugador.data.id+"' type='checkbox'></td><td><span class='label label-warning'>"+jugador.data.polera+"</span></td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>"+parseInt("{{setting('finanzas.mensualidad_jug')}}")+"</td></tr>");
 
                     example2.init();
                 total_mensualidades()

@@ -228,22 +228,30 @@
 
         var count = 1 
         var encuentros = []
-        function add() {                                       
-            $('#example').append("<tr><td>"+(count++)+"</td><td><span class='label label-warning'>"+$("#mihora").val()+"</span></td><td>"+$("#categoria option:selected").text()+"</td><td>"+$("#equipo_a option:selected").text()+"</td><td><span class='label label-primary'>vs</span></td><td>"+$("#equipo_b option:selected").text()+"</td></tr>");
-            encuentros.push({
-                fecha: $("#mifecha").val(),
-                hora: $("#mihora").val(),
-                planilla_a_id: $("#equipo_a option:selected").val(),
-                planilla_b_id: $("#equipo_b option:selected").val(),
-                veedor_id: $('#delegado_id :selected').val(),
-                categoria: $('#categoria :selected').val()
-            })
-            localStorage.setItem("encuentros", JSON.stringify(encuentros));
-            Toast.fire({
-                icon: 'success',
-                title: 'successfully'
-            })
-            $("#title").focus()
+        function add() {          
+                             
+            var planilla_a_id =  $("#equipo_a option:selected").val()
+            var planilla_b_id = $("#equipo_b option:selected").val()
+            if (planilla_a_id == planilla_b_id) {
+                toastr.error("Elige equipos diferentes para el partido")
+            } else {                
+        
+                $('#example').append("<tr><td>"+(count++)+"</td><td><span class='label label-warning'>"+$("#mihora").val()+"</span></td><td>"+$("#categoria option:selected").text()+"</td><td>"+$("#equipo_a option:selected").text()+"</td><td><span class='label label-primary'>vs</span></td><td>"+$("#equipo_b option:selected").text()+"</td></tr>");
+                encuentros.push({
+                    fecha: $("#mifecha").val(),
+                    hora: $("#mihora").val(),
+                    planilla_a_id: planilla_a_id,
+                    planilla_b_id: planilla_b_id,
+                    veedor_id: $('#delegado_id :selected').val(),
+                    categoria: $('#categoria :selected').val()
+                })
+                localStorage.setItem("encuentros", JSON.stringify(encuentros));
+                Toast.fire({
+                    icon: 'success',
+                    title: 'successfully'
+                })
+                $("#title").focus()
+        }
         }
 
         const Toast = Swal.mixin({
@@ -268,32 +276,46 @@
 
         //Guardar fixture---------------------------------------------------------
         async function save() {
-            Swal.fire({
-                title: 'Estas Segur@ de Guardar el FEATURE?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'SI',
-                cancelButtonText: 'NO'
-                }).then(async (result) => {
-                if (result.isConfirmed) {      
-                    var midata = {
-                        title: $("#title").val(),
-                        user_id: "{{ Auth::user()->id }}",
-                        descansa_id: $("#descansa_id").val()
-                    } 
-                    var newf = await axios.post("/api/features/save", midata)
-                    var enc = JSON.parse(localStorage.getItem("encuentros"))
-                    for (let index = 0; index < enc.length; index++) {
-                        var newecn =enc[index]
-                        newecn["fixture_id"] = newf.data.id
-                        newecn["editor_id"] = "{{ Auth::user()->id }}"
-                        var newf = await axios.post("/api/partidos/save/", newecn)
+            var milocal = JSON.parse(localStorage.getItem("encuentros"))
+            var midesf = false
+            var mides = $("#descansa_id :selected").val()
+            for (let index = 0; index < milocal.length; index++) {
+                if (milocal[index].planilla_a_id == mides || milocal[index].planilla_b_id == mides) {
+                    midesf = true
+                }      
+            }
+            if (midesf) {
+                toastr.error("cambia de equipo para el descanso.")
+            } else {
+                     
+                Swal.fire({
+                    title: 'Estas Segur@ de Guardar el FEATURE?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'SI',
+                    cancelButtonText: 'NO'
+                    }).then(async (result) => {
+                    if (result.isConfirmed) {      
+                        toastr.info("Enviando datos...")    
+                        var midata = {
+                            title: $("#title").val(),
+                            user_id: "{{ Auth::user()->id }}",
+                            descansa_id: $("#descansa_id").val()
+                        } 
+                        var newf = await axios.post("/api/features/save", midata)
+                        var enc = JSON.parse(localStorage.getItem("encuentros"))
+                        for (let index = 0; index < enc.length; index++) {
+                            var newecn =enc[index]
+                            newecn["fixture_id"] = newf.data.id
+                            newecn["editor_id"] = "{{ Auth::user()->id }}"
+                            var newf = await axios.post("/api/partidos/save/", newecn)
+                        }
+                        location.href = "/admin/fixtures"
                     }
-                    location.href = "/admin/fixtures"
-                }
-            }) 
+                }) 
+            }
         }
 
         function remove_list() {                                       

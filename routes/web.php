@@ -25,6 +25,7 @@ Route::get('/reset-db', function () {
     App\JugadoresPlanilla::truncate();
     App\Partido::truncate();
     App\RelPartidoNomina::truncate();
+    App\RelPlanillaJugadore::truncate();
 
     App\Clube::where('id', '>', 0)->update([
         'puntos' => 0,

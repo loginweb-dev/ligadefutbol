@@ -256,7 +256,7 @@
                 
                 <div id="tab_pendientes_jugadores" hidden>
                     <div class="col-sm-12 table-responsive" >
-                        <table class="table table-striped table-bordered" id="tabla_tab_pendientes_jugadores">
+                        <table class="table table-striped mitable" id="tabla_tab_pendientes_jugadores">
                             <thead class="thead-dark">
                                 <tr>
                                     <th class="text-center" scope="col">#</th>
@@ -319,7 +319,7 @@
                 </div>
 
                 <div class="col-sm-12 table-responsive" id="tab_pagados_jugadores" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_tab_pagados_jugadores">
+                    <table class="table table-striped mitable" id="tabla_tab_pagados_jugadores">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -445,7 +445,7 @@
 
                 <div id="tab_pendientes_club" hidden>
                     <div class="col-sm-12 table-responsive" >
-                        <table class="table table-striped table-bordered" id="tabla_tab_pendientes_club">
+                        <table class="table table-striped mitable" id="tabla_tab_pendientes_club">
                             <thead class="thead-dark">
                                 <tr>
                                     <th class="text-center" scope="col">#</th>
@@ -504,7 +504,7 @@
                 </div>
 
                 <div class="col-sm-12 table-responsive" id="tab_pagados_club" hidden>
-                    <table class="table table-striped table-bordered" id="tabla_tab_pagados_club">
+                    <table class="table table-striped mitable" id="tabla_tab_pagados_club">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -559,7 +559,7 @@
 
                 <div id="tab_todos_club" hidden>
                     <div class="col-sm-12 table-responsive" >
-                        <table class="table table-striped table-bordered" id="tabla_tab_todos_club">
+                        <table class="table table-striped mitable" id="tabla_tab_todos_club">
                             <thead class="thead-dark">
                                 <tr>
                                     <th class="text-center" scope="col">#</th>

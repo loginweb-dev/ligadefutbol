@@ -19,10 +19,21 @@ class Jugadore extends Model
     'foto',
     'color_carnet',
     'phone',
-    'ta',
-    'tr',
-    'goles'
+    'status'
     ];
+
+
+    protected $appends=['published', 'fecha', 'nacimiento'];
+	public function getPublishedAttribute(){
+		return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']) )->diffForHumans();
+	}
+	public function getFechaAttribute(){
+		return date('d-m-Y H:m', strtotime($this->attributes['created_at']));
+	}
+    public function getNacimientoAttribute(){
+		return date('d-m-Y', strtotime($this->attributes['nacido']));
+	}
+
 
     public function clubes()
 	{

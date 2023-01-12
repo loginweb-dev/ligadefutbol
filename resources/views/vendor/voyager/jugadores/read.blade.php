@@ -4,40 +4,44 @@
 
 
 @section('content')
+    @php
+        $sin_perfil='jugadores/jugadordefault.png';
+        $jugadore=App\Jugadore::where('id', $dataTypeContent->id)->with('clubes')->first();
+    @endphp
     <div class="page-content read container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered" style="padding-bottom:5px;">
-                    <h1 class="text-center">Datos del Jugador: {{$dataTypeContent->name}}</h1>
+                    {{-- <h1 class="text-center">Jugador: {{$dataTypeContent->name}}</h1> --}}
                     <div class="row">
-                        <div class="col-sm-6">
-                            {{-- <div  class=" table-responsive"> --}}
+                        <div class="col-sm-4">
+                            <div  class="table-responsive">
                                 <table class="table mitable">
                                     <thead>
                                         <tr class="active">
-                                            <th colspan="2">Datos</th>
+                                            <th class="text-center" colspan="3"><h4>Datos Personales</h4></th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
                                         <tr>
+                                            <td rowspan="4" class="text-center">
+                                               
+                                                @if ($dataTypeContent->foto)
+                                                    <img src="@if( !filter_var($dataTypeContent->foto, FILTER_VALIDATE_URL)){{ Voyager::image( $dataTypeContent->foto ) }}@else{{ $dataTypeContent->foto }}@endif" style="width:150px">
+                                                @else
+                                                    <img src="{{Voyager::image($sin_perfil)}}" style="width:150px">
+                                                @endif
+                                            </td>
+
+                                        </tr>
+                                        <tr>
                                             <td>Nombre</td>
-                                            <td>{{$dataTypeContent->name}}</td>
+                                            <td>{{$dataTypeContent->name}} <br> hola prueba</td>
                                         </tr>
                                         <tr>
                                             <td># Polera</td>
                                             <td>{{$dataTypeContent->polera}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tarjetas Amarillas</td>
-                                            <td>{{$dataTypeContent->ta}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tarjetas Rojas</td>
-                                            <td>{{$dataTypeContent->tr}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Goles</td>
-                                            <td>{{$dataTypeContent->goles}}</td>
                                         </tr>
                                         <tr>
                                             <td>Edad</td>
@@ -45,30 +49,98 @@
                                         </tr>
                                             
                                         <tr>
-                                            <td>Fecha Nacimiento</td>
-                                            <td>{{$dataTypeContent->nacido}}</td>
+                                            <td >Fecha Nacimiento</td>
+                                            <td colspan="2">{{$dataTypeContent->nacimiento}}</td>
                                         </tr>
                                         <tr>
-                                            <td>Categoria</td>
-                                            <td>{{$dataTypeContent->jug_categoria}}</td>
+                                            <td >Categoria</td>
+                                            <td colspan="2">{{$dataTypeContent->jug_categoria}}</td>
                                         </tr>
                                         <tr>
-                                            <td>Club Actual</td>
-                                            <td>{{$dataTypeContent->clube_id}}</td>
+                                            <td >Club Actual</td>
+                                            <td colspan="2">{{$jugadore->clubes->name}}</td>
                                         </tr>
-                                        <tr>
-                                            <td>Foto</td>
-                                            <td>{{$dataTypeContent->foto}}</td>
-                                        </tr>
+                                  
                                         <tr>
                                             <td>WhatsApp</td>
-                                            <td>{{$dataTypeContent->phone}}</td>
+                                            <td colspan="2">{{$dataTypeContent->phone}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            {{-- </div> --}}
+                                {{-- <img src="@if( !filter_var($dataTypeContent->foto, FILTER_VALIDATE_URL)){{ Voyager::image( $dataTypeContent->foto ) }}@else{{ $dataTypeContent->foto }}@endif" style="width:500px"> --}}
+
+                            </div>
                         </div>
-                        
+
+                        <div class="col-sm-4">
+                            <div  class="table-responsive">
+                                <table class="table mitable">
+                                    <thead>
+                                        <tr class="active">
+                                            <th class="text-center" colspan="6"><h4>Trayectoria</h4></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Equipo</th>
+                                            <th>Fecha Inicio</th>
+                                            <th>Fecha Finalización</th>
+                                            <th>Goles</th>
+                                            <th>Tarjetas Amarillas</th>
+                                            <th>Tarjetas Rojas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Equipo1</td>
+                                            <td>10-01-2020</td>
+                                            <td>10-11-2020</td>
+                                            <td>20</td>
+                                            <td>4</td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Equipo2</td>
+                                            <td>10-01-2021</td>
+                                            <td>10-11-2022</td>
+                                            <td>12</td>
+                                            <td>8</td>
+                                            <td>2</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                        <div class="col-sm-4">
+                            <div  class="table-responsive">
+                                <table class="table mitable">
+                                    <thead>
+                                        <tr class="active">
+                                            <th class="text-center" colspan="4"><h4>Transferencias</h4></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Equipo Inicial</th>
+                                            <th>Equipo Final</th>
+                                            <th>Fecha</th>
+                                            <th>Precio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Equipo1</td>
+                                            <td>Equipo2</td>
+                                            <td>10-11-2020</td>
+                                            <td>1000Bs</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Equipo2</td>
+                                            <td>Equipo3</td>
+                                            <td>10-11-2020</td>
+                                            <td>900</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                        
                     </div>
                     
                 </div>

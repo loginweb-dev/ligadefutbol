@@ -18,7 +18,10 @@
                             <th>Jugador</th>
                             <th>Edad</th>
                             <th>Polera</th>
-                            <th>Whatsapp</th>
+                            <th>🟨</th>
+                            <th>🟥</th>
+                            <th>⚽</th>
+                            <th>💬</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,6 +35,9 @@
                                 </td>
                                 <td><span class="label label-success">{{ $item->edad }}</span></td>
                                 <td><span class="label label-warning">{{ $item->polera }}</span></td>
+                                <td>{{ $item->ta }}</td>
+                                <td>{{ $item->tr }}</td>
+                                <td>{{ $item->goles }}</td>
                                 <td>{{ $item->phone }}</td>
                             </tr>
                         @endforeach

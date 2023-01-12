@@ -27,7 +27,8 @@ class Partido extends Model
         'status',
         'ganador',
         'perdedor',
-        'editor_id'
+        'editor_id',
+        'temporada_id'
     ];
 
     public function fixture()

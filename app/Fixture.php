@@ -12,6 +12,7 @@ class Fixture extends Model
     protected $fillable = [
     'title',
     'user_id',
-    'descansa_id'
+    'descansa_id',
+    'temporada_id'
     ];
 }

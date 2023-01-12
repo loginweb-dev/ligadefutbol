@@ -28,6 +28,18 @@
                                             <td>{{$dataTypeContent->polera}}</td>
                                         </tr>
                                         <tr>
+                                            <td>Tarjetas Amarillas</td>
+                                            <td>{{$dataTypeContent->ta}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tarjetas Rojas</td>
+                                            <td>{{$dataTypeContent->tr}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Goles</td>
+                                            <td>{{$dataTypeContent->goles}}</td>
+                                        </tr>
+                                        <tr>
                                             <td>Edad</td>
                                             <td>{{$dataTypeContent->edad}}</td>
                                         </tr>

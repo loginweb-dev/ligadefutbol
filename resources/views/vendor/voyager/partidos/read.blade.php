@@ -14,6 +14,7 @@
     $relparnom_a = App\RelPartidoNomina::where('partido_id', $dataTypeContent->id)->where('nomina_id', $dataTypeContent->planilla_a_id)->get();
     $relparnom_b = App\RelPartidoNomina::where('partido_id', $dataTypeContent->id)->where('nomina_id', $dataTypeContent->planilla_b_id)->get();
 
+    $temporada = App\Temporada::find($dataTypeContent->temporada_id);
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -62,8 +63,18 @@
                             <td>{{ $dataTypeContent->categoria }}</td>
                         </tr>
                         <tr>
-                            <td>Veedor: </td>
-                            <td>{{ $veedor->name }}</td>
+                            <td colspan="2" class="text-center">
+                                {{ $temporada->title }}
+                                <br>
+                                <span class="label label-primary">Temporada</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="text-center">
+                                {{ $veedor->name }}
+                                <br>
+                                <span class="label label-primary">Veedor del partido</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -194,7 +205,7 @@
                                 <td colspan="2" class="text-center"><span class="label label-success">{{ $eb->name }} - {{ $dataTypeContent->ganador }}</span></td>
                             </tr>
                             <tr>
-                                <td colspan="2" class="text-center"><span class="label label-success">{{ $ea->name }} - {{ $dataTypeContent->ganador }} </span></td>
+                                <td colspan="2" class="text-center"><span class="label label-success">{{ $ea->name }} - {{ $dataTypeContent->perdedor }} </span></td>
                             </tr>
                             <tr>
       

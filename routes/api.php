@@ -117,6 +117,7 @@ Route::group(['prefix' => 'partidos'], function () {
                     'monto_pagado'=> 0,
                     'user_id'=> $newpartido->editor
                 ]);
+                $jugador = App\Jugador::find($newpartido->planilla_a_id);
             }
 
             if ($item->tr > 0) {

@@ -7,6 +7,7 @@
 @section('content')
     <div class="page-content browse container-fluid">
         @include('voyager::alerts')
+        <br>
         <div class="row">
             <div class="col-sm-12">
         

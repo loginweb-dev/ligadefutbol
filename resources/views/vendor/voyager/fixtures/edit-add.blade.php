@@ -4,6 +4,7 @@
     $equipos = App\Clube::all();
     $planillas = App\JugadoresPlanilla::where("activo", "Aprobado")->with("clubes")->get();
     $delegados = App\Delegado::all();
+    $temporadas = App\Temporada::all();
 @endphp
 
 @extends('voyager::master')
@@ -16,10 +17,19 @@
 
 @section('content')
     <div class="container-fluid">
-        <hr>
+        <br>
         <div class="row">
                                   
-            <div class="col-sm-3">                              
+            <div class="col-sm-3">   
+                <label for="">Temporada</label>   
+                <div class="form-group miselect">                                    
+                    <select name="" id="temporada_id" class="select2 form-control">
+                        @foreach ($temporadas as $item)
+                            <option value="{{ $item->id }}">{{ $item->title }}</option>
+                        @endforeach                                    
+                    </select>
+                </div>
+
                 <label for="">Equipo "A"</label>   
                 <div class="form-group miselect">                                    
                     <select name="" id="equipo_a" class="select2 form-control">
@@ -73,7 +83,7 @@
                         <tr>
                             <td>
                                 <label for="">Categoria</label>
-                                <div class="form-group" style="border-style: outset;">
+                                <div class="form-group miselect">
                                     <select name="" id="delegado_id" class="select2 form-control">
                                         @foreach ($delegados as $item)
                                             <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -83,7 +93,7 @@
                             </td>
                             <td>
                                 <label for="">Veedor</label>
-                                <div class="form-group" style="border-style: outset;">
+                                <div class="form-group miselect">
                                     <select name="" id="categoria" class="select2 form-control">                        
                                             <option value="Senior">Senior</option>
                                             <option value="Especial">Especial</option>                                                       
@@ -232,7 +242,14 @@
                              
             var planilla_a_id =  $("#equipo_a option:selected").val()
             var planilla_b_id = $("#equipo_b option:selected").val()
-            if (planilla_a_id == planilla_b_id) {
+            var milocal = localStorage.getItem("encuentros") ? JSON.parse(localStorage.getItem("encuentros")) : []
+            var midesf = false
+            for (let index = 0; index < milocal.length; index++) {
+                if ((milocal[index].planilla_a_id == planilla_a_id) || (milocal[index].planilla_b_id == planilla_b_id)) {
+                    midesf = true
+                }      
+            }
+            if ((planilla_a_id == planilla_b_id) || midesf) {
                 toastr.error("Elige equipos diferentes para el partido")
             } else {                
         
@@ -243,7 +260,8 @@
                     planilla_a_id: planilla_a_id,
                     planilla_b_id: planilla_b_id,
                     veedor_id: $('#delegado_id :selected').val(),
-                    categoria: $('#categoria :selected').val()
+                    categoria: $('#categoria :selected').val(),
+                    temporada_id: $("#temporada_id :selected").val()
                 })
                 localStorage.setItem("encuentros", JSON.stringify(encuentros));
                 Toast.fire({
@@ -265,6 +283,7 @@
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         })
+
         function add_date() {       
             var midel = $('#delegado_id :selected').text()                               
             $('#example').append("<tr><td colspan='6' class='text-center'><span class='label label-success'>"+$("#mifecha").val()+"</span><br>"+midel+"</td></tr>");
@@ -302,7 +321,8 @@
                         var midata = {
                             title: $("#title").val(),
                             user_id: "{{ Auth::user()->id }}",
-                            descansa_id: $("#descansa_id").val()
+                            descansa_id: $("#descansa_id").val(),
+                            temporada_id: $("#temporada_id :selected").val()
                         } 
                         var newf = await axios.post("/api/features/save", midata)
                         var enc = JSON.parse(localStorage.getItem("encuentros"))

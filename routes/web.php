@@ -32,7 +32,8 @@ Route::get('/reset-db', function () {
         'ta' => 0,
         'tr' => 0,
         'golesa' => 0,
-        'golesc' => 0
+        'golesc' => 0,
+        'status' => 1
     ]);
     
     App\Jugadore::where('id', '>', 0)->update([

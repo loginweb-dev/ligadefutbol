@@ -79,9 +79,16 @@ Route::group(['prefix' => 'partidos'], function () {
         $newpartido->juez_3 = $request->juez_3;
         $newpartido->juez_4 = $request->juez_4;
         $newpartido->status = 2;
-        $newpartido->description = $request->description;;
-        
+        $newpartido->description = $request->description;        
         $newpartido->save();
+        
+        $club_a = App\Clube::find($newpartido->planilla_a_id);
+        $club_a->status = 2;
+        $club_a->save();
+        $club_b = App\Clube::find($newpartido->planilla_b_id);
+        $club_b->status = 2;
+        $club_b->save();
+
         $newpartido = App\Partido::find($request->miid);
         return $newpartido;
     });
@@ -100,6 +107,7 @@ Route::group(['prefix' => 'partidos'], function () {
         $tr_a = 0;
         foreach ($loop_a as $item) {
             $gol_a += ($item->g1t + $item->g2t);
+
             if ($item->ta > 0) {
                 $ta_a += $item->ta;
                 $asiento = App\Asiento::create([
@@ -117,19 +125,31 @@ Route::group(['prefix' => 'partidos'], function () {
                     'monto_pagado'=> 0,
                     'user_id'=> $newpartido->editor
                 ]);
-                $jugador = App\Jugador::find($newpartido->planilla_a_id);
+                $jugador = App\Jugadore::find($item->jugador_id);
+                $jugador->ta +=  $jugador->ta;
+                $jugador->save();
             }
 
             if ($item->tr > 0) {
                 $tr_a += $item->tr;
-                App\Asiento::create([
+                $asiento = App\Asiento::create([
                     'tipo'=> 'Ingreso',
                     'cat_asiento_id'=> 4,
-                    'monto'=> setting('partidos.ta'),
+                    'monto'=> setting('partidos.tr'),
                     'jugador_id'=> $item->jugador_id,
-                    'observacion'=> 'Cobro de Tarjeta Amarilla',
-                    'estado'=> 'Pendiente'
+                    'observacion'=> 'Cobro de Tarjeta Roja',
+                    'estado'=> 'Pendiente',
+                    'editor_id' => $newpartido->editor,
+                    'planilla_id' => $newpartido->planilla_a_id
                 ]);
+                App\AsientoDetalle::create([
+                    'asiento_id'=> $asiento->id,
+                    'monto_pagado'=> 0,
+                    'user_id'=> $newpartido->editor
+                ]);
+                $jugador = App\Jugadore::find($item->jugador_id);
+                $jugador->tr +=  $jugador->tr;
+                $jugador->save();
             }
         }
 
@@ -139,8 +159,51 @@ Route::group(['prefix' => 'partidos'], function () {
         $tr_b = 0;
         foreach ($loop_b as $item) {
             $gol_b += ($item->g1t + $item->g2t);
-            $ta_b += $item->ta;
-            $tr_b += $item->tr;
+            if ($item->ta > 0) {
+                $ta_b += $item->ta;
+                $asiento = App\Asiento::create([
+                    'tipo'=> 'Ingreso',
+                    'cat_asiento_id'=> 3,
+                    'monto'=> setting('partidos.ta'),
+                    'jugador_id'=> $item->jugador_id,
+                    'observacion'=> 'Cobro de Tarjeta Amarilla',
+                    'estado'=> 'Pendiente',
+                    'editor_id' => $newpartido->editor,
+                    'planilla_id' => $newpartido->planilla_b_id
+                ]);
+                App\AsientoDetalle::create([
+                    'asiento_id'=> $asiento->id,
+                    'monto_pagado'=> 0,
+                    'user_id'=> $newpartido->editor
+                ]);
+                $jugador = App\Jugadore::find($item->jugador_id);
+                $jugador->ta +=  $jugador->ta;
+                $jugador->save();
+            }
+           
+            if ($item->tr > 0) {
+                $tr_b += $item->tr;
+                $asiento = App\Asiento::create([
+                    'tipo'=> 'Ingreso',
+                    'cat_asiento_id'=> 4,
+                    'monto'=> setting('partidos.tr'),
+                    'jugador_id'=> $item->jugador_id,
+                    'observacion'=> 'Cobro de Tarjeta Roja',
+                    'estado'=> 'Pendiente',
+                    'editor_id' => $newpartido->editor,
+                    'planilla_id' => $newpartido->planilla_b_id
+                ]);
+                App\AsientoDetalle::create([
+                    'asiento_id'=> $asiento->id,
+                    'monto_pagado'=> 0,
+                    'user_id'=> $newpartido->editor
+                ]);
+                $jugador = App\Jugadore::find($item->jugador_id);
+                $jugador->tr +=  $jugador->tr;
+                $jugador->save();
+            }
+            
+
         }
         
         $nomina_a = App\JugadoresPlanilla::find($newpartido->planilla_a_id);

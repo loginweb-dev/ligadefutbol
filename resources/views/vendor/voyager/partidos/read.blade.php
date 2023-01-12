@@ -251,7 +251,7 @@
                     <table class="table table-striped mitable" id="cluba">
               
                         <thead>
-                            <tr class="active"><th class="text-center" colspan="8"><span class="label label-primary">Equipo A: {{ $ea->name }}</span></th></tr>
+                            <tr class="active"><th class="text-center" colspan="8"><h2><span class="label label-primary">Equipo A: {{ $ea->name }}</span></h2></th></tr>
                             <tr class="active">
                                 <th scope="col">ID</th>                                                                
                                 <th scope="col">Nombres y Apellidos</th>
@@ -345,7 +345,7 @@
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="clubb">
                         <thead>
-                            <tr class="active"><th class="text-center" colspan="8"><span class="label label-primary">Equipo B: {{ $eb->name }}</span></th></tr>
+                            <tr class="active"><th class="text-center" colspan="8"><h2><span class="label label-primary">Equipo B: {{ $eb->name }}</span></h2></th></tr>
                             <tr class="active">
                                 <th scope="col">ID</th>                                                                
                                 <th scope="col">Nombres y Apellidos</th>

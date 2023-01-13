@@ -21,15 +21,18 @@
         <div class="row">
                                   
             <div class="col-sm-3">   
-                <label for="">Temporada</label>   
-                <div class="form-group miselect">                                    
-                    <select name="" id="temporada_id" class="select2 form-control">
-                        @foreach ($temporadas as $item)
-                            <option value="{{ $item->id }}">{{ $item->title }}</option>
-                        @endforeach                                    
-                    </select>
-                </div>
+                <div hidden>
 
+              
+                    <label for="">Temporada</label>   
+                    <div class="form-group miselect">                                    
+                        <select name="" id="temporada_id" class="select2 form-control">
+                            @foreach ($temporadas as $item)
+                                <option value="{{ $item->id }}">{{ $item->title }}</option>
+                            @endforeach                                    
+                        </select>
+                    </div>
+                </div>
                 <label for="">Equipo "A"</label>   
                 <div class="form-group miselect">                                    
                     <select name="" id="equipo_a" class="select2 form-control">
@@ -53,7 +56,7 @@
                     <div class="input-group">
                         <input type="time" name="" id="mihora" class="form-control">
                         <span class="input-group-btn">
-                          <button class="btn btn-dark btn-lg" type="button" onclick="add()">Agregar</button>
+                          <button class="btn btn-dark btn-lg" type="button" onclick="add()">Añadir</button>
                         </span>
                       </div>
                 </div>
@@ -66,7 +69,7 @@
                 <div class="miselect">
                     <select name="" id="descansa_id" class="select2 form-control">
                         @foreach ($planillas as $item)
-                            <option value="{{ $item->id }}">{{ $item->clubes->name }}</option>
+                            <option value="{{ $item->clubes->id }}">{{ $item->clubes->name }}</option>
                         @endforeach                                    
                     </select>
                 </div> 
@@ -82,7 +85,7 @@
                     <table class="table">
                         <tr>
                             <td>
-                                <label for="">Categoria</label>
+                                <label for="">Veedor</label>
                                 <div class="form-group miselect">
                                     <select name="" id="delegado_id" class="select2 form-control">
                                         @foreach ($delegados as $item)
@@ -92,7 +95,7 @@
                                 </div>
                             </td>
                             <td>
-                                <label for="">Veedor</label>
+                                <label for="">Categoria</label>
                                 <div class="form-group miselect">
                                     <select name="" id="categoria" class="select2 form-control">                        
                                             <option value="Senior">Senior</option>
@@ -105,7 +108,7 @@
                                 <div class="input-group">
                                     <input type="date" name="" id="mifecha" class="form-control">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-dark btn-md" type="button" onclick="add_date()">Agregar</button>
+                                        <button class="btn btn-dark btn-md" type="button" onclick="add_date()">Añadir</button>
                                         <button class="btn btn-secundary btn-md" type="button" onclick="remove_list()">Limpiar</button>
                                     </span>
                                 </div>   
@@ -321,7 +324,7 @@
                         var midata = {
                             title: $("#title").val(),
                             user_id: "{{ Auth::user()->id }}",
-                            descansa_id: $("#descansa_id").val(),
+                            descansa_id: $("#descansa_id :selected").val(),
                             temporada_id: $("#temporada_id :selected").val()
                         } 
                         var newf = await axios.post("/api/features/save", midata)

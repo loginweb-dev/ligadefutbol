@@ -12,7 +12,7 @@ class RelTemporadaClube extends Model
     use SoftDeletes;
     protected $fillable = [
         'temporada_id',
-        'jugadore_id',
+        'club_id',
         'ta',
         'tr',
         'goles'

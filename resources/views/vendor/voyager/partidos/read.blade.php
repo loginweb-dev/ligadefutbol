@@ -229,10 +229,6 @@
                                 <td>{{ $arb4->name }}</td>
                             </tr>
                             <tr>
-                                <td>Tercer Juez</td>
-                                <td>{{ $arb4->name }}</td>
-                            </tr>
-                            <tr>
                                 <td>Inicio 1er Tiempo</td>
                                 <td>{{ $dataTypeContent->hora_comienzo_pt }}</td>
                             </tr>
@@ -334,10 +330,10 @@
                                     <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>                                                                        
                                     <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>
                                     <td>@if($dataTypeContent->status == 1)0 @else 
-                                            @if($relparnom_a[$loop->index]->ta == 0)0 @else<span class="label label-primary">{{ $relparnom_a[$loop->index]->ta }}</span>@endif                                            
+                                            @if($relparnom_b[$loop->index]->ta == 0)0 @else<span class="label label-primary">{{ $relparnom_b[$loop->index]->ta }}</span>@endif                                            
                                         @endif</td>  
                                     <td>@if($dataTypeContent->status == 1)0 @else 
-                                            @if ($relparnom_a[$loop->index]->tr == 0)0 @else<span class="label label-primary">{{ $relparnom_a[$loop->index]->tr }}</span>@endif                                            
+                                            @if ($relparnom_b[$loop->index]->tr == 0)0 @else<span class="label label-primary">{{ $relparnom_b[$loop->index]->tr }}</span>@endif                                            
                                         @endif</td> 
                                     <td>@if($dataTypeContent->status == 1)0 @else 
                                             @if ($relparnom_b[$loop->index]->g1t == 0)0 @else<span class="label label-primary">{{ $relparnom_b[$loop->index]->g1t }}</span>@endif                                            

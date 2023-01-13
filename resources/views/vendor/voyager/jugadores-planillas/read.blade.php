@@ -15,7 +15,7 @@
     $asientos_jugadores_pagados=0;
     $asientos= App\Asiento::where('planilla_id', $dataTypeContent->id)->with('jugadores', 'clubes', 'categorias')->get();
     $num_jugadores=count($nomina);
-    $equipo_titulo= App\Clube::find($dataTypeContent->clube_id);
+    $equipo_titulo= App\Clube::where('id', $dataTypeContent->clube_id)->with('temporadas')->first();
     $planilla_jugs= App\JugadoresPlanilla::where('id', $dataTypeContent->id)->with('user')->first();
 @endphp
 
@@ -51,30 +51,50 @@
                     </a>
                 @endif
             </div>
+            
              <!-- Parte Izquierda Lienzo , Inputs Totales -->
-             <div class="col-sm-3" id="div_izquierdo_detalles" hidden>
-
-
-               
-                
+             <div class="col-sm-3" id="div_izquierdo_detalles" hidden>                               
                 <table class="table mitable">
                     <thead>
                         <tr class="active">
-                            <th class="text-center" colspan="2">Datos de la Planilla</th>
+                            <th class="text-center" colspan="2">Datos de la Planilla #<span class="label label-primary">{{ $dataTypeContent->id }}</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center" colspan="2"><b>Club: {{$equipo_titulo->name}}</b></td>
+                            <td class="text-center" colspan="2">
+                                <b>{{$equipo_titulo->name}}</b>
+                                <br>
+                                <span class="label label-warning">Equipo</span>
+                            </td>
                         </tr>
                         <tr>
-                            <td>
-                                Gestión:
-                            </td>
-                            <td id="fecha_entrega_td">
-                                {{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('m-Y') }}
+                            <td colspan="2">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class="badge">{{ $equipo_titulo->temporadas ? $equipo_titulo->temporadas->puntos : 0 }}</span>
+                                        Puntos 🏁
+                                    </li>
+                                    <li class="list-group-item">
+                                      <span class="badge">{{ $equipo_titulo->temporadas ? $equipo_titulo->temporadas->ta : 0 }}</span>
+                                      Tarjetas 🟨
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">{{ $equipo_titulo->temporadas ? $equipo_titulo->temporadas->tr : 0 }}</span>
+                                        Tarjetas 🟥
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">{{ $equipo_titulo->temporadas ? $equipo_titulo->temporadas->golesa : 0 }}</span>
+                                        Goles++⚽
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">{{ $equipo_titulo->temporadas ? $equipo_titulo->temporadas->golesc : 0 }}</span>
+                                        Goles-- ⚽
+                                    </li>
+                                </ul>
                             </td>
                         </tr>
+  
                         <tr>
                             <td>
                                 Estado:
@@ -94,28 +114,34 @@
                         </tr>
                         <tr>
                             <td>
+                                Gestión:
+                            </td>
+                            <td id="fecha_entrega_td">
+                                <span class="label label-success">
+                                    {{ \Carbon\Carbon::parse($dataTypeContent->fecha_entrega)->format('m-Y') }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
                                 Categoria:
                             </td>
                             <td>
-                                {{$dataTypeContent->categoria_jugadores}}
+                                <span class="label label-success">
+                                    {{$dataTypeContent->categoria_jugadores}}
+                                </span>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Delegado:</td>
-          
-                            <td>
-                                {{$delegado->name}}
-                            </td>
-                        </tr>
-                     
+
                         <tr>
                             <td>
-                                Observación:
+                                Deudores:
                             </td>
-                            <td>
-                                {{$dataTypeContent->observacion}}
-                            </td>
+                            <td id="input_jugadores_deudores"></td>
                         </tr>
+
+
                         <tr>
                             <td>
                                 Editor:
@@ -125,11 +151,22 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                Deudores:
+                            <td colspan="2" class="text-center">
+                                {{$delegado->name}}
+                                <br>
+                                <span class="label label-primary">Delegado</span>
                             </td>
-                            <td id="input_jugadores_deudores"></td>
                         </tr>
+                     
+                        <tr>
+                            <td colspan="2" class="text-center">
+                                {{ $dataTypeContent->observacion ? $dataTypeContent->observacion : 'null'}}
+                                <br>
+                                <span class="label label-primary">Observaciones</span>
+                            </td>
+                        </tr>
+   
+                
                     </tbody>
 
                 </table>
@@ -192,7 +229,6 @@
             
             <!-- Parte Derecha Lienzo , Asientos -->
             <div class="col-sm-9" id="div_derecho_detalles" hidden>
-                {{-- <h3 class="text-center">Pagos de Jugadores y Equipo</h3> --}}
                 <div class="col-sm-4 form-group">
                     <label for="select_cat_asientos">Tipo Asientos</label>
                     <div class="miselect">    
@@ -252,7 +288,9 @@
                                                     {{$item->jugadores->name}}
                                                 </td>
                                                 <td class='text-center'>
-                                                    {{$item->categorias->title}}
+                                                    <span class="label label-success">
+                                                        {{$item->categorias->title}}
+                                                    </span>
                                                 </td>
                                                 <td class='text-center'>
                                                     {{$item->monto}}
@@ -314,7 +352,10 @@
                                                 {{$item->jugadores->name}}
                                             </td>
                                             <td class='text-center'>
-                                                {{$item->categorias->title}}
+                                                <span class="label label-success">
+                                                    {{$item->categorias->title}}
+                                                </span>
+                                                
                                             </td>
                                             <td class='text-center'>
                                                 {{$item->monto}}
@@ -374,7 +415,9 @@
                                                 {{$item->jugadores->name}}
                                             </td>
                                             <td class='text-center'>
-                                                {{$item->categorias->title}}
+                                                <span class="label label-success">
+                                                    {{$item->categorias->title}}
+                                                </span>
                                             </td>
                                             <td class='text-center'>
                                                 {{$item->monto}}
@@ -664,8 +707,7 @@
                                 @endif                          
                             @endforeach                              
                         </tbody>                   
-                    </table>
-                    
+                    </table>                    
                 </div>
             </div>
 

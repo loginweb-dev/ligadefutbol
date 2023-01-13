@@ -117,7 +117,7 @@ Route::group(['prefix' => 'partidos'], function () {
                     'jugador_id'=> $item->jugador_id,
                     'observacion'=> 'Cobro de Tarjeta Amarilla',
                     'estado'=> 'Pendiente',
-                    'editor_id' => $newpartido->editor,
+                    'editor_id' => $newpartido->editor_id,
                     'planilla_id' => $newpartido->planilla_a_id
                 ]);
                 App\AsientoDetalle::create([

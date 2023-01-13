@@ -26,4 +26,8 @@ class Clube extends Model
     public function jugadores(){
         return $this->hasMany(Jugadore::class);
     }    
+
+    public function temporadas(){
+        return $this->belongsTo(RelTemporadaClube::class, 'club_id');
+    }    
 }

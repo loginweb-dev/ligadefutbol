@@ -7,7 +7,8 @@
     @php
         $sin_perfil='jugadores/jugadordefault.png';
         $jugadore=App\Jugadore::where('id', $dataTypeContent->id)->with('clubes', 'transferencias')->first();
-        $rel_temporada= App\RelTemporadaJugadore::where('jugadore_id', $dataTypeContent->id)->with('temporadas')->get();
+        $rel_temporada= App\RelTemporadaJugadore::where('jugadore_id', $dataTypeContent->id)->with('temporadas', 'clubes')->get();
+        $transferencias= App\Transferencia::where('jugadore_id', $dataTypeContent->id)->with('club_origen', 'club_destino')->get();
     @endphp
     <div class="page-content read container-fluid">
         <div class="row">
@@ -81,32 +82,39 @@
                                             <th class="text-center" colspan="7"><h4>Trayectoria</h4></th>
                                         </tr>
                                         <tr>
-                                            <th>Equipo</th>
-                                            <th>Fecha Fichaje</th>
-                                            <th>Fecha Transferencia</th>
-                                            <th>Precio</th>
-                                            <th>Goles</th>
-                                            <th>Tarjetas Amarillas</th>
-                                            <th>Tarjetas Rojas</th>
+                                            <th class="text-center">Club Origen</th>
+                                            <th class="text-center">Club Destino</th>
+                                            <th class="text-center">Fecha Transferencia</th>
+                                            <th class="text-center">Precio</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Equipo1</td>
-                                            <td>10-01-2020</td>
-                                            <td>10-11-2020</td>
-                                            <td>20</td>
-                                            <td>4</td>
-                                            <td>1</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Equipo2</td>
-                                            <td>10-01-2021</td>
-                                            <td>10-11-2022</td>
-                                            <td>12</td>
-                                            <td>8</td>
-                                            <td>2</td>
-                                        </tr>
+                                        @if ($transferencias!="[]")
+                                            <tr>
+                                                <td  class="text-center success">{{$transferencias[0]->club_origen->name}}</td>
+                                                <td  class="text-center success"><-- Empezó su debut en este equipo</td>
+                                                <td class="text-center success">{{$jugadore->fecha}}</td>
+                                                <td class="text-center success">0</td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td class="text-center success">{{$jugadore->clubes->name}}</td>
+                                                <td  class="text-center success"><-- Empezó su debut en este equipo</td>
+                                                <td class="text-center success">{{$jugadore->fecha}}</td>
+                                                <td class="text-center success">0</td>
+                                            </tr>
+                                        @endif
+                                       
+                                     
+                                        @foreach ($transferencias as $item)
+                                          
+                                            <tr>
+                                                <td>{{$item->club_origen->name}}</td>
+                                                <td>{{$item->club_destino}}</td>
+                                                <td>{{$item->fecha}}</td>
+                                                <td>{{$item->precio}}</td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -126,6 +134,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php
+                                            $planilla= App\JugadoresPlanilla::where('temporada_id', 1)->where('clube_id', 1)->get();
+                                        @endphp
+                                        @foreach ($rel_temporada as $item)
+                                            
+                                        @endforeach
                                         <tr>
                                             <td>Temporada 2021-2022</td>
                                             <td>Las Aguilas FC</td>
@@ -214,7 +228,7 @@
 @stop
 
 @section('javascript')
-    @if ($isModelTranslatable)
+    {{-- @if ($isModelTranslatable)
         <script>
             $(document).ready(function () {
                 $('.side-body').multilingual();
@@ -227,7 +241,7 @@
             var form = $('#delete_form')[0];
 
             if (!deleteFormAction) {
-                // Save form action initial value
+                //Save form action initial value
                 deleteFormAction = form.action;
             }
 
@@ -238,5 +252,16 @@
             $('#delete_modal').modal('show');
         });
 
+    </script> --}}
+    <script>
+        $('document').ready(function () {
+        
+        });
+        async function send_carnet_jugador() {
+            var phone= "{{$dataTypeContent->phone}}"
+            if (phone!="") {
+                
+            }
+        }
     </script>
 @stop

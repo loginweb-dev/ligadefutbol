@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use App\Transferencia;
 
 class Jugadore extends Model
 {
@@ -39,5 +40,10 @@ class Jugadore extends Model
 	{
 		return $this->belongsTo(Clube::class, 'clube_id');
 	}
+    public function transferencias()
+	{
+		return $this->hasMany(Transferencia::class);
+	}
+    
 
 }

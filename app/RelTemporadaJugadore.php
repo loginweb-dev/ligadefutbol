@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
-
+use App\Temporada;
 class RelTemporadaJugadore extends Model
 {
         
@@ -20,4 +20,9 @@ class RelTemporadaJugadore extends Model
         'partidos',
         'puntos'
     ];
+
+    public function temporadas()
+	{
+		return $this->hasMany(Temporada::class);
+	}
 }

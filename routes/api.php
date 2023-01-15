@@ -293,22 +293,23 @@ Route::group(['prefix' => 'jugadores'], function () {
             $ult_planilla->save();
         }
             $temporada= App\Temporada::where('status', 1)->first();
-            $planilla= App\JugadoresPlanilla::create([
-                'clube_id'=> $request->clube_id,
-                'categoria_jugadores'=> $request->categoria_jugadores,
-                'fecha_entrega'=> $request->fecha_entrega,
-                'veedor_id'=> $request->veedor_id,
-                'delegado_id'=> $request->delegado_id,
-                'men_pagadas'=> $request->men_pagadas,
-                'subtotal'=> $request->subtotal,
-                'deuda'=> $request->deuda,
-                'total'=> $request->total,
-                'observacion'=> $request->observacion,
-                'hora_entrega'=>$request->hora_entrega,
-                'activo'=>'Entregado',
-                'user_id'=>$request->user_id,
-                'temporada_id'=>$temporada->id
-            ]);
+            // $planilla= App\JugadoresPlanilla::create([
+            //     'clube_id'=> $request->clube_id,
+            //     'categoria_jugadores'=> $request->categoria_jugadores,
+            //     'fecha_entrega'=> $request->fecha_entrega,
+            //     'veedor_id'=> $request->veedor_id,
+            //     'delegado_id'=> $request->delegado_id,
+            //     'men_pagadas'=> $request->men_pagadas,
+            //     'subtotal'=> $request->subtotal,
+            //     'deuda'=> $request->deuda,
+            //     'total'=> $request->total,
+            //     'observacion'=> $request->observacion,
+            //     'hora_entrega'=>$request->hora_entrega,
+            //     'activo'=>'Entregado',
+            //     'user_id'=>$request->user_id,
+            //     'temporada_id'=>$temporada->id
+            // ]);
+            $planilla= App\JugadoresPlanilla::create($request->all());
             $planilla2= App\JugadoresPlanilla::where('id', $planilla->id)->with('clubes', 'delegado', 'user')->first();
         return $planilla2;
     });
@@ -355,9 +356,9 @@ Route::group(['prefix' => 'features'], function () {
     });
     
     Route::post('descansa', function(Request $request){
-        $misave =  App\RelTemporadaClube::find("club_id", $request->club_id);
+        $misave = App\RelTemporadaClube::where("club_id", $request->club_id)->first();
         $misave->descansos += 1;
-        $misave();
+        $misave->save();
         return true;
     });
 });

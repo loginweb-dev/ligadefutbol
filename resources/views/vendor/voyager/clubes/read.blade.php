@@ -3,6 +3,9 @@
 @php
     $jugadores = App\Jugadore::where('clube_id', $dataTypeContent->id)->with("temporadas")->get();
     $temporada = App\RelTemporadaClube::where('club_id', $dataTypeContent->id)->first();
+    $tem = App\Temporada::where('id', $temporada->temporada_id)->first();
+    $delegados = App\Delegado::where('clube_id', $temporada->id)->get();
+    $user = App\Models\User::find($dataTypeContent->user_id);
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -48,17 +51,38 @@
             <div class="col-sm-4">   
                 <table class="table mitable">
                     <tr class="active">
-                        <td>Nombre: </td>
-                        <td>{{ $dataTypeContent->name }}</td>    
+                        <td colspan="2" class="text-center">{{ $dataTypeContent->name }}</td>    
                     </tr>  
                     <tr>
-                        <td>Presidente: </td>
-                        <td>{{ $dataTypeContent->presidente }}</td>    
+                        <td class="text-center" colspan="2">
+                            {{ $user->name }}
+                            <br>
+                            <span class="label label-primary">Usuario</span>
+                        </td>    
                     </tr>   
                     <tr>
-                        <td>Whatsapp: </td>
-                        <td>{{ $dataTypeContent->wpp }}</td>    
+                        <td class="text-center" colspan="2">
+                            {{ $dataTypeContent->presidente }}
+                            <br>
+                            <span class="label label-primary">Presidente</span>
+                        </td>    
+                    </tr>   
+                    <tr>
+                        <td class="text-center" colspan="2">
+                            {{ $tem->title }}
+                            <br>
+                            <span class="label label-primary">temporada</span>
+                        </td>    
+                     
+                    </tr>  
+                    <tr>
+                        <td class="text-center" colspan="2">
+                            +591 {{ $dataTypeContent->wpp }}
+                            <br>
+                            <span class="label label-primary">Whatsapp</span>
+                        </td>                          
                     </tr> 
+
                     <tr>
                         <td>Total Puntos: </td>
                         <td><span class="label label-primary">{{ $temporada->puntos }}</span></td>    
@@ -88,6 +112,16 @@
                         <td>Goles ⚽--: </td>
                         <td><span class="label label-primary">{{ $temporada->golesc }}</span></td>    
                     </tr> 
+                    <tr>
+                        <td class="text-center" colspan="2">
+                            <ul class="list-group">
+                                @foreach ($delegados as $item)
+                                    <li class="list-group-item">{{ $loop->index+1 }}.- {{ $item->name }}</li>
+                                @endforeach                               
+                            </ul>
+                            <span class="label label-primary">Delegados</span>
+                        </td>    
+                    </tr>
                 </table>       
             </div>
         </div>

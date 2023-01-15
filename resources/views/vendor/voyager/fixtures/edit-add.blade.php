@@ -327,11 +327,12 @@
                     cancelButtonText: 'NO'
                     }).then(async (result) => {
                     if (result.isConfirmed) {      
-                        toastr.info("Enviando datos...")    
+                        toastr.info("Enviando datos...")  
+                        var midesc = $("#descansa_id :selected").val()
                         var midata = {
                             title: $("#title").val(),
                             user_id: "{{ Auth::user()->id }}",
-                            descansa_id: $("#descansa_id :selected").val(),
+                            descansa_id: midesc,
                             temporada_id: $("#temporada_id :selected").val()
                         } 
                         var newf = await axios.post("/api/features/save", midata)
@@ -342,8 +343,8 @@
                             newecn["editor_id"] = "{{ Auth::user()->id }}"
                             var newf = await axios.post("/api/partidos/save/", newecn)
                         }
-                        await axios.post("/api/features/descansa", { club_id: $("#descansa_id :selected").val() })
-                        location.reload()
+                        await axios.post("/api/features/descansa", { club_id: midesc })
+                        location.href = "/admin/fixtures/"+newf.data.id
                     }
                 }) 
             }

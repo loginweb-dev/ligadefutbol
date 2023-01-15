@@ -190,6 +190,7 @@ return [
         'css/custom.css',
         'css/flat.css',
         'https://use.fontawesome.com/releases/v5.8.1/css/all.css',
+        'https://cdn.jsdelivr.net/npm/jquery.steps@1.1.2/dist/jquery-steps.min.css',
     ],
 
     'additional_js' => [
@@ -197,6 +198,7 @@ return [
         'https://cdn.jsdelivr.net/npm/sweetalert2@11',
         'https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js',
         'js/bstable.js',
+        'https://cdn.jsdelivr.net/npm/jquery.steps@1.1.2/dist/jquery-steps.min.js',
         // asset('js/app.js')
     ],
 

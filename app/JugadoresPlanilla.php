@@ -28,7 +28,8 @@ class JugadoresPlanilla extends Model
 		'men_pagadas',
 		'cant_jugs_deudores',
 		'user_id',
-		'temporada_id'
+		'temporada_id',
+		'gestion'
     ];
     
     protected $appends=['published', 'fecha'];

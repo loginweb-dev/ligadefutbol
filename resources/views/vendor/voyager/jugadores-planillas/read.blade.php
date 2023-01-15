@@ -899,11 +899,11 @@
     </div>
 
     <!-- Modal Aprobar Rechazar-->
-    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_acciones_planilla">
-        <div class="modal-dialog modal-md">
+    <div class="modal fade modal-primary" id="modal_acciones_planilla">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tomar Acción Sobre Planilla</h5>
+                    Tomar Acción Sobre Planilla
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>

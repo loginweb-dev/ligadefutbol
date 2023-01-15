@@ -102,7 +102,7 @@
                     
                 <div class="form-group">
                     <label for="fecha">Gestión</label>
-                    <input type="month" name="fecha_mensual" id="fecha_mensual" class="form-control" value="{{$date}}">
+                    <input type="month" name="gestion" id="gestion" class="form-control" value="{{ $date }}">
                 </div>
 
                 <label>Delegado</label>                  
@@ -155,7 +155,7 @@
                 </div>     
                 <div class="form-group">
                    
-                    <button class="btn btn-primary btn-block" onclick="validacion_cantidad_jugs()">Guardar Formulario</button>
+                    <button id="miboton1" class="btn btn-primary btn-block" onclick="validacion_cantidad_jugs()">Guardar Formulario</button>
                 </div>   
 
             </div>
@@ -208,11 +208,11 @@
     </div>
 
     <!-- Modal Transferencia-->
-    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_transferencia">
+    <div class="modal fade modal-primary"id="modal_transferencia">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Transferencias</h5>
+                    Transferencias
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -259,11 +259,11 @@
     </div>
 
     <!-- Modal Crear Delegado-->
-    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_delegado">
-        <div class="modal-dialog modal-md">
+    <div class="modal fade modal-primary" id="modal_delegado">
+        <div class="modal-dialog ">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Crear Delegado</h5>
+                    Crear delegado
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -288,36 +288,27 @@
     </div>
 
     <!-- Modal Crear Jugador-->
-    <div class="modal fade bd-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_jugador">
-        <div class="modal-dialog modal-md">
+    <div class="modal fade modal-primary" id="modal_jugador">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Crear Jugador</h5>
+                    Crear Jugador
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container ">
+                    <div class="container">
                         <div class="col-sm-6">
-                            <label for="nombre_jugador_create">Nombre</label>
-                                                           
-                                <input class="form-control" id="nombre_jugador_create" name="nombre_jugador_create" type="text">
-                         
+                            <label for="nombre_jugador_create">Nombre</label>                                                           
+                                <input class="form-control" id="nombre_jugador_create" name="nombre_jugador_create" type="text">                         
                         </div>
-
                         <div class="col-sm-6">
                             <label for="polera_jugador_create"># Polera</label>
                                                            
                                 <input class="form-control" id="polera_jugador_create" name="polera_jugador_create" min="1" type="number">
                           
                         </div>
-                        {{-- <div class="col-sm-6">
-                            <label for="edad_jugador_create">Edad</label>
-                                                           
-                                <input class="form-control" id="edad_jugador_create" name="edad_jugador_create" type="number">
-                            
-                        </div> --}}
                         <div class="col-sm-6">
                             <label for="nacido_jugador_create">Fecha Nac.</label>
                             <input class="form-control" id="nacido_jugador_create" name="nacido_jugador_create" type="date">
@@ -334,6 +325,43 @@
             </div>
         </div>
     </div>
+
+        <!-- Modal Crear Jugador-->
+        <div class="modal fade modal-primary" id="modal_jugador_view">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Datos del Jugador
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <img src="/storage/jugadores/jugadordefault.png" alt="" class="img-responsive">
+                            </div>
+                            <div class="col-sm-6">
+                                <table class="table mitable">
+                                    <tr>
+                                        <td>Jugador:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Edad:</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
 @stop
 
 @section('javascript')
@@ -350,7 +378,9 @@
                 cancelButtonText: 'NO'
                 }).then((result) => {
                 if (result.isConfirmed) {
-                    $('.mireload').attr("hidden", false)
+
+                    // $('.mireload').attr("hidden", false)
+                    $("#miboton1").hide()
                     guardar_planilla()
                 }
             })
@@ -358,7 +388,7 @@
         async function guardar_planilla(){
             var clube_id= $("#select_club").val()
             var categoria_jugadores= $("#select_cat").val()
-            var fecha_entrega=$("#fecha_mensual").val()+"-01"
+            // var fecha_entrega=$("#fecha_mensual").val()+"-01"
             var delegado_id=$("#select_delegado").val()
             var deuda=$("#input_deudas").val()
             var total=$("#input_total").val()
@@ -367,25 +397,29 @@
             var detalles={
                 clube_id: clube_id,
                 categoria_jugadores:categoria_jugadores,
-                fecha_entrega:fecha_entrega,
+                // fecha_entrega: fecha_entrega,
                 delegado_id:delegado_id,
                 deuda:deuda,
                 total:total,
                 observacion:observacion,
                 subtotal:subtotal,
                 men_pagadas: total,
-                user_id: parseInt("{{Auth::user()->id}}")
+                user_id: parseInt("{{ Auth::user()->id }}"),
+                gestion: $("#gestion").val(),
+                activo: "Entregado"
             }
+            console.log(detalles)
             var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
             var phone_club=planilla.data.clubes.wpp
             var phone_delegado=planilla.data.delegado.phone
-            if (await validacion_wpp(phone_club)) {
-                phone_club=phone_club.toString()
-            }
-            if (await validacion_wpp(phone_delegado)) {
-                phone_delegado= phone_delegado.toString()
-            }           
+            // if (await validacion_wpp(phone_club)) {
+            //     phone_club=phone_club.toString()
+            // }
+            // if (await validacion_wpp(phone_delegado)) {
+            //     phone_delegado= phone_delegado.toString()
+            // }           
             await generar_nomina(planilla.data.id, phone_club, phone_delegado, planilla.data.fecha)
+            location.href = "/admin/jugadores-planillas/"+planilla.data.id
         }
 
         // guardar transferencia-----------------------------------------------------------------
@@ -783,7 +817,6 @@
             location.href="/admin/jugadores-planillas"
         }
 
-
         // VALIDACION DE WHATSAPP -------------------------------------------------------------
         async function validacion_wpp(phone){
             var wpp=parseInt(phone)
@@ -804,6 +837,7 @@
             }   
             toastr.success("Planilla a Completa Registrada")
         }
+
         async function add_fila(){
             var jugador_id=0
                 jugador_id= $("#select_jugador").val()
@@ -844,7 +878,7 @@
             }
             else{
                 var cont=count_jugs()+1
-                    $('#table2').append("<tr><td><input class='tab_jugs_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden><input class='tab_jugs_phone' type='number' value="+jugador.data.phone+" hidden>"+cont+"</td><td class='tab_jugs'><input id='check_"+jugador.data.id+"' type='checkbox'></td><td><span class='label label-warning'>"+jugador.data.polera+"</span></td><td> "+jugador.data.name+"</td><td class='mensualidad_table_tit'>"+parseInt("{{setting('finanzas.mensualidad_jug')}}")+"</td></tr>");
+                    $('#table2').append("<tr><td><input class='tab_jugs_id' type='number' value="+jugador.data.id+" hidden><input class='tab_club_jugs' type='number' value="+jugador.data.clube_id+" hidden><input class='tab_jugs_phone' type='number' value="+jugador.data.phone+" hidden>"+cont+"</td><td class='tab_jugs'><input id='check_"+jugador.data.id+"' type='checkbox'></td><td><span class='label label-warning'>"+jugador.data.polera+"</span></td><td><a href='#' data-toggle='modal' data-target='#modal_jugador_view'>"+jugador.data.name+"</a></td><td class='mensualidad_table_tit'>"+parseInt("{{setting('finanzas.mensualidad_jug')}}")+"</td></tr>");
 
                     example2.init();
                 total_mensualidades()
@@ -881,6 +915,7 @@
                 clube_id=$("#select_club").val()
             return clube_id;
         }
+
         async function transferir_jugador() {
             var midata={
                 'jugadore_id':$("#jugador_transferencia").val(),

@@ -13,99 +13,32 @@
 
 @section('content')
     <div class="container-fluid">
+        <br>
         <div class="row">
-            <div class="col-sm-12 form-group">
-                    <hr>
-                    <form role="form"
-                            class="form-edit-add"
-                            action="{{ $edit ? route('voyager.'.$dataType->slug.'.update', $dataTypeContent->getKey()) : route('voyager.'.$dataType->slug.'.store') }}"
-                            method="POST" enctype="multipart/form-data">
-                        <!-- PUT Method if we are editing -->
-                        @if($edit)
-                            {{ method_field("PUT") }}
-                        @endif
-
-                        <!-- CSRF TOKEN -->
-                        {{ csrf_field() }}
-
-                
-
-                            @if (count($errors) > 0)
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-
-                            <!-- Adding / Editing -->
-                            @php
-                                $dataTypeRows = $dataType->{($edit ? 'editRows' : 'addRows' )};
-                            @endphp
-
-                            @foreach($dataTypeRows as $row)
-                                <!-- GET THE DISPLAY OPTIONS -->
-                                @php
-                                    $display_options = $row->details->display ?? NULL;
-                                    if ($dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')}) {
-                                        $dataTypeContent->{$row->field} = $dataTypeContent->{$row->field.'_'.($edit ? 'edit' : 'add')};
-                                    }
-                                @endphp
-                                @if (isset($row->details->legend) && isset($row->details->legend->text))
-                                    <legend class="text-{{ $row->details->legend->align ?? 'center' }}" style="background-color: {{ $row->details->legend->bgcolor ?? '#f0f0f0' }};padding: 5px;">{{ $row->details->legend->text }}</legend>
-                                @endif
-
-                                <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
-                                    {{ $row->slugify }}
-                                    <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
-                                    @include('voyager::multilingual.input-hidden-bread-edit-add')
-                                    @if ($add && isset($row->details->view_add))
-                                        @include($row->details->view_add, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'view' => 'add', 'options' => $row->details])
-                                    @elseif ($edit && isset($row->details->view_edit))
-                                        @include($row->details->view_edit, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'view' => 'edit', 'options' => $row->details])
-                                    @elseif (isset($row->details->view))
-                                        @include($row->details->view, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'action' => ($edit ? 'edit' : 'add'), 'view' => ($edit ? 'edit' : 'add'), 'options' => $row->details])
-                                    @elseif ($row->type == 'relationship')
-                                        <div class="miselect">
-                                            @include('voyager::formfields.relationship', ['options' => $row->details])
-                                        </div>                                      
-                                    @else
-                                        <div class="miselect">
-                                            {!! app('voyager')->formField($row, $dataType, $dataTypeContent) !!}
-                                        </div>  
-                                    @endif
-
-                                    @foreach (app('voyager')->afterFormFields($row, $dataType, $dataTypeContent) as $after)
-                                        {!! $after->handle($row, $dataType, $dataTypeContent) !!}
-                                    @endforeach
-                                    @if ($errors->has($row->field))
-                                        @foreach ($errors->get($row->field) as $error)
-                                            <span class="help-block">{{ $error }}</span>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            @endforeach
-
-                    
-
-                            <div class="col-sm-6">
-                                <br>
-                                @section('submit-buttons')
-                                    <button type="submit" class="btn btn-primary btn-block save">{{ __('voyager::generic.save') }}</button>
-                                @stop
-                                @yield('submit-buttons')
-                            </div>
-                
-                    
-                    </form>
-
-                    <div style="display:none">
-                        <input type="hidden" id="upload_url" value="{{ route('voyager.upload') }}">
-                        <input type="hidden" id="upload_type_slug" value="{{ $dataType->slug }}">
+            <div class="col-sm-12">
+                <div class="step-app" id="demo">
+                    <ul class="step-steps">
+                      <li data-step-target="step1">Paso 1</li>
+                      <li data-step-target="step2">Paso 2</li>
+                      <li data-step-target="step3">Paso 3</li>
+                    </ul>
+                    <div class="step-content">
+                      <div class="step-tab-panel text-center" data-step="step1">
+                        <h2>Datos del Equipo</h2>
+                      </div>
+                      <div class="step-tab-panel text-center" data-step="step2">
+                        <h2>Usuarios y Delegados</h2>
+                      </div>
+                      <div class="step-tab-panel text-center" data-step="step3">
+                        <h2>Jugadores</h2>
+                      </div>
                     </div>
-
+                    <div class="step-footer">
+                      <button data-step-action="prev" class="step-btn btn btn-dark">Anterior</button>
+                      <button data-step-action="next" class="step-btn btn btn-dark">Siguiente</button>
+                      <button data-step-action="finish" class="step-btn btn btn-dark">Final</button>
+                    </div>
+                  </div>
             </div>
         </div>
     </div>
@@ -205,6 +138,13 @@
                 $('#confirm_delete_modal').modal('hide');
             });
             $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        $('#demo').steps({
+            onFinish: function () { 
+                toastr.info("Enviando datos..")
+                // alert('complete'); 
+            }
         });
     </script>
 @stop

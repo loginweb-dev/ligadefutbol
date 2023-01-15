@@ -29,7 +29,7 @@ class Jugadore extends Model
 		return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']) )->diffForHumans();
 	}
 	public function getFechaAttribute(){
-		return date('d-m-Y H:m', strtotime($this->attributes['created_at']));
+		return date('d-m-Y', strtotime($this->attributes['created_at']));
 	}
     public function getNacimientoAttribute(){
 		return date('d-m-Y', strtotime($this->attributes['nacido']));

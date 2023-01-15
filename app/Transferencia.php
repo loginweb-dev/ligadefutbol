@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Clube;
 use App\Jugadore;
+use Carbon\Carbon;
 
 class Transferencia extends Model
 {
@@ -15,6 +16,14 @@ class Transferencia extends Model
     'observacion',
     'precio'
     ];
+
+    protected $appends=['published', 'fecha'];
+	public function getPublishedAttribute(){
+		return Carbon::createFromTimeStamp(strtotime($this->attributes['created_at']) )->diffForHumans();
+	}
+	public function getFechaAttribute(){
+		return date('d/m/Y', strtotime($this->attributes['created_at']));
+	}
 
     public function club_origen()
 	{

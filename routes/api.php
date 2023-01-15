@@ -292,6 +292,7 @@ Route::group(['prefix' => 'jugadores'], function () {
             $ult_planilla->activo='Inactivo';
             $ult_planilla->save();
         }
+            $temporada= App\Temporada::where('status', 1)->first();
             $planilla= App\JugadoresPlanilla::create([
                 'clube_id'=> $request->clube_id,
                 'categoria_jugadores'=> $request->categoria_jugadores,
@@ -305,7 +306,8 @@ Route::group(['prefix' => 'jugadores'], function () {
                 'observacion'=> $request->observacion,
                 'hora_entrega'=>$request->hora_entrega,
                 'activo'=>'Entregado',
-                'user_id'=>$request->user_id
+                'user_id'=>$request->user_id,
+                'temporada_id'=>$temporada->id
             ]);
             $planilla2= App\JugadoresPlanilla::where('id', $planilla->id)->with('clubes', 'delegado', 'user')->first();
         return $planilla2;

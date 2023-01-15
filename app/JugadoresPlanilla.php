@@ -27,7 +27,8 @@ class JugadoresPlanilla extends Model
 		'subtotal',
 		'men_pagadas',
 		'cant_jugs_deudores',
-		'user_id'
+		'user_id',
+		'temporada_id'
     ];
     
     protected $appends=['published', 'fecha'];
@@ -43,7 +44,7 @@ class JugadoresPlanilla extends Model
 	}	
     public function jugadores()
 	{
-		return $this->hasMany(RelPlanillaJugadore::class);
+		return $this->belongsTo(RelPlanillaJugadore::class, 'id');
 	}
 	public function delegado()
 	{

@@ -12,13 +12,12 @@ class RelTemporadaJugadore extends Model
     use SoftDeletes;
     protected $fillable = [
         'temporada_id',
-        'club_id',
+        'clube_id',
+        'jugadore_id',
         'ta',
         'tr',
-        'golesa',
-        'golesc',
-        'partidos',
-        'puntos'
+        'goles',
+        'partidos'
     ];
 
     public function temporadas()

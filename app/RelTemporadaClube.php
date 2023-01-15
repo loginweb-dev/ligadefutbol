@@ -15,6 +15,10 @@ class RelTemporadaClube extends Model
         'club_id',
         'ta',
         'tr',
-        'goles'
+        'golesa',
+        'partidos',
+        'puntos',
+        'golesc',
+        'descansos'
     ];
 }

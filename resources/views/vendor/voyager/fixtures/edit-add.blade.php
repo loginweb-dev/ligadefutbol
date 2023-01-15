@@ -190,6 +190,12 @@
         }
 
         $('document').ready(function () {
+            var today = new Date().toISOString().split('T')[0];
+            var now = new Date(Date.now());
+            var mitime = now.getHours() + ":" + now.getMinutes();
+            $('#mifecha').val(today);
+            $('#mihora').val(mitime);
+            
             $('.toggleswitch').bootstrapToggle();
 
             //Init datepicker for date fields if data-datepicker attribute defined
@@ -239,6 +245,7 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
 
+        // Agregar encuentro------------------------------------------------------
         var count = 1 
         var encuentros = []
         function add() {          
@@ -335,7 +342,8 @@
                             newecn["editor_id"] = "{{ Auth::user()->id }}"
                             var newf = await axios.post("/api/partidos/save/", newecn)
                         }
-                        location.href = "/admin/fixtures"
+                        await axios.post("/api/features/descansa", { club_id: $("#descansa_id :selected").val() })
+                        location.reload()
                     }
                 }) 
             }
@@ -351,10 +359,5 @@
             })
         }
         
-        var today = new Date().toISOString().split('T')[0];
-        var now = new Date(Date.now());
-        var mitime = now.getHours() + ":" + now.getMinutes();
-        $('#mifecha').val(today);
-        $('#mihora').val(mitime);
     </script>
 @stop

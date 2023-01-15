@@ -31,14 +31,23 @@ Route::get('/reset-db', function () {
     App\Clube::where('id', '>', 0)->update([
         'status' => 1
     ]);
-    App\RelTemporadaClube::truncate();
+    App\RelTemporadaClube::where('id', '>', 0)->update([
+        'partidos' => 0,
+        'puntos' => 0,
+        'golesa' => 0,
+        'golesc' => 0,
+        'ta' => 0,
+        'tr' => 0,
+        'descansos' => 0,
+        'temporada_id' => 1
+    ]);
     
     App\Jugadore::where('id', '>', 0)->update([
         'status' => 1
     ]);
     App\RelTemporadaJugadore::truncate();
 
-    return "Bade de datos reseteda correctamente..";
+    return redirect("/admin");
 });
 
 Route::group(['prefix' => 'admin'], function () {

@@ -23,7 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // rutas PARTIDOS -----------------------------------------------------------------------
 Route::group(['prefix' => 'partidos'], function () {
-
     Route::post('save', function(Request $request){
         $misave =  App\Partido::create($request->all());
 
@@ -71,7 +70,7 @@ Route::group(['prefix' => 'partidos'], function () {
     });
 
     Route::post('/update', function (Request $request) {
-        $newpartido = App\Partido::find($request->miid);
+        $newpartido = App\Partido::where("id", $request->miid)->with("RelPartidoEvento")->first();
         $newpartido->hora_comienzo_pt = $request->hora_comienzo_pt;
         $newpartido->hora_comienzo_st = $request->hora_comienzo_st;
         $newpartido->juez_1 = $request->juez_1;
@@ -81,14 +80,6 @@ Route::group(['prefix' => 'partidos'], function () {
         $newpartido->status = 2;
         $newpartido->description = $request->description;        
         $newpartido->save();
-        
-        $club_a = App\Clube::find($newpartido->planilla_a_id);
-        $club_a->status = 2;
-        $club_a->save();
-        $club_b = App\Clube::find($newpartido->planilla_b_id);
-        $club_b->status = 2;
-        $club_b->save();
-
         $newpartido = App\Partido::find($request->miid);
         return $newpartido;
     });
@@ -98,18 +89,26 @@ Route::group(['prefix' => 'partidos'], function () {
         return $new;
     });
 
-    Route::post('/update/clube', function (Request $request) {
+    Route::post('/eventos/save', function (Request $request) {
+        $new = App\RelPartidoEvento::create($request->all());
+        return $new;
+    });
 
+    Route::post('/update/puntos', function (Request $request) {
         $newpartido = App\Partido::find($request->partido_id);
         $loop_a = App\RelPartidoNomina::where("partido_id", $request->partido_id)->where("nomina_id", $newpartido->planilla_a_id)->get();
         $gol_a = 0;
         $ta_a = 0;
         $tr_a = 0;
+        
+        // recorrer equipo A
         foreach ($loop_a as $item) {
-            $gol_a += ($item->g1t + $item->g2t);
-
+            $jugador = App\TemporadaJugadore::where("jugadore_id", $item->jugador_id)-first();
+            
+            //tarjetas amarillas
             if ($item->ta > 0) {
                 $ta_a += $item->ta;
+                $jugador->ta +=  $item->ta;
                 $asiento = App\Asiento::create([
                     'tipo'=> 'Ingreso',
                     'cat_asiento_id'=> 3,
@@ -125,13 +124,12 @@ Route::group(['prefix' => 'partidos'], function () {
                     'monto_pagado'=> 0,
                     'user_id'=> $newpartido->editor
                 ]);
-                $jugador = App\Jugadore::find($item->jugador_id);
-                $jugador->ta +=  $jugador->ta;
-                $jugador->save();
             }
 
+            //tarjetas rojas
             if ($item->tr > 0) {
                 $tr_a += $item->tr;
+                $jugador->tr +=  $item->tr;
                 $asiento = App\Asiento::create([
                     'tipo'=> 'Ingreso',
                     'cat_asiento_id'=> 4,
@@ -147,20 +145,30 @@ Route::group(['prefix' => 'partidos'], function () {
                     'monto_pagado'=> 0,
                     'user_id'=> $newpartido->editor
                 ]);
-                $jugador = App\Jugadore::find($item->jugador_id);
-                $jugador->tr +=  $jugador->tr;
-                $jugador->save();
             }
+
+            //Goles
+            if ($item->g1t > 0 || $item->g2t > 0) {
+                $gol_a += ($item->g1t + $item->g2t);                
+                $jugador->goles += ($item->g1t + $item->g2t);
+                $jugador->partidos += 1;
+            }
+
+            //save temporada jugador
+            $jugador->save();
         }
 
+        // recorrer equipo A
         $loop_b = App\RelPartidoNomina::where("partido_id", $request->partido_id)->where("nomina_id", $newpartido->planilla_b_id)->get();
         $gol_b = 0;
         $ta_b = 0;
         $tr_b = 0;
         foreach ($loop_b as $item) {
-            $gol_b += ($item->g1t + $item->g2t);
+            $jugador = App\TemporadaJugadore::where("jugadore_id", $item->jugador_id)-first();
+            //tarjetas amarillas
             if ($item->ta > 0) {
                 $ta_b += $item->ta;
+                $jugador->ta +=  $item->ta;
                 $asiento = App\Asiento::create([
                     'tipo'=> 'Ingreso',
                     'cat_asiento_id'=> 3,
@@ -176,13 +184,12 @@ Route::group(['prefix' => 'partidos'], function () {
                     'monto_pagado'=> 0,
                     'user_id'=> $newpartido->editor
                 ]);
-                $jugador = App\Jugadore::find($item->jugador_id);
-                $jugador->ta +=  $jugador->ta;
-                $jugador->save();
             }
            
+             //tarjetas rojas
             if ($item->tr > 0) {
                 $tr_b += $item->tr;
+                $jugador->tr +=  $item->tr;
                 $asiento = App\Asiento::create([
                     'tipo'=> 'Ingreso',
                     'cat_asiento_id'=> 4,
@@ -198,37 +205,55 @@ Route::group(['prefix' => 'partidos'], function () {
                     'monto_pagado'=> 0,
                     'user_id'=> $newpartido->editor
                 ]);
-                $jugador = App\Jugadore::find($item->jugador_id);
-                $jugador->tr +=  $jugador->tr;
-                $jugador->save();
             }
             
+            //Goles
+            if ($item->g1t > 0 || $item->g2t > 0) {
+                $gol_b += ($item->g1t + $item->g2t);                
+                $jugador->goles += ($item->g1t + $item->g2t);
+                $jugador->partidos += 1;
+            }
 
+            //save temporada jugador
+            $jugador->save();
         }
         
+        //actualizar puntos de los equipos A y B por temoporadas
         $nomina_a = App\JugadoresPlanilla::find($newpartido->planilla_a_id);
         $nomina_b = App\JugadoresPlanilla::find($newpartido->planilla_b_id);
-        $club_a = App\Clube::find($nomina_a->clube_id);
-        $club_b = App\Clube::find($nomina_b->clube_id);
-        // return $club_b;
+        $club_a = App\RelTemporadaClube::where("club_id", $nomina_a->clube_id)->where("temporada_id", $nomina_a->temporada_id)->first();
+        $club_b = App\RelTemporadaClube::find("club_id", $nomina_b->clube_id)->where("temporada_id", $nomina_a->temporada_id)->first();
         if ($gol_a > $gol_b) {
             $newpartido->ganador = $gol_a;
             $newpartido->perdedor = $gol_b;            
-            $club_a->puntos = $club_a->puntos + setting('partidos.ganador');
-            $club_b->puntos = $club_b->puntos + setting('partidos.perdedor');
+            $club_a->puntos += setting('partidos.ganador');            
+            $club_a->golesa += $gol_a;            
+            $club_a->golesc += $gol_b; 
+            $club_b->puntos += setting('partidos.perdedor');
+           
         } else  if ($gol_a < $gol_b) {
             $newpartido->ganador = $gol_b;
             $newpartido->perdedor = $gol_a;
-            $club_a->puntos = $club_a->puntos + setting('partidos.perdedor');
-            $club_b->puntos = $club_b->puntos + setting('partidos.ganador');
+            $club_a->puntos += setting('partidos.perdedor');
+            $club_b->puntos += setting('partidos.ganador');
+            $club_b->golesa += $gol_b;            
+            $club_b->golesc += $gol_a; 
         }else{
-            $newpartido->ganador = $gol_a;
-            $newpartido->perdedor = $gol_b;
+            $newpartido->ganador = null;
+            $newpartido->perdedor = null;
             $newpartido->status = 4;
-            $club_a->puntos = $club_a->puntos + setting('partidos.empate');
-            $club_b->puntos = $club_b->puntos + setting('partidos.empate');
+            $club_a->puntos += setting('partidos.empate');
+            $club_b->puntos += setting('partidos.empate');
+            $club_a->golesa += $gol_a;            
+            $club_a->golesc += $gol_b; 
+            $club_b->golesa += $gol_b;            
+            $club_b->golesc += $gol_a; 
         }
 
+        //actualizar cant partidos
+        $club_a->partidos += 1; 
+        $club_b->partidos += 1; 
+              
         //actualizar TARJERAS
         $club_a->ta += $ta_a;
         $club_a->tr += $tr_a;
@@ -243,15 +268,13 @@ Route::group(['prefix' => 'partidos'], function () {
     });
 
     Route::post('/save/asientos', function (Request $request) {
-        // $partido = App\Partido::find($request->partido_id);
         $newasi = App\Asiento::create($request-all());
         return $newasi;
     });
-
 });
 
+// rutas juGADORES -----------------------------------------------------------------------
 Route::group(['prefix' => 'jugadores'], function () {
-
     Route::get('planilla/find/jugadores/{clube_id}', function ($clube_id) {
         $jugadores= App\Jugadore::where('clube_id', $clube_id)->get();
         return $jugadores;
@@ -263,7 +286,6 @@ Route::group(['prefix' => 'jugadores'], function () {
     });
 
     Route::post('planilla/save', function (Request $request) {
-        // $ult_planilla= App\JugadoresPlanilla::where('clube_id', $request->clube_id)->where('categoria_jugadores', $request->categoria_jugadores)->where('activo', 1)->first();
         $ult_planilla= App\JugadoresPlanilla::where('clube_id', $request->clube_id)->where('activo', 'Aprobado')->first();
 
         if ($ult_planilla) {
@@ -290,9 +312,7 @@ Route::group(['prefix' => 'jugadores'], function () {
     });
 
     Route::post('rel/planilla/save', function (Request $request) {
-
         $tits= json_decode($request->titulares);
-
         foreach ($tits as $item) {
             $rel_planilla= App\RelPlanillaJugadore::create([
                 'planilla_id'=>1,
@@ -323,9 +343,23 @@ Route::group(['prefix' => 'jugadores'], function () {
         ]);
         return $rel_planilla;
     });
-
-
 });
+
+// rutas fixtures -------------------------------------------------------
+Route::group(['prefix' => 'features'], function () {
+    Route::post('save', function(Request $request){
+        $misave =  App\Fixture::create($request->all());
+        return $misave;
+    });
+    
+    Route::post('descansa', function(Request $request){
+        $misave =  App\RelTemporadaClube::find("club_id", $request->club_id);
+        $misave->descansos += 1;
+        $misave();
+        return true;
+    });
+});
+
 
 
 Route::post('asiento/save', function(Request $request){
@@ -529,16 +563,6 @@ Route::post('update/cant/jugs/deudores', function(Request $request){
     $planilla->save();
     return true;
 });
-
-// mi code -------------------------------------------------------
-Route::group(['prefix' => 'features'], function () {
-    Route::post('save', function(Request $request){
-        $misave =  App\Fixture::create($request->all());
-        return $misave;
-    });
-});
-
-
 
 
 //Delete Dependencias de Planilla por ser Rechazada

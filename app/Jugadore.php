@@ -34,8 +34,6 @@ class Jugadore extends Model
     public function getNacimientoAttribute(){
 		return date('d-m-Y', strtotime($this->attributes['nacido']));
 	}
-
-
     public function clubes()
 	{
 		return $this->belongsTo(Clube::class, 'clube_id');
@@ -44,6 +42,9 @@ class Jugadore extends Model
 	{
 		return $this->hasMany(Transferencia::class);
 	}
-    
+    public function temporadas()
+	{
+		return $this->belongsTo(RelTemporadaJugadore::class, "jugadore_id");
+	}
 
 }

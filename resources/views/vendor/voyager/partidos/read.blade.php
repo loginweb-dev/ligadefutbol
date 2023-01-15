@@ -24,7 +24,6 @@
         <br>
         <div class="row">
             <div class="col-sm-3">
-            
                 <table class="table mitable">
                     <thead>
                         <tr class="active">
@@ -48,10 +47,8 @@
                                     @case(4)
                                         <span class="badge badge-warning">Empate</span>
                                         @break
-                                    @default         
-                                                                   
-                                @endswitch                                                                 
-                                                              
+                                    @default            
+                                @endswitch                                                              
                             </td>
                         </tr>
                         <tr>
@@ -78,8 +75,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-
                 @if($dataTypeContent->status == 1)                  
                     <table class="table">
                         <thead>
@@ -124,7 +119,6 @@
                                     </div>
                                 </td>
                             </tr>
-
                             <tr>
                                 <td class="text-center">
                                     <label for="">Cuarto juez del Partido</label>
@@ -137,7 +131,6 @@
                                     </div>
                                 </td>
                             </tr>
-
                             <tr>
                                 <td class="text-center">
                                     <label for="">Inicio 1er Tiempo</label>   
@@ -147,48 +140,17 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="text-center">
-                               
-                                        <a href="#" onclick="misave()" class="btn btn-sm btn-dark btn-block">Enviar y Guardar</a>
-                                   
-                                            
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                   
-                                        @if($isSoftDeleted)
-                                            <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-sm btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
-                                                <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
-                                            </a>
-                                        @else
-                                            <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger btn-sm btn-block delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
-                                            {{ __('voyager::generic.delete') }}
-                                            </a>
-                                        @endif
-                                        <div hidden>
-                                            <input type="text" id="miid" class="form-control" value="{{ $dataTypeContent->id }}" hidden />
-                                        </div>
-                                   
+                                <td class="text-center">    
+                                    <div hidden>
+                                        <input type="text" id="miid" class="form-control" value="{{ $dataTypeContent->id }}" hidden />
+                                    </div>                           
+                                    <a href="#" onclick="misave()" class="btn btn-sm btn-dark btn-block">Enviar y Guardar</a>                                                                               
                                 </td>
                             </tr>
                         </tbody>
                     </table>                                                    
-
-
-
-
-
-     
-
-
-
-
-           
                 @else  
-
-                    @php
-                                        
+                    @php             
                         $arb1 =  App\Arbitro::find($dataTypeContent->juez_1);
                         $arb2 =  App\Arbitro::find($dataTypeContent->juez_2);
                         $arb3 =  App\Arbitro::find($dataTypeContent->juez_3);
@@ -207,11 +169,9 @@
                             <tr>
                                 <td colspan="2" class="text-center"><span class="label label-success">{{ $ea->name }} - {{ $dataTypeContent->perdedor }} </span></td>
                             </tr>
-                            <tr>
-      
+                            <tr>    
                                 <td colspan="2" class="text-center"><span class="label label-info">{{ $dataTypeContent->description }} </span></td>
-                            </tr>
-                            
+                            </tr>                            
                             <tr>
                                 <td>Arbitro del Partido</td>
                                 <td>{{ $arb1->name }}</td>
@@ -242,10 +202,8 @@
             </div>
 
             <div class="col-sm-9">
-
                 <div class="table-responsive">
-                    <table class="table table-striped mitable" id="cluba">
-              
+                    <table class="table table-striped mitable" id="cluba">              
                         <thead>
                             <tr class="active"><th class="text-center" colspan="8"><h2><span class="label label-primary">Equipo A: {{ $ea->name }}</span></h2></th></tr>
                             <tr class="active">
@@ -259,48 +217,38 @@
                                 <th scope="col">G2T</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @foreach ($a as $item)
                                 <tr>
                                     <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
                                     <td>
-                                        <a href="/admin/jugadores/{{  $item->jugador->id }}">
+                                        <a href="#" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
                                             {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
                                         </a>
                                     </td>
                                     <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>           
-                                    <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>                                        
-                                    <td>@if($dataTypeContent->status == 1)0 @else 
-                                            @if ($relparnom_a[$loop->index]->ta == 0)0 @else<span class="label label-primary">{{ $relparnom_a[$loop->index]->ta }}</span>@endif                                            
-                                        @endif</td>  
-                                    <td>
-                                        @if($dataTypeContent->status == 1)0 @else 
-                                            @if ($relparnom_a[$loop->index]->tr == 0)0 @else<span class="label label-primary">{{ $relparnom_a[$loop->index]->tr }}</span>@endif                                            
-                                        @endif
-                                    </td>                                                      
-                                    <td>
-                                        @if($dataTypeContent->status == 1)0 @else 
-                                            @if ($relparnom_a[$loop->index]->g1t == 0)0 @else<span class="label label-primary">{{ $relparnom_a[$loop->index]->g1t }}</span>@endif                                            
-                                        @endif
-                                    </td>                            
-                                    <td>               
-                                        @if($dataTypeContent->status == 1)0 @else 
-                                            @if ($relparnom_a[$loop->index]->g2t == 0)0 @else<span class="label label-primary">{{ $relparnom_a[$loop->index]->g2t }}</span>@endif                                            
-                                        @endif
-                                    </td>  
+                                    <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>                                                                            
+                                    @if($dataTypeContent->status == 1)
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                    @else 
+                                        <td>{{ $relparnom_a[$loop->index]->ta }}</td>    
+                                        <td>{{ $relparnom_a[$loop->index]->tr }}</td>    
+                                        <td>{{ $relparnom_a[$loop->index]->g1t }}</td>   
+                                        <td>{{ $relparnom_a[$loop->index]->g2t }}</td>                                        
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-
                 
                 @if($dataTypeContent->status == 1)     
                     <div class="form-group">               
                         <textarea name="" id="description" rows="4" class="form-control" placeholder="Detalles u Observaciones del partido"></textarea>                    
                     </div>
-                @else
                 @endif
                   
                 <div class="table-responsive">
@@ -329,27 +277,24 @@
                                     </td>
                                     <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>                                                                        
                                     <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>
-                                    <td>@if($dataTypeContent->status == 1)0 @else 
-                                            @if($relparnom_b[$loop->index]->ta == 0)0 @else<span class="label label-primary">{{ $relparnom_b[$loop->index]->ta }}</span>@endif                                            
-                                        @endif</td>  
-                                    <td>@if($dataTypeContent->status == 1)0 @else 
-                                            @if ($relparnom_b[$loop->index]->tr == 0)0 @else<span class="label label-primary">{{ $relparnom_b[$loop->index]->tr }}</span>@endif                                            
-                                        @endif</td> 
-                                    <td>@if($dataTypeContent->status == 1)0 @else 
-                                            @if ($relparnom_b[$loop->index]->g1t == 0)0 @else<span class="label label-primary">{{ $relparnom_b[$loop->index]->g1t }}</span>@endif                                            
-                                        @endif</td>                            
-                                    <td>@if($dataTypeContent->status == 1)0 @else 
-                                            @if ($relparnom_b[$loop->index]->g2t == 0)0 @else<span class="label label-primary">{{ $relparnom_b[$loop->index]->g2t }}</span>@endif                                            
-                                        @endif</td>  
+                                    @if($dataTypeContent->status == 1)
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                @else 
+                                    <td>{{ $relparnom_b[$loop->index]->ta }}</td>    
+                                    <td>{{ $relparnom_b[$loop->index]->tr }}</td>    
+                                    <td>{{ $relparnom_b[$loop->index]->g1t }}</td>   
+                                    <td>{{ $relparnom_b[$loop->index]->g2t }}</td>                                        
+                                @endif
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-
-            </div>
-
-        
+                
+            </div>        
         </div>
     </div>
 
@@ -370,9 +315,61 @@
                     </form>
                     <button type="button" class="btn btn-default pull-right" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                 </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-primary fade" tabindex="-1" id="mimodal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Formulario de eventos</h4>
+                </div>
+                <div class="modal-body">
+
+                
+                    <div class="col-sm-6">
+                        <label for="">Jugador</label>
+                        <input type="hidden" name="" id="je_id" class="form-control">
+                        <input type="text" name="" id="je_name" class="form-control" readonly>
+           
+                        <label for="">Tipo de Evento</label>
+                        <select name="" id="te" class="form-control">
+                            <option value="ta">Tarjeta Amarilla</option>
+                            <option value="tr">Tarjeta Roja</option>
+                            <option value="gol">Gol</option>
+                        </select>
+              
+                        <label for="">Hora</label>
+                        <input type="time" name="" id="mitime" class="form-control">
+                        <br>
+                        <div class="text-center">
+                            <a href="#" class="btn btn-sm btn-block btn-primary" onclick="savevent()">Guardar Evento</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="">Registros</label>
+                        <table class="table mitable" id="table_eventos">
+                            <thead>
+                                <tr class="active">
+                                    <th>#</th>
+                                    <th>Jugador</th>                                    
+                                    <th>Hora</th>
+                                    <th>Evento</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
 @stop
 
 @section('javascript')
@@ -390,7 +387,8 @@
             var mitime = now.getHours() + ":" + now.getMinutes();
             $('#hora_comienzo_pt').val(mitime);
             $('#hora_comienzo_st').val(mitime);
-
+            $('#mitime').val(mitime);
+            localStorage.removeItem('eventos');
         });
 
         const Toast = Swal.mixin({
@@ -404,7 +402,6 @@
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         })
-
 
         @if($dataTypeContent->status == 1)     
 
@@ -432,7 +429,6 @@
             example2.init();
 
         @else  
-
         @endif
 
         function totales(){
@@ -468,77 +464,150 @@
             $('#delete_modal').modal('show');
         });
 
-        async function misave() {
-            // totales()
-            Swal.fire({
-                title: 'Estás Seguro?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'SI',
-                cancelButtonText: 'NO'
-                }).then(async (result) => {
-                if (result.isConfirmed) {
-                    var midata = {
-                        'miid': $("#miid").val(),
-                        'juez_1': $("#juez_1").val(),
-                        'juez_2': $("#juez_2").val(),
-                        'juez_3': $("#juez_3").val(),
-                        'juez_4': $("#juez_4").val(),
-                        'hora_comienzo_pt': $("#hora_comienzo_pt").val(),
-                        'hora_comienzo_st': $("#hora_comienzo_st").val(),
-                        'description': $("#description").val(),
-                    }
-                    // console.log(midata)      
-                    var partido = await axios.post("/api/partidos/update", midata)
-
-                    //recorrer equipoa--------------------------------------
-                    var equipoa = document.getElementById("cluba")
-                    var partido_id = "{{ $dataTypeContent->id }}"
-                    var nomina_a_id = "{{ $dataTypeContent->planilla_a_id }}"
-                    for (var i = 2, row; row = equipoa.rows[i]; i++) {
-                        var midataa = {
-                            'partido_id': partido_id,
-                            'nomina_id': nomina_a_id,
-                            'ta': row.cells[4].innerText,
-                            'tr': row.cells[5].innerText,
-                            'g1t': row.cells[6].innerText,
-                            'g2t': row.cells[7].innerText,
-                            'jugador_id': row.cells[0].innerText                
-                        }
-                        // console.log(midataa)
-                        await axios.post("/api/partidos/rel/save", midataa)
-                    }
-
-                    //recorrer equipob-------------------------------------
-                    var equipob = document.getElementById("clubb");
-                    var nomina_b_id = "{{ $dataTypeContent->planilla_b_id }}"
-                    for (var i = 2, row; row = equipob.rows[i]; i++) {
-                        var midatab = {
-                            'partido_id': partido_id,
-                            'nomina_id': nomina_b_id,
-                            'ta': row.cells[4].innerText,
-                            'tr': row.cells[5].innerText,
-                            'g1t': row.cells[6].innerText,
-                            'g2t': row.cells[7].innerText,
-                            'jugador_id': row.cells[0].innerText                
-                        }
-                        // console.log(midataa)
-                        await axios.post("/api/partidos/rel/save", midatab)
-                    }
-
-                    // actualiar puntos------------------------------------     
-                    await axios.post("/api/partidos/update/clube", {'partido_id': partido_id})
-
-                      // crear asientos------------------------------------     
-                      await axios.post("/api/partidos/update/clube", {'partido_id': partido_id})
-
-                    location.reload()             
-                }
-            })
+        function validacion() {
+            var mival = false
+            if($("#hora_comienzo_pt").val() == $("#hora_comienzo_st").val()) {
+                mival = false
+            }else if($("#juez_1").val() == $("#juez_4").val()) {
+                mival = false
+            }else if($("#juez_2").val() == $("#juez_3").val()) {                
+                mival = false
+            } else {
+                mival = true
+            }
+            return mival
         }
 
+        //guardar partido-------------------------------------------------------------------
+        async function misave() {
+            if (!validacion()) {
+                toastr.error("Error en los datos, Hora & Arbitros")
+            } else {
+                Swal.fire({
+                    title: 'Estás Seguro?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'SI',
+                    cancelButtonText: 'NO'
+                    }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        var midata = {
+                            'miid': $("#miid").val(),
+                            'juez_1': $("#juez_1").val(),
+                            'juez_2': $("#juez_2").val(),
+                            'juez_3': $("#juez_3").val(),
+                            'juez_4': $("#juez_4").val(),
+                            'hora_comienzo_pt': $("#hora_comienzo_pt").val(),
+                            'hora_comienzo_st': $("#hora_comienzo_st").val(),
+                            'description': $("#description").val(),
+                        }     
+                        var partido = await axios.post("/api/partidos/update", midata)
+                        toastr.success("Partido Actualizado")
 
+                        // //recorrer equipoa--------------------------------------
+                        var equipoa = document.getElementById("cluba")
+                        var partido_id = "{{ $dataTypeContent->id }}"
+                        var nomina_a_id = "{{ $dataTypeContent->planilla_a_id }}"
+                        for (var i = 2, row; row = equipoa.rows[i]; i++) {
+                            var midataa = {
+                                'partido_id': partido_id,
+                                'nomina_id': nomina_a_id,
+                                'ta': row.cells[4].innerText,
+                                'tr': row.cells[5].innerText,
+                                'g1t': row.cells[6].innerText,
+                                'g2t': row.cells[7].innerText,
+                                'jugador_id': row.cells[0].innerText                
+                            }
+                            await axios.post("/api/partidos/rel/save", midataa)
+                        }
+                        toastr.info("Generando eventos del partido")
+                        //recorrer equipob-------------------------------------
+                        var equipob = document.getElementById("clubb");
+                        var nomina_b_id = "{{ $dataTypeContent->planilla_b_id }}"
+                        for (var i = 2, row; row = equipob.rows[i]; i++) {
+                            var midatab = {
+                                'partido_id': partido_id,
+                                'nomina_id': nomina_b_id,
+                                'ta': row.cells[4].innerText,
+                                'tr': row.cells[5].innerText,
+                                'g1t': row.cells[6].innerText,
+                                'g2t': row.cells[7].innerText,
+                                'jugador_id': row.cells[0].innerText                
+                            }
+                            await axios.post("/api/partidos/rel/save", midatab)
+                        }
+                        //recorrer eventos
+                        var mieventos = localStorage.getItem("eventos") ? JSON.parse(localStorage.getItem("eventos")) : []
+                        for (let index = 0; index < mieventos.length; index++) {
+                            var midatar =  {
+                                'time': mieventos[index].time
+                                'partido_id': partido_id
+                                'jugador_id': mieventos[index].jugador_id
+                                'evento': mieventos[index].evento
+                            }
+                            await axios.post("/api/partidos/eventos/save", midatar)
+                        }        
+
+                        //actualiar puntos------------------------------------     
+                        toastr.success("Generando puntos..")
+                        await axios.post("/api/partidos/update/puntos", {'partido_id': partido_id})
+                        
+                        // location.reload()             
+                    }
+                })
+            }
+        }
+
+        function setevent(jugador_id, jugador_name){
+            $("#je_id").val(jugador_id)
+            $("#je_name").val(jugador_name)
+            $('#table_eventos tbody tr').remove();
+            var midata = localStorage.getItem("eventos") ? JSON.parse(localStorage.getItem("eventos")) : []
+            for (let index = 0; index < midata.length; index++) {              
+                switch (midata[index].evento) {
+                    case 'ta':                       
+                        $("#table_eventos").append("<tr><td>"+(index+1)+"</td><td>"+midata[index].jugador_name+"</td><td>"+midata[index].time+"</td><td>🟨</td></tr>")  
+                        break;
+                    case 'tr':                      
+                        $("#table_eventos").append("<tr><td>"+(index+1)+"</td><td>"+midata[index].jugador_name+"</td><td>"+midata[index].time+"</td><td>🟥</td></tr>")  
+                        break;
+                    case 'gol':
+                      
+                        $("#table_eventos").append("<tr><td>"+(index+1)+"</td><td>"+midata[index].jugador_name+"</td><td>"+midata[index].time+"</td><td>⚽</td></tr>")  
+                        break;
+                    default:
+                        break;
+                }                
+            }
+        }
+
+        function savevent(){
+            var midata = localStorage.getItem("eventos") ? JSON.parse(localStorage.getItem("eventos")) : []
+            var mivar = false
+            var mitime = $('#mitime').val()
+            for (let index = 0; index < midata.length; index++) {
+                if (midata[index].time == mitime) {
+                    mivar = true
+                }                
+            }
+            if (mivar) {
+                toastr.error("Cambia la hora")
+            } else {
+                var misave = {
+                    'jugador_id': $('#je_id').val(),
+                    'jugador_name': $('#je_name').val(),
+                    'time': mitime,
+                    'partido_id': '{{ $dataTypeContent->id }}',
+                    'evento': $('#te :selected').val(),
+                }
+                midata.push(misave)
+                localStorage.setItem("eventos", JSON.stringify(midata))
+                toastr.info("Evento Guardado")
+                setevent($('#je_id').val(), $('#je_name').val())
+            }
+
+        }
     </script>
 @stop

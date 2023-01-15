@@ -43,4 +43,11 @@ class Partido extends Model
 	{
 		return $this->belongsTo(JugadoresPlanilla::class, 'planilla_b_id');
 	}
+
+    public function RelPartidoEvento()
+	{
+		return $this->belongsTo(RelPartidoEvento::class, 'partido_id');
+	}
+
+    
 }

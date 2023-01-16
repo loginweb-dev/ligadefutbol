@@ -61,7 +61,13 @@ Route::get('/reset-db', function () {
         'status' => 1
     ]);
 
-    App\RelTemporadaJugadore::truncate();
+    App\RelTemporadaJugadore::where('id', '>', 0)->update([
+        'temporada_id' => 1,
+        'ta' => 0,
+        'tr' => 0,
+        'goles' => 0,
+        'partidos' => 0
+    ]);
 
     return redirect("/admin");
 });

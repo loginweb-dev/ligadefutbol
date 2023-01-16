@@ -2,7 +2,7 @@
 @php
     $partidos = App\Partido::where("fixture_id", $dataTypeContent->id)->with("fixture", "planilla_a", "planilla_b")->get();
     $fixture = App\Fixture::find($dataTypeContent->id);
-    $descansa = App\JugadoresPlanilla::where("id", $dataTypeContent->descansa_id)->with("clubes")->first();
+    $clube=App\Clube::find($dataTypeContent->descansa_id);
     $miuser = App\Models\User::find($dataTypeContent->user_id);
 @endphp
 
@@ -28,7 +28,8 @@
                         <tr>
                             {{-- <td><strong>Descansa: </strong></td> --}}
                             <td class="text-center" colspan="2">
-                                {{ $descansa->clubes->name }}
+                                {{-- {{ $descansa->clubes->name }} --}}
+                                {{$clube->name}}
                                 <br>
                                 <span class="label label-primary">Descansa</span>
                             </td>

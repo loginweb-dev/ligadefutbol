@@ -341,7 +341,7 @@
                             var newecn =enc[index]
                             newecn["fixture_id"] = newf.data.id
                             newecn["editor_id"] = "{{ Auth::user()->id }}"
-                            var newf = await axios.post("/api/partidos/save/", newecn)
+                            var newf = await axios.post("/api/partidos/save", newecn)
                         }
                         await axios.post("/api/features/descansa", { club_id: midesc })
                         location.href = "/admin/fixtures/"+newf.data.id

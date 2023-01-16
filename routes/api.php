@@ -364,7 +364,6 @@ Route::group(['prefix' => 'features'], function () {
 });
 
 
-
 Route::post('asiento/save', function(Request $request){
     $asiento=App\Asiento::create([
         'tipo'=> $request->tipo,
@@ -434,6 +433,7 @@ Route::post('credenciales', function(Request $request){
     }
     return $user;
 });
+
 //Restablecer Password encontrando usuario por equipo
 Route::post('reset/credenciales/club', function(Request $request){
     $club=App\Clube::where('id', $request->clube_id)->with('user')->first();
@@ -443,6 +443,7 @@ Route::post('reset/credenciales/club', function(Request $request){
     }
     return $club->user;
 });
+
 //Mensaje con Whaticket
 Route::post('/whaticket/send', function (Request $request) {
     $message = $request->message;

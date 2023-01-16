@@ -271,7 +271,7 @@
                                 <tr>
                                     <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
                                     <td>
-                                        <a href="#">
+                                        <a href="#" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
                                             {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
                                         </a>
                                     </td>

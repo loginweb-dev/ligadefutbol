@@ -31,7 +31,7 @@ class Transferencia extends Model
 	}
     public function club_destino()
 	{
-		return $this->belongsTo(Clube::class, 'clube_id_final_destino');
+		return $this->belongsTo(Clube::class, 'clube_id_destino');
 	}
     public function jugador()
 	{

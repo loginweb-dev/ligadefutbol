@@ -597,3 +597,8 @@ Route::get('find/ultima/planilla/{clube_id}', function($clube_id){
     $planilla= App\JugadoresPlanilla::where('clube_id', $clube_id)->orderby('created_at', 'desc')->get();
     return $planilla;
 });
+
+Route::get('prueba/jugador/{jugador_id}', function($jugador_id){
+    return  App\RelTemporadaJugadore::where('jugadore_id', $jugador_id)->with('temporadas', 'clubes')->get();
+
+});

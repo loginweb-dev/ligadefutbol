@@ -109,10 +109,10 @@
                                         @foreach ($transferencias as $item)
                                           
                                             <tr>
-                                                <td>{{$item->club_origen->name}}</td>
-                                                <td>{{$item->club_destino}}</td>
-                                                <td>{{$item->fecha}}</td>
-                                                <td>{{$item->precio}}</td>
+                                                <td class="text-center">{{$item->club_origen->name}}</td>
+                                                <td class="text-center">{{$item->club_destino->name}}</td>
+                                                <td class="text-center">{{$item->fecha}}</td>
+                                                <td class="text-center">{{$item->precio}}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -125,22 +125,57 @@
                                             <th class="text-center" colspan="6"><h4>Rendimiento</h4></th>
                                         </tr>
                                         <tr>
-                                            <td>Temporada</td>
-                                            <th>Club</th>
-                                            <th>Media de Goles</th>
-                                            <th>Partidos Jugados</th>
-                                            <th>Partidos de Titular</th>
-                                            <th>Partidos de Suplente</th>
+                                            <th class="text-center">Temporada</th>
+                                            <th class="text-center">Club</th>
+                                            <th class="text-center">Media de Goles</th>
+                                            <th class="text-center">Partidos Jugados</th>
+                                            <th class="text-center">Partidos de Titular</th>
+                                            <th class="text-center">Partidos de Suplente</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @php
-                                            $planilla= App\JugadoresPlanilla::where('temporada_id', 1)->where('clube_id', 1)->get();
+                                            // $planilla= App\JugadoresPlanilla::where('temporada_id', $dataTypeContent->temporada_id)->where('clube_id', $dataTypeContent->clube_id)->get();
+                                            $rel_planilla_jugadores= App\RelPlanillaJugadore::where('jugador_id', $dataTypeContent->id)->with('planilla')->get();
                                         @endphp
                                         @foreach ($rel_temporada as $item)
-                                            
+                                            @php
+                                                $partido_titular=0;
+                                                $partido_suplente=0;
+                                            @endphp
+                                            <tr>
+                                                <td class="text-center">{{$item->temporadas->title}}</td>
+                                                <td class="text-center">{{$item->clubes->name}}</td>
+
+                                                @foreach ($rel_planilla_jugadores as $item2)
+                                                    @if ($item->temporada_id==$item2->planilla->temporada_id && ($item2->planilla->activo=="Inactivo" || $item2->planilla->activo=="Aprobado"))
+                                                        @if ($item2->titular=1)
+                                                            @php
+                                                                $partido_titular+=1;
+                                                            @endphp
+                                                        @endif
+                                                        @if ($item2->titular=2)
+                                                            @php
+                                                                $partido_suplente+=1;
+                                                            @endphp
+                                                    @endif
+                                                    
+                                                    @endif
+                                                @endforeach
+                                                @php
+                                                    $media_goles=0;
+                                                    $total_partidos=$partido_titular+$partido_suplente;
+                                                    if ($total_partidos>0) {
+                                                        $media_goles= $item->goles/$total_partidos;
+                                                    }
+                                                @endphp
+                                                <td class="text-center">{{$media_goles}}</td>
+                                                <td class="text-center">{{$total_partidos}}</td>
+                                                <td class="text-center">{{$partido_titular}}</td>
+                                                <td class="text-center">{{$partido_suplente}}</td>
+                                            </tr>
                                         @endforeach
-                                        <tr>
+                                        {{-- <tr>
                                             <td>Temporada 2021-2022</td>
                                             <td>Las Aguilas FC</td>
                                             <td>1</td>
@@ -155,7 +190,7 @@
                                             <td>30</td>
                                             <td>25</td>
                                             <td>5</td>
-                                        </tr>
+                                        </tr> --}}
                                     </tbody>
                                 </table>
                             </div>

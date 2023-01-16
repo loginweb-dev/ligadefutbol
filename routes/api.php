@@ -108,7 +108,6 @@ Route::group(['prefix' => 'partidos'], function () {
         foreach ($loop_a as $item) {
             $jugador = App\RelTemporadaJugadore::where("jugadore_id", $item->jugador_id)->where("temporada_id", $newpartido->temporada_id)->first();
             //tarjetas amarillas
-            return $jugador;
             if ($item->ta > 0) {
                 $ta_a += $item->ta;
                 $jugador->ta +=  $item->ta;
@@ -160,7 +159,6 @@ Route::group(['prefix' => 'partidos'], function () {
             //save temporada jugador
             $jugador->save();
         }
-
         // recorrer equipo A
         $loop_b = App\RelPartidoNomina::where("partido_id", $request->partido_id)->where("nomina_id", $newpartido->planilla_b_id)->get();
         $gol_b = 0;
@@ -224,8 +222,7 @@ Route::group(['prefix' => 'partidos'], function () {
         
         //actualizar puntos de los equipos A y B por temoporadas
         $nomina_a = App\JugadoresPlanilla::find($newpartido->planilla_a_id);
-        // $nomina_b = App\JugadoresPlanilla::find($newpartido->planilla_b_id);
-            return $nomina_a;
+        $nomina_b = App\JugadoresPlanilla::find($newpartido->planilla_b_id);
         $club_a = App\RelTemporadaClube::where("club_id", $nomina_a->clube_id)->where("temporada_id", $nomina_a->temporada_id)->first();
         $club_b = App\RelTemporadaClube::where("club_id", $nomina_b->clube_id)->where("temporada_id", $nomina_a->temporada_id)->first();
         // return $club_b;

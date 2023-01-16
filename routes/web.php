@@ -17,6 +17,22 @@ Route::get('/', function () {
     return redirect("/admin/profile");
 });
 
+// Route::get('/test', function () {
+//     $jugafores = App\Jugadore::all();
+//     foreach ($jugafores as $key) {
+//         App\RelTemporadaJugadore::create([
+//             'temporada_id' => 1,
+//             'clube_id' => $key->clube_id,
+//             'jugadore_id' => $key->id,
+//             'ta' => 0,
+//             'tr' => 0, 
+//             'goles' => 0,
+//             'partidos' => 0
+//         ]);
+//     }
+//     return true;
+// });
+
 Route::get('/reset-db', function () {
 
     App\Asiento::truncate();
@@ -39,12 +55,12 @@ Route::get('/reset-db', function () {
         'ta' => 0,
         'tr' => 0,
         'descansos' => 0,
-        'temporada_id' => 1
     ]);
     
     App\Jugadore::where('id', '>', 0)->update([
         'status' => 1
     ]);
+
     App\RelTemporadaJugadore::truncate();
 
     return redirect("/admin");

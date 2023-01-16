@@ -221,10 +221,14 @@
                             @foreach ($a as $item)
                                 <tr>
                                     <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
-                                    <td>
-                                        <a href="#" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
+                                    <td>                               
+                                        @if($dataTypeContent->status == 1)   
+                                            <a href="#" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
+                                                {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
+                                            </a>
+                                        @else
                                             {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
-                                        </a>
+                                        @endif                                                              
                                     </td>
                                     <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>           
                                     <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>                                                                            
@@ -271,9 +275,13 @@
                                 <tr>
                                     <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
                                     <td>
-                                        <a href="#" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
+                                        @if($dataTypeContent->status == 1)   
+                                            <a href="#" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
+                                                {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
+                                            </a>
+                                        @else
                                             {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
-                                        </a>
+                                        @endif                                
                                     </td>
                                     <td><span class="label label-warning">{{ $item->jugador->polera }}</span></td>                                                                        
                                     <td><span class="label label-success">{{ $item->jugador->edad }}</span></td>

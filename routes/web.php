@@ -43,7 +43,7 @@ Route::get('/reset-db', function () {
     App\RelPartidoNomina::truncate();
     App\RelPlanillaJugadore::truncate();
     App\Transferencia::truncate();
-
+    App\Transferencia::truncate();
     App\Clube::where('id', '>', 0)->update([
         'status' => 1
     ]);

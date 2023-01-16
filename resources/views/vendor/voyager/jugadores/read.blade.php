@@ -148,7 +148,11 @@
                                                 <td class="text-center">{{$item->clubes->name}}</td>
 
                                                 @foreach ($rel_planilla_jugadores as $item2)
+                                               
                                                     @if ($item->temporada_id==$item2->planilla->temporada_id && ($item2->planilla->activo=="Inactivo" || $item2->planilla->activo=="Aprobado"))
+                                                        @php
+                                                            $partido_titular+=1;
+                                                        @endphp
                                                         @if ($item2->titular=1)
                                                             @php
                                                                 $partido_titular+=1;
@@ -169,12 +173,14 @@
                                                         $media_goles= $item->goles/$total_partidos;
                                                     }
                                                 @endphp
-                                                <td class="text-center">{{$media_goles}}</td>
-                                                <td class="text-center">{{$total_partidos}}</td>
+                                                <td class="text-center">{{round($media_goles, 1)}}</td>
+                                                <td class="text-center">{{$item->partidos}}</td>
                                                 <td class="text-center">{{$partido_titular}}</td>
                                                 <td class="text-center">{{$partido_suplente}}</td>
                                             </tr>
+                                           
                                         @endforeach
+                                      
                                         {{-- <tr>
                                             <td>Temporada 2021-2022</td>
                                             <td>Las Aguilas FC</td>

@@ -23,7 +23,7 @@ class RelPlanillaJugadore extends Model
 	}
     public function planilla()
 	{
-		return $this->belongsTo(RelPlanillaJugadore::class, 'planilla_id');
+		return $this->belongsTo(JugadoresPlanilla::class, 'planilla_id');
 	}
 
 }

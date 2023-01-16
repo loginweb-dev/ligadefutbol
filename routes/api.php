@@ -70,18 +70,20 @@ Route::group(['prefix' => 'partidos'], function () {
     });
 
     Route::post('/update', function (Request $request) {
-        $newpartido = App\Partido::where("id", $request->miid)->with("RelPartidoEvento")->first();
-        $newpartido->hora_comienzo_pt = $request->hora_comienzo_pt;
-        $newpartido->hora_comienzo_st = $request->hora_comienzo_st;
-        $newpartido->juez_1 = $request->juez_1;
-        $newpartido->juez_2 = $request->juez_2;
-        $newpartido->juez_3 = $request->juez_3;
-        $newpartido->juez_4 = $request->juez_4;
-        $newpartido->status = 2;
-        $newpartido->description = $request->description;        
-        $newpartido->save();
-        $newpartido = App\Partido::find($request->miid);
-        return $newpartido;
+        // DB::transaction(function () {
+            $newpartido = App\Partido::where("id", $request->miid)->with("RelPartidoEvento")->first();
+            $newpartido->hora_comienzo_pt = $request->hora_comienzo_pt;
+            $newpartido->hora_comienzo_st = $request->hora_comienzo_st;
+            $newpartido->juez_1 = $request->juez_1;
+            $newpartido->juez_2 = $request->juez_2;
+            $newpartido->juez_3 = $request->juez_3;
+            $newpartido->juez_4 = $request->juez_4;
+            $newpartido->status = 2;
+            $newpartido->description = $request->description;        
+            $newpartido->save();
+            $newpartido = App\Partido::find($request->miid);
+            return $newpartido;
+        // });
     });
 
     Route::post('/rel/save', function (Request $request) {

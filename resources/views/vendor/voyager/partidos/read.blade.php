@@ -15,6 +15,7 @@
     $relparnom_b = App\RelPartidoNomina::where('partido_id', $dataTypeContent->id)->where('nomina_id', $dataTypeContent->planilla_b_id)->get();
 
     $temporada = App\Temporada::find($dataTypeContent->temporada_id);
+    $eventos = App\RelPartidoEvento::where("partido_id", $dataTypeContent->id)->get();
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -169,8 +170,37 @@
                             <tr>
                                 <td colspan="2" class="text-center"><span class="label label-success">{{ $ea->name }} - {{ $dataTypeContent->perdedor }} </span></td>
                             </tr>
+                            <tr>
+                                <td colspan="2" class="text-center">
+                                    <h4>Eventos</h4>
+                                    <ul class="list-group">
+                                        @foreach ($eventos as $item)
+                                            @php
+                                                $mijug = App\Jugadore::find($item->jugador_id);
+                                            @endphp
+                                            <li class="list-group-item">
+                                                Min: {{ $item->time }} / 
+                                                @switch($item->evento)
+                                                    @case("ta")
+                                                        Tarjetas 🟨
+                                                        @break
+                                                    @case("tr")
+                                                        Tarjetas 🟥
+                                                        @break
+                                                    @case("gol")
+                                                        Goles ⚽
+                                                        @break
+                                                    @default                                                        
+                                                @endswitch     
+                                                <br>
+                                                {{ $mijug->name }}                                           
+                                            </li>
+                                        @endforeach                                      
+                                      </ul>
+                                </td>
+                            </tr>
                             <tr>    
-                                <td colspan="2" class="text-center"><span class="label label-info">{{ $dataTypeContent->description }} </span></td>
+                                <td colspan="2" class="text-center"><span class="label label-info">{{ $dataTypeContent->description ? $dataTypeContent->description : 'null' }} </span></td>
                             </tr>                            
                             <tr>
                                 <td>Arbitro del Partido</td>
@@ -223,7 +253,7 @@
                                     <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
                                     <td>                               
                                         @if($dataTypeContent->status == 1)   
-                                            <a href="#" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
+                                            <a href="javascrip;" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
                                                 {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
                                             </a>
                                         @else
@@ -276,7 +306,7 @@
                                     <td><span class="label label-info">{{ $item->jugador->id }}</span></td>
                                     <td>
                                         @if($dataTypeContent->status == 1)   
-                                            <a href="#" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
+                                            <a href="javascript;" onclick="setevent({{ $item->jugador->id }}, '{{ $item->jugador->name }}')" data-toggle="modal" data-target="#mimodal">
                                                 {{ $loop->index + 1 }}.- {{ $item->jugador->name }} 
                                             </a>
                                         @else
@@ -353,7 +383,7 @@
                         <input type="time" name="" id="mitime" class="form-control">
                         <br>
                         <div class="text-center">
-                            <a href="#" class="btn btn-sm btn-block btn-primary" onclick="savevent()">Guardar Evento</a>
+                            <a href="#" class="btn btn-sm btn-block btn-primary" onclick="savevent()" id="misave2">Guardar Evento</a>
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -501,6 +531,7 @@
                     cancelButtonText: 'NO'
                     }).then(async (result) => {
                     if (result.isConfirmed) {
+                        $("#misave2").hide()
                         var midata = {
                             'miid': $("#miid").val(),
                             'juez_1': $("#juez_1").val(),
@@ -562,7 +593,7 @@
                         toastr.success("Generando puntos..")
                         await axios.post("/api/partidos/update/puntos", {'partido_id': partido_id})
                         
-                        // location.reload()             
+                        location.reload()             
                     }
                 })
             }
@@ -595,11 +626,11 @@
             var midata = localStorage.getItem("eventos") ? JSON.parse(localStorage.getItem("eventos")) : []
             var mivar = false
             var mitime = $('#mitime').val()
-            for (let index = 0; index < midata.length; index++) {
-                if (midata[index].time == mitime) {
-                    mivar = true
-                }                
-            }
+            // for (let index = 0; index < midata.length; index++) {
+            //     if (midata[index].time == mitime) {
+            //         mivar = true
+            //     }                
+            // }
             if (mivar) {
                 toastr.error("Cambia la hora")
             } else {

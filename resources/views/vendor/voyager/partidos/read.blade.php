@@ -542,9 +542,9 @@
                         var mieventos = localStorage.getItem("eventos") ? JSON.parse(localStorage.getItem("eventos")) : []
                         for (let index = 0; index < mieventos.length; index++) {
                             var midatar =  {
-                                'time': mieventos[index].time
-                                'partido_id': partido_id
-                                'jugador_id': mieventos[index].jugador_id
+                                'time': mieventos[index].time,
+                                'partido_id': partido_id,
+                                'jugador_id': mieventos[index].jugador_id,
                                 'evento': mieventos[index].evento
                             }
                             await axios.post("/api/partidos/eventos/save", midatar)

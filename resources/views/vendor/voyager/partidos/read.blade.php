@@ -141,13 +141,19 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>
+                                        <textarea name="" id="description" rows="4" class="form-control" placeholder="Detalles u Observaciones"></textarea>   
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="text-center">    
                                     <div hidden>
                                         <input type="text" id="miid" class="form-control" value="{{ $dataTypeContent->id }}" hidden />
                                     </div>                           
-                                    <a href="#" onclick="misave()" class="btn btn-sm btn-dark btn-block">Enviar y Guardar</a>                                                                               
+                                    <a href="#" onclick="misave()" class="btn btn-sm btn-primary btn-block">Enviar y Guardar</a>                                                                               
                                 </td>
                             </tr>
+                            
                         </tbody>
                     </table>                                                    
                 @else  
@@ -235,7 +241,17 @@
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="cluba">              
                         <thead>
-                            <tr class="active"><th class="text-center" colspan="8"><h2><span class="label label-primary">Equipo A: {{ $ea->name }}</span></h2></th></tr>
+                            <tr class="active">
+                                <th class="text-center" colspan="8">
+                                    <h2>
+                                        <span class="label label-primary">
+                                            <a href="/admin/clubes/{{ $ea->id }}">
+                                                Equipo A: {{ $ea->name }}
+                                            </a>
+                                        </span>
+                                    </h2>
+                                </th>
+                            </tr>
                             <tr class="active">
                                 <th scope="col">ID</th>                                                                
                                 <th scope="col">Nombres y Apellidos</th>
@@ -280,15 +296,20 @@
                 </div>
                 
                 @if($dataTypeContent->status == 1)     
-                    <div class="form-group">               
-                        <textarea name="" id="description" rows="4" class="form-control" placeholder="Detalles u Observaciones del partido"></textarea>                    
-                    </div>
+           
                 @endif
                   
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="clubb">
                         <thead>
-                            <tr class="active"><th class="text-center" colspan="8"><h2><span class="label label-primary">Equipo B: {{ $eb->name }}</span></h2></th></tr>
+                            <tr class="active"><th class="text-center" colspan="8">                                
+                                <h2>
+                                    <span class="label label-primary">
+                                        <a href="/admin/clubes/{{ $eb->id }}">
+                                            Equipo A: {{ $eb->name }}
+                                        </a>
+                                    </span>
+                                </h2>                            </th></tr>
                             <tr class="active">
                                 <th scope="col">ID</th>                                                                
                                 <th scope="col">Nombres y Apellidos</th>

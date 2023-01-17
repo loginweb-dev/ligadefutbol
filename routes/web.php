@@ -69,6 +69,8 @@ Route::get('/reset-db', function () {
         'partidos' => 0
     ]);
 
+    App\RelPartidoEvento::truncate();
+
     return redirect("/admin");
 });
 

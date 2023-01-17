@@ -335,16 +335,16 @@
                             descansa_id: midesc,
                             temporada_id: $("#temporada_id :selected").val()
                         } 
-                        var newf = await axios.post("/api/features/save", midata)
+                        var newf0 = await axios.post("/api/features/save", midata)
                         var enc = JSON.parse(localStorage.getItem("encuentros"))
                         for (let index = 0; index < enc.length; index++) {
                             var newecn =enc[index]
-                            newecn["fixture_id"] = newf.data.id
+                            newecn["fixture_id"] = newf0.data.id
                             newecn["editor_id"] = "{{ Auth::user()->id }}"
                             var newf = await axios.post("/api/partidos/save", newecn)
                         }
-                        await axios.post("/api/features/descansa", { club_id: midesc })
-                        location.href = "/admin/fixtures/"+newf.data.id
+                        await axios.post("/api/features/descansa", { club_id: midesc }) 
+                        location.href = "/admin/fixtures/"+newf0.data.id
                     }
                 }) 
             }

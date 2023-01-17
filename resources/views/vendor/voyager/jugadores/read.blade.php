@@ -38,38 +38,42 @@
 
                                         </tr>
                                         <tr>
-                                            <td>Nombre</td>
-                                            <td>{{$dataTypeContent->name}} <br> hola prueba</td>
+                                            <td><b>Nombre:</b></td>
+                                            <td>{{$dataTypeContent->name}}</td>
                                         </tr>
                                         <tr>
-                                            <td># Polera</td>
+                                            <td><b>Nº Polera:</b></td>
                                             <td>{{$dataTypeContent->polera}}</td>
                                         </tr>
                                         <tr>
-                                            <td>Edad</td>
+                                            <td><b>Edad:</b></td>
                                             <td>{{$dataTypeContent->edad}}</td>
                                         </tr>
                                             
                                         <tr>
-                                            <td >Fecha Nacimiento</td>
+                                            <td><b>Fecha Nacimiento:</b></td>
                                             <td colspan="2">{{$dataTypeContent->nacimiento}}</td>
                                         </tr>
                                         <tr>
-                                            <td >Categoria</td>
+                                            <td><b>Categoria:</b></td>
                                             <td colspan="2">{{$dataTypeContent->jug_categoria}}</td>
                                         </tr>
                                         <tr>
-                                            <td >Club Actual</td>
+                                            <td><b>Club Actual:</b></td>
                                             <td colspan="2">{{$jugadore->clubes->name}}</td>
                                         </tr>
                                   
                                         <tr>
-                                            <td>WhatsApp</td>
+                                            <td><b>WhatsApp:</b></td>
                                             <td colspan="2">{{$dataTypeContent->phone}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
                                 {{-- <img src="@if( !filter_var($dataTypeContent->foto, FILTER_VALIDATE_URL)){{ Voyager::image( $dataTypeContent->foto ) }}@else{{ $dataTypeContent->foto }}@endif" style="width:500px"> --}}
+
+                            </div>
+                            <div class="text-center">
+                                <button type='button' onclick='send_carnet()' class='btn btn-success'>Enviar Carnet</button>
 
                             </div>
                         </div>
@@ -295,6 +299,53 @@
 
     </script> --}}
     <script>
+        async function send_carnet() {
+            if (await validacion_wpp("{{$dataTypeContent->phone}}")) {
+                var imagen= "$dataTypeContent->foto"
+                if ("$dataTypeContent->foto") {
+                 imagen= "/jugadores/jugadordefault.png"   
+                }
+                var midata2={
+                    phone: "{{$dataTypeContent->phone}}",
+                    imagen:"{{setting('admin.url')}}storage"+imagen
+                }
+                // console.log("{{setting('admin.url')}}storage"+imagen)
+                try {
+                    await axios.post("/api/whaticket/multimedia/send", midata2)
+                } catch (error) {
+                    toastr.error("Falló en notificación por WhatsApp.")
+                }
+                var mitext= ""
+                mitext+="*Nombre:* {{$dataTypeContent->name}}\n"
+                mitext+="*Nº Polera:* {{$dataTypeContent->polera}}\n"
+                mitext+="*Edad:* {{$dataTypeContent->edad}}\n"
+                mitext+="*Fecha Nacimiento:* {{$dataTypeContent->nacimiento}}\n"
+                mitext+="*Categoria:* {{$dataTypeContent->jug_categoria}}\n"
+                mitext+="*Club Actual:* {{$jugadore->clubes->name}}\n"
+                var midata={
+                    phone: "{{$dataTypeContent->phone}}",
+                    message: mitext
+                }
+                try {
+                    await axios.post("/api/whaticket/send", midata)
+                } catch (error) {
+                    toastr.error("Falló en notificación por WhatsApp.")
+                }
+                
+            }
+            else{
+
+            }
+        }
+         async function validacion_wpp(phone){
+            var wpp=parseInt(phone)
+            if (wpp<=79999999 && wpp>=60000000) {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
         $('document').ready(function () {
         
         });

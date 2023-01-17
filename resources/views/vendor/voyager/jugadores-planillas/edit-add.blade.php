@@ -412,12 +412,12 @@
             var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
             var phone_club=planilla.data.clubes.wpp
             var phone_delegado=planilla.data.delegado.phone
-            // if (await validacion_wpp(phone_club)) {
-            //     phone_club=phone_club.toString()
-            // }
-            // if (await validacion_wpp(phone_delegado)) {
-            //     phone_delegado= phone_delegado.toString()
-            // }           
+            if (await validacion_wpp(phone_club)) {
+                phone_club=phone_club.toString()
+            }
+            if (await validacion_wpp(phone_delegado)) {
+                phone_delegado= phone_delegado.toString()
+            }           
             await generar_nomina(planilla.data.id, phone_club, phone_delegado, planilla.data.fecha)
             location.href = "/admin/jugadores-planillas/"+planilla.data.id
         }
@@ -688,8 +688,10 @@
                     titular=2
                     wpp_index_sups+=1
                     wpp_suplentes+=wpp_index_sups+".- "+row.cells[3].innerText+"\n"
-                    if (await validacion_wpp(jugs_phone[(i-1)])) {
-                        await notificacion_asientos_jugadores(fecha, "Suplente", "- "+row.cells[3].innerText, "- "+row.cells[2].innerText, row.cells[4].innerText, jugs_phone[(i-1)])
+                    if ("{{setting('notificaciones.noti_asientos')}}") {
+                        if (await validacion_wpp(jugs_phone[(i-1)])) {
+                            await notificacion_asientos_jugadores(fecha, "Suplente", "- "+row.cells[3].innerText, "- "+row.cells[2].innerText, row.cells[4].innerText, jugs_phone[(i-1)])
+                        }
                     }
                 }
                 else{
@@ -697,8 +699,10 @@
                     //Cuerpo Titulares
                     wpp_index_tits+=1
                     wpp_titulares+=wpp_index_tits+".- "+row.cells[3].innerText+"\n"
-                    if (await validacion_wpp(jugs_phone[(i-1)])) {
-                        await notificacion_asientos_jugadores(fecha, "Titular", "- "+row.cells[3].innerText, "- "+row.cells[2].innerText, row.cells[4].innerText, jugs_phone[(i-1)])
+                    if ("{{setting('notificaciones.noti_asientos')}}") {
+                        if (await validacion_wpp(jugs_phone[(i-1)])) {
+                            await notificacion_asientos_jugadores(fecha, "Titular", "- "+row.cells[3].innerText, "- "+row.cells[2].innerText, row.cells[4].innerText, jugs_phone[(i-1)])
+                        }
                     }
                 }
 
@@ -750,68 +754,70 @@
             mitext+=wpp_suplentes
             mitext+="\nSe enviará un mensaje cuando se tome una decisión respecto a esta planilla.\n\n"
             //Condicional de repetidos
-            if (phone_club==phone_delegado) {
-                if (await validacion_wpp(phone_club)) {
-                    var newpassword=Math.random().toString().substring(2, 6)
-                    var midata_cred = {
-                        clube_id: parseInt($("#select_club").val()),
-                        password: newpassword
-                    }
-                    var user= await axios.post("/api/reset/credenciales/club", midata_cred)
-                    mitext+="*Credenciales*:\n"
-                    mitext+="Usuario: "+user.data.email+"\n"
-                    mitext+="Contraseña: "+newpassword+"\n\n"
-                    mitext+="Link del Sistema: {{setting('admin.url')}}"
-                    var midata={
-                        phone: phone_club,
-                        message: mitext
-                    }
-                    try {
-                        await axios.post("/api/whaticket/send", midata)
-                    } catch (error) {
-                        toastr.error("Falló la notificación por WhatsApp.")
-                    }
-                    
-                }
-            }
-            else{
-                if (await validacion_wpp(phone_delegado)) {
-                    var midata={
-                        phone: phone_delegado,
-                        message: mitext
-                    }
-                    try {
-                        await axios.post("/api/whaticket/send", midata)
-                    } catch (error) {
-                        toastr.error("Falló en notificación por WhatsApp.")
+            if ("{{setting('notificaciones.noti_planillas')}}") {
+                if (phone_club==phone_delegado) {
+                    if (await validacion_wpp(phone_club)) {
+                        var newpassword=Math.random().toString().substring(2, 6)
+                        var midata_cred = {
+                            clube_id: parseInt($("#select_club").val()),
+                            password: newpassword
+                        }
+                        var user= await axios.post("/api/reset/credenciales/club", midata_cred)
+                        mitext+="*Credenciales*:\n"
+                        mitext+="Usuario: "+user.data.email+"\n"
+                        mitext+="Contraseña: "+newpassword+"\n\n"
+                        mitext+="Link del Sistema: {{setting('admin.url')}}"
+                        var midata={
+                            phone: phone_club,
+                            message: mitext
+                        }
+                        try {
+                            await axios.post("/api/whaticket/send", midata)
+                        } catch (error) {
+                            toastr.error("Falló la notificación por WhatsApp.")
+                        }
+                        
                     }
                 }
-                if (await validacion_wpp(phone_club)) {
-                    var newpassword=Math.random().toString().substring(2, 6)
-                    var midata_cred = {
-                        clube_id: parseInt($("#select_club").val()),
-                        password: newpassword
+                else{
+                    if (await validacion_wpp(phone_delegado)) {
+                        var midata={
+                            phone: phone_delegado,
+                            message: mitext
+                        }
+                        try {
+                            await axios.post("/api/whaticket/send", midata)
+                        } catch (error) {
+                            toastr.error("Falló en notificación por WhatsApp.")
+                        }
                     }
-                    var user= await axios.post("/api/reset/credenciales/club", midata_cred)
-                    mitext+="*Credenciales*:\n"
-                    mitext+="Usuario: "+user.data.email+"\n"
-                    mitext+="Contraseña: "+newpassword+"\n\n"
-                    mitext+="Link del Sistema: {{setting('admin.url')}}"
-                    var midata2={
-                        phone: phone_club,
-                        message: mitext
+                    if (await validacion_wpp(phone_club)) {
+                        var newpassword=Math.random().toString().substring(2, 6)
+                        var midata_cred = {
+                            clube_id: parseInt($("#select_club").val()),
+                            password: newpassword
+                        }
+                        var user= await axios.post("/api/reset/credenciales/club", midata_cred)
+                        mitext+="*Credenciales*:\n"
+                        mitext+="Usuario: "+user.data.email+"\n"
+                        mitext+="Contraseña: "+newpassword+"\n\n"
+                        mitext+="Link del Sistema: {{setting('admin.url')}}"
+                        var midata2={
+                            phone: phone_club,
+                            message: mitext
+                        }
+                        try {
+                            await axios.post("/api/whaticket/send", midata2)
+                        } catch (error) {
+                            toastr.error("Falló en notificación por WhatsApp.")
+                        }
+                        
                     }
-                    try {
-                        await axios.post("/api/whaticket/send", midata2)
-                    } catch (error) {
-                        toastr.error("Falló en notificación por WhatsApp.")
-                    }
-                    
                 }
-            }
-            var midata={
-                cant_jugs_deudores:cant_jugs_deudas,
-                planilla_id: planilla_id
+                var midata={
+                    cant_jugs_deudores:cant_jugs_deudas,
+                    planilla_id: planilla_id
+                }
             }
             await axios.post("/api/update/cant/jugs/deudores", midata)
             location.href="/admin/jugadores-planillas"

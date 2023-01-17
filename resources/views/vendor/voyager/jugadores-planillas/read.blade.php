@@ -1042,42 +1042,44 @@
                 planilla_id: "{{$dataTypeContent->id}}",
                 decision: $("#select_accion").val()
             }
-            var planilla= await axios.post("/api/find/planilla", {planilla_id: parseInt("{{ $dataTypeContent->id }}")})
-            var phone_club=planilla.data.clubes.wpp
-            var phone_delegado=planilla.data.delegado.phone
-            if (await validacion_wpp(phone_club)) {
-                phone_club=phone_club.toString()
-            }
-            if (await validacion_wpp(phone_delegado)) {
-                phone_delegado=phone_delegado.toString()
-            }
-            var mitext=""
-
-            if ($("#select_accion").val()=="Rechazado") {
-                var midata_rechazado={
-                    planilla_id: parseInt("{{$dataTypeContent->id}}"),
-                    decision: $("#select_accion").val()
+            //Switch parámetros Notificaciones Planilla
+            if ("{{setting('notificaciones.noti_planillas')}}") {
+                var planilla= await axios.post("/api/find/planilla", {planilla_id: parseInt("{{ $dataTypeContent->id }}")})
+                var phone_club=planilla.data.clubes.wpp
+                var phone_delegado=planilla.data.delegado.phone
+                if (await validacion_wpp(phone_club)) {
+                    phone_club=phone_club.toString()
                 }
-                await axios.post("/api/delete/planilla", midata_rechazado)
-                mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Rechazada* ------------------------\n\n"
-                mitext+="*Club*:\n"
-                mitext+="- "+planilla.data.clubes.name+"\n"
-                mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
-                mitext+="*Observación*:\n"
-                mitext+="- "+$("#text_area_observacion").val()
-                mitext+="\n\nNota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"        
-            }
-            else{
-                mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Aprobada* ------------------------\n\n"
+                if (await validacion_wpp(phone_delegado)) {
+                    phone_delegado=phone_delegado.toString()
+                }
+                var mitext=""
+
+                if ($("#select_accion").val()=="Rechazado") {
+                    var midata_rechazado={
+                        planilla_id: parseInt("{{$dataTypeContent->id}}"),
+                        decision: $("#select_accion").val()
+                    }
+                    await axios.post("/api/delete/planilla", midata_rechazado)
+                    mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Rechazada* ------------------------\n\n"
                     mitext+="*Club*:\n"
                     mitext+="- "+planilla.data.clubes.name+"\n"
                     mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
                     mitext+="*Observación*:\n"
                     mitext+="- "+$("#text_area_observacion").val()
-                    mitext+="\n\nNota.- Pueden proceder a realizar los pagos de las deudas que deben si es que las tienen.\n\n"
+                    mitext+="\n\nNota.- Pueden proceder a crear una nueva planilla si así lo requieren tomando en cuenta las observaciones dadas.\n\n"        
+                }
+                else{
+                    mitext+="--------------- *Planilla de Jugadores* ---------------\n------------------------ *Aprobada* ------------------------\n\n"
+                        mitext+="*Club*:\n"
+                        mitext+="- "+planilla.data.clubes.name+"\n"
+                        mitext+="Fecha: "+planilla.data.fecha+"\n\n"               
+                        mitext+="*Observación*:\n"
+                        mitext+="- "+$("#text_area_observacion").val()
+                        mitext+="\n\nNota.- Pueden proceder a realizar los pagos de las deudas que deben si es que las tienen.\n\n"
+                }
+                await mensaje_decision_planilla(phone_club, phone_delegado, mitext)
             }
-            await mensaje_decision_planilla(phone_club, phone_delegado, mitext)
-
             var decision= await axios.post("/api/save/decision/planilla", midata)
             if (decision.data) {
                 location.reload()

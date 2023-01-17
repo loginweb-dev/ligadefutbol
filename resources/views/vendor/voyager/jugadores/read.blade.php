@@ -72,8 +72,9 @@
                                 {{-- <img src="@if( !filter_var($dataTypeContent->foto, FILTER_VALIDATE_URL)){{ Voyager::image( $dataTypeContent->foto ) }}@else{{ $dataTypeContent->foto }}@endif" style="width:500px"> --}}
 
                             </div>
-                            <div>
-                                <button onclick="send_carnet()">Enviar Carnet</button>
+                            <div class="text-center">
+                                <button type='button' onclick='send_carnet()' class='btn btn-success'>Enviar Carnet</button>
+
                             </div>
                         </div>
 
@@ -300,8 +301,27 @@
     <script>
         async function send_carnet() {
             if (await validacion_wpp("{{$dataTypeContent->phone}}")) {
+                var imagen= "$dataTypeContent->foto"
+                if ("$dataTypeContent->foto") {
+                 imagen= "/jugadores/jugadordefault.png"   
+                }
+                var midata2={
+                    phone: "{{$dataTypeContent->phone}}",
+                    imagen:"{{setting('admin.url')}}storage"+imagen
+                }
+                // console.log("{{setting('admin.url')}}storage"+imagen)
+                try {
+                    await axios.post("/api/whaticket/multimedia/send", midata2)
+                } catch (error) {
+                    toastr.error("Falló en notificación por WhatsApp.")
+                }
                 var mitext= ""
-                mitext+=""
+                mitext+="*Nombre:* {{$dataTypeContent->name}}\n"
+                mitext+="*Nº Polera:* {{$dataTypeContent->polera}}\n"
+                mitext+="*Edad:* {{$dataTypeContent->edad}}\n"
+                mitext+="*Fecha Nacimiento:* {{$dataTypeContent->nacimiento}}\n"
+                mitext+="*Categoria:* {{$dataTypeContent->jug_categoria}}\n"
+                mitext+="*Club Actual:* {{$jugadore->clubes->name}}\n"
                 var midata={
                     phone: "{{$dataTypeContent->phone}}",
                     message: mitext

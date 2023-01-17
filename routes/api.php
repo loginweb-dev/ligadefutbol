@@ -456,6 +456,15 @@ Route::post('/whaticket/send', function (Request $request) {
     return true;
 });
 
+//Mensaje Multimedia Whaticket
+Route::post('/whaticket/multimedia/send', function (Request $request){
+    $phone = $request->phone;
+    $imagen= $request->imagen;
+    $api = new Api(setting('chatbot.url'), setting('chatbot.token'));
+    $api->sendMedia($phone, $imagen, setting('chatbot.whatsapp'));
+    return true;
+});
+
 //Set Setting ID Whaticket
 Route::post('update/wt/id', function(Request $request){
 	$wt=$request->whaticket_id;

@@ -412,12 +412,12 @@
             var planilla= await axios.post("/api/jugadores/planilla/save", detalles)
             var phone_club=planilla.data.clubes.wpp
             var phone_delegado=planilla.data.delegado.phone
-            // if (await validacion_wpp(phone_club)) {
-            //     phone_club=phone_club.toString()
-            // }
-            // if (await validacion_wpp(phone_delegado)) {
-            //     phone_delegado= phone_delegado.toString()
-            // }           
+            if (await validacion_wpp(phone_club)) {
+                phone_club=phone_club.toString()
+            }
+            if (await validacion_wpp(phone_delegado)) {
+                phone_delegado= phone_delegado.toString()
+            }           
             await generar_nomina(planilla.data.id, phone_club, phone_delegado, planilla.data.fecha)
             location.href = "/admin/jugadores-planillas/"+planilla.data.id
         }

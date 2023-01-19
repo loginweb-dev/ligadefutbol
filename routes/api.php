@@ -78,7 +78,11 @@ Route::group(['prefix' => 'partidos'], function () {
             $newpartido->juez_2 = $request->juez_2;
             $newpartido->juez_3 = $request->juez_3;
             $newpartido->juez_4 = $request->juez_4;
-            $newpartido->status = 2;
+            $newpartido->status = $request->status;
+            $newpartido->obs_delegado_a = $request->obs_delegado_a;
+            $newpartido->obs_delegado_b = $request->obs_delegado_b;
+            $newpartido->cal_delegado_a = $request->cal_delegado_a;
+            $newpartido->cal_delegado_b = $request->cal_delegado_b;
             $newpartido->description = $request->description;        
             $newpartido->save();
             $newpartido = App\Partido::find($request->miid);
@@ -242,8 +246,8 @@ Route::group(['prefix' => 'partidos'], function () {
             $club_b->golesa += $gol_b;            
             $club_b->golesc += $gol_a; 
         }else{
-            $newpartido->ganador = null;
-            $newpartido->perdedor = null;
+            $newpartido->ganador = $gol_a;
+            $newpartido->perdedor = $gol_b;
             $newpartido->status = 4;
             $club_a->puntos += setting('partidos.empate');
             $club_b->puntos += setting('partidos.empate');

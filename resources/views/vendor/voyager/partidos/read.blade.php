@@ -16,6 +16,8 @@
 
     $temporada = App\Temporada::find($dataTypeContent->temporada_id);
     $eventos = App\RelPartidoEvento::where("partido_id", $dataTypeContent->id)->get();
+    $mistatus = App\PartidoEstado::all();
+    $mipartido = App\Partido::where("id", $dataTypeContent->id)->with("estado")->first();
 @endphp
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
@@ -32,7 +34,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        {{-- <tr>
                             <th class="text-center">Juego #{{ $dataTypeContent->id }}</th>
                             <td  class="text-center">
                                 @switch($dataTypeContent->status)
@@ -51,15 +53,18 @@
                                     @default            
                                 @endswitch                                                              
                             </td>
+                        </tr> --}}
+                        <tr>
+                            <td>Estado: </td>
+                            <td><span class="badge badge-primary">{{ $mipartido->estado->name }}</span></td>
                         </tr>
                         <tr>
                             <td>Fecha & Hora: </td>
-                            <td>{{ $dataTypeContent->created_at }}</td>
+                            <td>
+                                {{ $dataTypeContent->created_at }}
+                            </td>
                         </tr>
-                        <tr>
-                            <td>Categoria: </td>
-                            <td>{{ $dataTypeContent->categoria }}</td>
-                        </tr>
+
                         <tr>
                             <td colspan="2" class="text-center">
                                 {{ $temporada->title }}
@@ -84,6 +89,18 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td class="text-center">                               
+                                    <label for="">Estado: </label>  
+                                    <div class="form-group miselect">                              
+                                        <select name="" id="status" class="form-control select2">
+                                            @foreach ($mistatus as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach    
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
                             <tr>
                                 <td class="text-center">                               
                                     <label for="">Arbitro del Partido</label>  
@@ -243,13 +260,30 @@
                         <thead>
                             <tr class="active">
                                 <th class="text-center" colspan="8">
-                                    <h2>
-                                        <span class="label label-primary">
-                                            <a href="/admin/clubes/{{ $ea->id }}">
-                                                Equipo A: {{ $ea->name }}
-                                            </a>
-                                        </span>
-                                    </h2>
+                                                
+                                    @if($dataTypeContent->status == 1)                              
+                                        <h2>
+                                            <span class="label label-primary">
+                                                <a href="/admin/clubes/{{ $ea->id }}">
+                                                    Equipo A: {{ $ea->name }}
+                                                </a>
+                                            </span>
+                                            <br>
+                                            <small>Calificacion del Arbitraje</small>
+                                        </h2>                                   
+                                        <div class="miselect">
+                                            <select name="" id="cal_delegado_a" class="form-control">
+                                                <option value="Bueno">Bueno</option>
+                                                <option value="Regular">Regular</option>
+                                                <option value="Malo">Malo</option>
+                                            </select>
+                                        </div>                                    
+                                        <textarea name="" id="obs_delegado_a" class="form-control" placeholder="Observaciones delgado del equipo A"></textarea>
+                                    @else
+                                        <h2>Equipo A: {{ $ea->name }}</h2>
+                                        <p>Calificacion: {{ $mipartido->cal_delegado_a }}</p>
+                                        <p>Observaciones : {{ $mipartido->obs_delegado_a }}</p>
+                                    @endif
                                 </th>
                             </tr>
                             <tr class="active">
@@ -295,21 +329,37 @@
                     </table>
                 </div>
                 
-                @if($dataTypeContent->status == 1)     
-           
-                @endif
                   
                 <div class="table-responsive">
                     <table class="table table-striped mitable" id="clubb">
                         <thead>
-                            <tr class="active"><th class="text-center" colspan="8">                                
-                                <h2>
-                                    <span class="label label-primary">
-                                        <a href="/admin/clubes/{{ $eb->id }}">
-                                            Equipo A: {{ $eb->name }}
-                                        </a>
-                                    </span>
-                                </h2>                            </th></tr>
+                            <tr class="active">
+                                <th class="text-center" colspan="8">      
+                                    @if($dataTypeContent->status == 1)                           
+                                        <h2>
+                                            <span class="label label-primary">
+                                                <a href="/admin/clubes/{{ $eb->id }}">
+                                                    Equipo A: {{ $eb->name }}
+                                                </a>
+                                            </span>
+                                            <br>
+                                            <small>Calificacion del Arbitraje</small>
+                                        </h2>                                    
+                                        <div class="miselect">
+                                            <select name="" id="cal_delegado_b" class="form-control">
+                                                <option value="Bueno">Bueno</option>
+                                                <option value="Regular">Regular</option>
+                                                <option value="Malo">Malo</option>
+                                            </select>
+                                        </div>  
+                                        <textarea name="" id="obs_delegado_b" class="form-control" placeholder="Observaciones delgado del equipo B"></textarea>       
+                                        @else
+                                        <h2>Equipo B: {{ $eb->name }}</h2>
+                                        <p>Calificacion: {{ $mipartido->cal_delegado_b }}</p>
+                                        <p>Observaciones : {{ $mipartido->obs_delegado_b }}</p>
+                                    @endif                
+                                </th>
+                            </tr>
                             <tr class="active">
                                 <th scope="col">ID</th>                                                                
                                 <th scope="col">Nombres y Apellidos</th>
@@ -562,6 +612,11 @@
                             'hora_comienzo_pt': $("#hora_comienzo_pt").val(),
                             'hora_comienzo_st': $("#hora_comienzo_st").val(),
                             'description': $("#description").val(),
+                            'obs_delegado_a': $("#obs_delegado_a").val(),
+                            'obs_delegado_b': $("#obs_delegado_b").val(),
+                            'cal_delegado_a': $("#cal_delegado_a").val(),
+                            'cal_delegado_b': $("#cal_delegado_b").val(),
+                            'status': $("#status").val()                            
                         }     
                         var partido = await axios.post("/api/partidos/update", midata)
                         toastr.success("Partido Actualizado")

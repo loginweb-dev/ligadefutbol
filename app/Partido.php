@@ -28,7 +28,11 @@ class Partido extends Model
         'ganador',
         'perdedor',
         'editor_id',
-        'temporada_id'
+        'temporada_id',
+        'obs_delegado_a',
+        'obs_delegado_b',
+        'cal_delegado_a',
+        'cal_delegado_b'
     ];
 
     public function fixture()
@@ -43,11 +47,13 @@ class Partido extends Model
 	{
 		return $this->belongsTo(JugadoresPlanilla::class, 'planilla_b_id');
 	}
-
     public function RelPartidoEvento()
 	{
 		return $this->belongsTo(RelPartidoEvento::class, 'partido_id');
 	}
-
+    public function estado()
+	{
+		return $this->belongsTo(PartidoEstado::class, 'status');
+	}
     
 }

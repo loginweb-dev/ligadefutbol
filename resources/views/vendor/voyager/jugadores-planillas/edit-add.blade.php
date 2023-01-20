@@ -386,6 +386,7 @@
             })
         }
         async function guardar_planilla(){
+            toastr.success("Guardando Planilla, porfavor no recargue ni se salga de la página.")
             var clube_id= $("#select_club").val()
             var categoria_jugadores= $("#select_cat").val()
             // var fecha_entrega=$("#fecha_mensual").val()+"-01"
@@ -484,21 +485,23 @@
         async function validacion_gestion() {
             if ("{{setting('nominas.validacion_gestion')}}") {
                 var ultima_planilla= await axios("/api/find/ultima/planilla/"+$("#select_club").val())
-                var gestion_actual=$("#fecha_mensual").val()+"-01"
+                var gestion_actual=$("#gestion").val()+"-01"
                 if (ultima_planilla.data.length>0) {
-                    if (ultima_planilla.data[0].fecha_entrega==gestion_actual && ultima_planilla.data[0].activo=="Aprobado") {
+                    if (ultima_planilla.data[0].gestion==gestion_actual && ultima_planilla.data[0].activo=="Aprobado") {
                         toastr.error("Ya existe una planilla de ese Mes que está Aprobada.")
                     }
                     else{
-                        if(Date.parse(ultima_planilla.data[0].fecha_entrega) <= Date.parse(gestion_actual)){
+                        console.log(ultima_planilla.data)
+                        console.log(gestion_actual)
+                        if(Date.parse(ultima_planilla.data[0].gestion) <= Date.parse(gestion_actual)){
                             // toastr.success("correcto")
-                            if (Date.parse(ultima_planilla.data[0].fecha_entrega)== Date.parse(gestion_actual)&& ultima_planilla.data[0].activo!="Entregado" && ultima_planilla.data.activo!="Aprobado" ) {
+                            if (Date.parse(ultima_planilla.data[0].gestion)== Date.parse(gestion_actual)&& ultima_planilla.data[0].activo!="Entregado" && ultima_planilla.data.activo!="Aprobado" ) {
                                 misave()
                             }
-                            else if(Date.parse(ultima_planilla.data[0].fecha_entrega)== Date.parse(gestion_actual)&& ultima_planilla.data[0].activo=="Entregado"){
+                            else if(Date.parse(ultima_planilla.data[0].gestion)== Date.parse(gestion_actual)&& ultima_planilla.data[0].activo=="Entregado"){
                                 toastr.error("Hay una planilla de dicha gestión en proceso de verificación.")
                             }
-                            else if(Date.parse(ultima_planilla.data[0].fecha_entrega)< Date.parse(gestion_actual)){
+                            else if(Date.parse(ultima_planilla.data[0].gestion)< Date.parse(gestion_actual)){
                                 if (ultima_planilla.data[0].activo!="Entregado") {
                                     misave()
                                 } else {

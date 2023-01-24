@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use RicardoPaes\Whaticket\Api;
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -77,6 +79,15 @@ Route::get('/reset-db', function () {
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
+Route::post('decision/planilla', function (Request $request) {
+    $planilla= App\JugadoresPlanilla::find($request->planilla_id);
+    $planilla->observacion= $request->text_area_observacion;
+    $planilla->save();
+    return redirect("/admin/jugadores-planillas/".$request->planilla_id);
+
+})->name('decision_planilla');
+
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 

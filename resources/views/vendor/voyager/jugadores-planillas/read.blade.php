@@ -908,25 +908,43 @@
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">                    
-                    <div class="form-group col-6">
-                        <label for="select_accion">Acción Decisiva</label>
-                        <div class="miselect">                                
-                            <select class="form-control select2" name="select_accion" id="select_accion">
-                                <option value="Aprobado">Aprobar</option>
-                                <option value="Rechazado">Rechazar</option>
-                            </select>
-                        </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form action="{{route('decision_planilla')}}" name="form_decision" method="POST" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+
+                            <input type="number" name="planilla_id" value="{{$dataTypeContent->id}}" hidden>
+                            <div class="form-group col-sm-9">
+                                <label for="select_accion">Acción Decisiva</label>
+                                <div class="miselect">                                
+                                    <select class="form-control select2" name="select_accion" id="select_accion">
+                                        <option value="Aprobado">Aprobar</option>
+                                        <option value="Rechazado">Rechazar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <br>
+                                <button  onclick="save_decision()" >Guardar</button>
+                                {{-- onclick="save_decision()" --}}
+                            </div>
+                            </div>
+                                <div class="form-group">
+                                <label for="">Observaciones</label>                             
+                                <textarea class="form-control richTextBox" name="text_area_observacion" id="text_area_observacion"  ></textarea>
+                            </div>
+                            <div>
+                            </div>
+                            
+                        </form>                    
+                    
                     </div>
-                        <div class="form-group col-6">
-                        <label for="">Observaciones</label>                             
-                        <textarea class="form-control" name="text_area_observacion" rows="5" id="text_area_observacion"  ></textarea>
-                    </div>                            
                 </div>
                 <div class="modal-footer mt-3">
                     {{-- <a type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</a> --}}
-                    <a type="button" onclick="save_decision()" class="btn btn-sm btn-dark">Guardar</a>
+                    {{-- <a type="button" onclick="save_decision()" class="btn btn-sm btn-dark">Guardar</a> --}}
                 </div>
+               
             </div>
         </div>
     </div>
@@ -934,7 +952,22 @@
 @stop
 
 @section('javascript')
+<script>
+    $(document).ready(function() {
+        var additionalConfig = {
+            // selector: 'textarea.richTextBox[name="text_area_observacion"]',
+            selector:'.richTextBox'
+        }
+
+        $.extend(additionalConfig, {!! json_encode($options->tinymceOptions ?? (object)[]) !!})
+
+        tinymce.init(window.voyagerTinyMCE.getConfig(additionalConfig));
+    });
+</script>
     <script>
+        function enviar_formulario(){
+            document.form_decision.submit()
+        }
         async function validar_check(seleccionada) {
             var validacion=0
             var asientos= await axios("/api/asientos/get/planilla/"+"{{$dataTypeContent->id}}")
@@ -952,6 +985,12 @@
 
             }
         }
+
+        function htmlToText(html) {
+			var temp = document.createElement('div');
+			temp.innerHTML = html;
+			return temp.textContent; // Or return temp.innerText if you need to return only visible text. It's slower.
+		}
 
         function misave(seleccionada){
             Swal.fire({
@@ -1002,6 +1041,8 @@
             $('.mireload').attr("hidden", false)
             $("#modal_acciones_planilla .close").click()
             acciones_planilla()
+            // let txtcont = document.getElementById("text_area_observacion2");
+            // console.log(txtcont)
         }
 
         function save_asiento_individual(){
@@ -1038,7 +1079,7 @@
 
         async function acciones_planilla(){
             var midata={
-                observacion: $("#text_area_observacion").val(),
+                observacion: $("#text_area_observacion").text(),
                 planilla_id: "{{$dataTypeContent->id}}",
                 decision: $("#select_accion").val()
             }
@@ -1081,9 +1122,11 @@
                 await mensaje_decision_planilla(phone_club, phone_delegado, mitext)
             }
             var decision= await axios.post("/api/save/decision/planilla", midata)
-            if (decision.data) {
-                location.reload()
-            }
+
+            enviar_formulario()
+            // if (decision.data) {
+            //     location.reload()
+            // }
         }
 
         async function mensaje_decision_planilla(phone_club, phone_delegado, mitext) {

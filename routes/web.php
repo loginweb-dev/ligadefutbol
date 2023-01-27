@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use RicardoPaes\Whaticket\Api;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,6 +16,7 @@ use RicardoPaes\Whaticket\Api;
 
 Route::get('/', function () {
     return redirect("/admin/profile");
+    // return view("/welcome");
 });
 
 // Route::get('/test', function () {
@@ -70,13 +72,17 @@ Route::get('/reset-db', function () {
     ]);
 
     App\RelPartidoEvento::truncate();
-
     return redirect("/admin");
+});
+
+Route::post('/uploads/image', function (Request $request) {
+    return "hola";
 });
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 

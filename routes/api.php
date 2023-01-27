@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use RicardoPaes\Whaticket\Api;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -282,6 +283,11 @@ Route::group(['prefix' => 'partidos'], function () {
 
 // rutas juGADORES -----------------------------------------------------------------------
 Route::group(['prefix' => 'jugadores'], function () {
+    Route::post('save', function (Request $request) {
+        $new = App\Jugadore::create($request->all());
+        return $new;
+    });
+
     Route::get('planilla/find/jugadores/{clube_id}', function ($clube_id) {
         $jugadores= App\Jugadore::where('clube_id', $clube_id)->get();
         return $jugadores;
@@ -300,22 +306,6 @@ Route::group(['prefix' => 'jugadores'], function () {
             $ult_planilla->save();
         }
             $temporada= App\Temporada::where('status', 1)->first();
-            // $planilla= App\JugadoresPlanilla::create([
-            //     'clube_id'=> $request->clube_id,
-            //     'categoria_jugadores'=> $request->categoria_jugadores,
-            //     'fecha_entrega'=> $request->fecha_entrega,
-            //     'veedor_id'=> $request->veedor_id,
-            //     'delegado_id'=> $request->delegado_id,
-            //     'men_pagadas'=> $request->men_pagadas,
-            //     'subtotal'=> $request->subtotal,
-            //     'deuda'=> $request->deuda,
-            //     'total'=> $request->total,
-            //     'observacion'=> $request->observacion,
-            //     'hora_entrega'=>$request->hora_entrega,
-            //     'activo'=>'Entregado',
-            //     'user_id'=>$request->user_id,
-            //     'temporada_id'=>$temporada->id
-            // ]);
             $planilla= App\JugadoresPlanilla::create($request->all());
             $planilla2= App\JugadoresPlanilla::where('id', $planilla->id)->with('clubes', 'delegado', 'user')->first();
         return $planilla2;
@@ -370,6 +360,36 @@ Route::group(['prefix' => 'features'], function () {
     });
 });
 
+// rutas clubes -------------------------------------------------------
+Route::group(['prefix' => 'clubes'], function () {
+    Route::post('save', function(Request $request){
+        $new = App\Clube::create($request->all());
+        $path = Storage::disk('local')->put('public/clubes', $request->file('image'));
+        $new->image = $path;
+        $new->save();
+        return $new;
+    });
+    Route::post('rel/save', function(Request $request){
+        $new = App\RelTemporadaClube::create($request->all());
+        return $new;
+    });
+});
+
+// rutas usuarios -------------------------------------------------------
+Route::group(['prefix' => 'usuarios'], function () {
+    Route::post('save', function(Request $request){
+        $new = App\Models\User::create($request->all());
+        return $new;
+    });
+});
+
+// rutas delegados -------------------------------------------------------
+Route::group(['prefix' => 'delegados'], function () {
+    Route::post('save', function(Request $request){
+        $new = App\Delegado::create($request->all());
+        return $new;
+    });
+});
 
 Route::post('asiento/save', function(Request $request){
     $asiento=App\Asiento::create([

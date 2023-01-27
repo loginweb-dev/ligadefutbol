@@ -602,6 +602,7 @@
                     cancelButtonText: 'NO'
                     }).then(async (result) => {
                     if (result.isConfirmed) {
+                        
                         $("#misave2").hide()
                         var midata = {
                             'miid': $("#miid").val(),

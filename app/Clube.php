@@ -11,6 +11,13 @@ class Clube extends Model
 {
     use SoftDeletes;
     protected $fillable = [
+        'name',
+        'presidente',
+        'vicepresidente',
+        'secre_general',
+        'secre_hacienda',
+        'vocal',
+        'image',
         'puntos',
         'golesa',
         'golesc',

@@ -46,12 +46,6 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="phone">WhatsApp</label>
-                                <input type="number" class="form-control" id="phone" name="phone" placeholder="WhatsApp"
-                                       value="{{ old('phone', $dataTypeContent->phone ?? '') }}">
-                            </div>
-
-                            <div class="form-group">
                                 <label for="email">{{ __('voyager::generic.email') }}</label>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="{{ __('voyager::generic.email') }}"
                                        value="{{ old('email', $dataTypeContent->email ?? '') }}">

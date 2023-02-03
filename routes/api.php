@@ -343,6 +343,43 @@ Route::group(['prefix' => 'jugadores'], function () {
         ]);
         return $rel_planilla;
     });
+
+    Route::post('update/jugador', function(Request $request){
+        $jugador=App\Jugadore::find($request->id);
+        switch ($request->name) {
+            case 'name':
+                $jugador->name= $request->valor;
+                $jugador->save();
+                break;
+            case 'polera':
+                $jugador->polera= $request->valor;
+                $jugador->save();
+                break;
+            case 'edad':
+                $jugador->edad= $request->valor;
+                $jugador->save();
+                break;
+            case 'nacido':
+                $jugador->nacido= $request->valor;
+                $jugador->save();
+                break;
+            case 'jug_categoria':
+                $jugador->jug_categoria= $request->valor;
+                $jugador->save();
+                break;
+            case 'clube_id':
+                $jugador->clube_id= $request->valor;
+                $jugador->save();
+                break;
+            case 'phone':
+                $jugador->phone= $request->valor;
+                $jugador->save();
+                break;
+            default:
+                break;
+        }
+        return true;
+    });
 });
 
 // rutas fixtures -------------------------------------------------------

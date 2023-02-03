@@ -92,11 +92,11 @@
                             </tr>
                             <tr>
                                 <td>Correo</td>
-                                <td><input type="text" id="email" name="email" class="form-control"></td>
+                                <td><input type="text" id="miemail" name="miemail" class="form-control"></td>
                             </tr>
                             <tr>
                                 <td>Contraseña</td>
-                                <td><input type="password" id="password" name="password" class="form-control"></td>
+                                <td><input type="password" id="mipassword" name="mipassword" class="form-control"></td>
                             </tr>
                             <tr>
                                 <td colspan="2">
@@ -288,41 +288,35 @@
                         var data = new FormData();
                         data.append('image', document.getElementById('image').files[0]);
                         data.append('name', $('#name').val())
-                        data.append('wpp' : $('#wpp').val())
-                        data.append('user_id' : '{{ Auth::user()->id }}')
-                        data.append('presidente' : $('#presidente').val())
-                        data.append('vocal' : $('#vocal').val())
-                        data.append('status' : 1)
-                        data.append('secre_hacienda' : $('#secre_hacienda').val())
-                        data.append('vicepresidente' : $('#vicepresidente').val())
+                        data.append('wpp', $('#wpp').val())
+                        data.append('user_id', '{{ Auth::user()->id }}')
+                        data.append('presidente', $('#presidente').val())
+                        data.append('vocal', $('#vocal').val())
+                        data.append('status', 1)
+                        data.append('secre_hacienda', $('#secre_hacienda').val())
+                        data.append('vicepresidente', $('#vicepresidente').val())
                         const config = { headers: { 'Content-Type': 'multipart/form-data' } };
                         var newclub = await axios.post("/api/clubes/save", data, config)
                         console.log(newclub.data)
-                        var nuwrel = {
+                        var newclub = await axios.post("/api/clubes/rel/save", {
                             'temporada_id': $('#temporada_id :selected').val(),
                             'club_id': newclub.data.id
-                        }
-                        var newclub = await axios.post("/api/clubes/rel/save", nuwrel)
+                        })
 
-                        // toastr.success("Guardando Usuarios y Delegados..")
-                        // var miusuario = {
-                        //     'name' : $('#name').val(),
-                        //     'email' : $('#email').val(),
-                        //     'password': $('#password').val(),
-                        // }
-                        // var newclub = await axios.post("/api/usuarios/save", miusuario)
-
-                        // var mideletado1 = {
-                        //     'name' : $('#name_titular').val(),
-                        //     'clube_id' : newclub.data.id
-                        // }
-                        // var newclub = await axios.post("/api/delegados/save", mideletado1)
-
-                        // var mideletado2 = {
-                        //     'name' : $('#name_suplente').val(),
-                        //     'clube_id' : newclub.data.id
-                        // }
-                        // var newclub = await axios.post("/api/delegados/save", mideletado2)
+                        toastr.success("Guardando Usuarios y Delegados..")
+                        var newclub = await axios.post("/api/usuarios/save", {
+                            'name' : $('#name').val(),
+                            'email' : $('#miemail').val(),
+                            'password': $('#mipassword').val(),
+                        })
+                        var newclub = await axios.post("/api/delegados/save", {
+                            'name' : $('#name_titular').val(),
+                            'clube_id' : newclub.data.id
+                        })
+                        var newclub = await axios.post("/api/delegados/save", {
+                            'name' : $('#name_suplente').val(),
+                            'clube_id' : newclub.data.id
+                        })
 
                         // toastr.success("Guardando jugadores..")
                         // var midata = localStorage.getItem("jugadores_equipos") ? JSON.parse(localStorage.getItem("jugadores_equipos")) : []

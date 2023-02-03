@@ -364,7 +364,7 @@ Route::group(['prefix' => 'features'], function () {
 Route::group(['prefix' => 'clubes'], function () {
     Route::post('save', function(Request $request){
         $new = App\Clube::create($request->all());
-        $path = Storage::disk('local')->put('public/clubes', $request->file('image'));
+        $path = Storage::disk('public')->put('clubes', $request->file('image'));
         $new->image = $path;
         $new->save();
         return $new;

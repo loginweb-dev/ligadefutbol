@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use RicardoPaes\Whaticket\Api;
 use Illuminate\Http\Request;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,32 +47,47 @@ Route::get('/reset-db', function () {
     App\RelPlanillaJugadore::truncate();
     App\Transferencia::truncate();
     App\Transferencia::truncate();
-    App\Clube::where('id', '>', 0)->update([
-        'status' => 1
-    ]);
-    App\RelTemporadaClube::where('id', '>', 0)->update([
-        'partidos' => 0,
-        'puntos' => 0,
-        'golesa' => 0,
-        'golesc' => 0,
-        'ta' => 0,
-        'tr' => 0,
-        'descansos' => 0,
-    ]);
-    
-    App\Jugadore::where('id', '>', 0)->update([
-        'status' => 1
-    ]);
 
-    App\RelTemporadaJugadore::where('id', '>', 0)->update([
-        'temporada_id' => 1,
-        'ta' => 0,
-        'tr' => 0,
-        'goles' => 0,
-        'partidos' => 0
-    ]);
+    // App\Clube::where('id', '>', 0)->update([
+    //     'status' => 1
+    // ]);
+    // App\RelTemporadaClube::where('id', '>', 0)->update([
+    //     'partidos' => 0,
+    //     'puntos' => 0,
+    //     'golesa' => 0,
+    //     'golesc' => 0,
+    //     'ta' => 0,
+    //     'tr' => 0,
+    //     'descansos' => 0,
+    // ]);
+    
+    // App\Jugadore::where('id', '>', 0)->update([
+    //     'status' => 1
+    // ]);
+
+    // App\RelTemporadaJugadore::where('id', '>', 0)->update([
+    //     'temporada_id' => 1,
+    //     'ta' => 0,
+    //     'tr' => 0,
+    //     'goles' => 0,
+    //     'partidos' => 0
+    // ]);
 
     App\RelPartidoEvento::truncate();
+    App\Jugadore::truncate();
+    App\Clube::truncate();
+    App\Delegado::truncate();
+    App\RelTemporadaClube::truncate();
+    App\RelTemporadaJugadore::truncate();
+
+    // App\Models\User::truncate();
+    // App\Models\User::create([
+    //     'name' => 'admin',
+    //     'email' => 'admin@admin.com',
+    //     'password' => Hash::make('password'),
+    //     'role_id' => 1
+    // ]);
+
     return redirect("/admin");
 });
 

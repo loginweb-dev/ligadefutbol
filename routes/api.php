@@ -6,7 +6,7 @@ use RicardoPaes\Whaticket\Api;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Models\User;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -401,10 +401,16 @@ Route::group(['prefix' => 'features'], function () {
 Route::group(['prefix' => 'clubes'], function () {
     Route::post('save', function(Request $request){
         $new = App\Clube::create($request->all());
-        $path = Storage::disk('public')->put('clubes', $request->file('image'));
-        $new->image = $path;
-        $new->save();
-        return $new;
+        if ($request->hasFile('image'))
+        {
+            $path = Storage::disk('public')->put('clubes', $request->file('image'));
+            $new->image = $path;
+            $new->save();
+            return $new;
+        }else{
+            return $new;
+        }
+
     });
     Route::post('rel/save', function(Request $request){
         $new = App\RelTemporadaClube::create($request->all());
@@ -416,6 +422,8 @@ Route::group(['prefix' => 'clubes'], function () {
 Route::group(['prefix' => 'usuarios'], function () {
     Route::post('save', function(Request $request){
         $new = App\Models\User::create($request->all());
+        $new->password = Hash::make($request->password);
+        $new->save();
         return $new;
     });
 });

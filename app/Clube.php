@@ -23,7 +23,8 @@ class Clube extends Model
         'golesc',
         'ta',
         'tr',
-        'status'
+        'status',
+        'user_id'
     ];
 
     public function user(){

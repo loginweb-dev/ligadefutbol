@@ -91,6 +91,9 @@ Route::get('/reset-db', function () {
     return redirect("/admin");
 });
 
+Route::get('/club/{id}', function ($id) {
+    return view("app.index", compact('id'));
+});
 Route::post('/uploads/image', function (Request $request) {
     return "hola";
 });

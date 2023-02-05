@@ -345,6 +345,12 @@
                             newecn["clube_id"] = newclub.data.id
                             await axios.post("/api/jugadores/save", newecn)
                         }
+
+                        //4.--------------------------------------------------------
+                        await axios.post("/api/whaticket/send", {
+                            'phone': $('#wpp').val(),
+                            'message': 'Nuevo club creado correctamente\n'+$('#name').val()+'\nIngrese a sgte link para ver los detalles\nhttps://ligadefutbol.loginweb.dev/club/'+newclub.data.id
+                        })
                         location.href = "/admin/clubes"
                     }
                 })
